@@ -1,0 +1,64 @@
+<?php
+
+namespace App\Livewire\Forms;
+
+use Illuminate\Validation\Rule;
+use Livewire\Attributes\Locked;
+use Livewire\Component;
+use Livewire\Form;
+use App\Models\Product;
+
+class ProductForm extends Form
+{
+  public ?Product $product = null;
+  #[Locked]
+  public $id = null;
+  public $name = '';
+  public $description = '';
+  public $category_id = null;
+  public $state = 1;
+
+  public function rules()
+  {
+    return [
+      'name' => [
+        'required',
+        'string',
+        'max:150',
+        Rule::unique('products')->ignore($this->product),
+      ],
+      'description' => 'nullable|string',
+      'category_id' => 'required|integer|exists:categories,id',
+      'state' => 'required|integer|in:1,2',
+    ];
+  }
+
+  public function setProduct(Product $product)
+  {
+    $this->product = $product;
+    $this->id = $product->id;
+    $this->name = $product->name;
+    $this->description = $product->description;
+    $this->category_id = $product->category_id;
+    $this->state = $product->state;
+  }
+
+  public function store()
+  {
+    $this->validate();
+    Product::create($this->all());
+    $this->reset();
+  }
+
+  public function update()
+  {
+    $this->validate();
+    $this->product->update($this->all());
+    $this->reset();
+  }
+
+  public function delete()
+  {
+    $this->product->delete();
+  }
+}
