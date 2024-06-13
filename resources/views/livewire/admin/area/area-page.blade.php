@@ -75,9 +75,9 @@
                 <button
                   class="rounded bg-purple-400 px-2 py-1 font-bold text-white hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-300"
                   wire:click="selectedProducts({{ $area->id }})"><i class="fas fa-list-ul"></i></button>
-                <button
+                {{--                 <button
                   class="rounded bg-cyan-400 px-2 py-1 font-bold text-white hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-300"
-                  wire:click="show({{ $area->id }})"><i class="fas fa-eye"></i></button>
+                  wire:click="show({{ $area->id }})"><i class="fas fa-eye"></i></button> --}}
               </td>
             </tr>
           @endforeach
@@ -88,16 +88,24 @@
         @foreach ($areas as $area)
           <div class="overflow-hidden rounded-lg bg-white shadow-lg">
             <div class="p-6">
-              <h3 class="mb-2 text-lg font-semibold text-gray-900">{{ $area->id }}</h3>
-              <p class="text-sm text-gray-600">{{ $area->name }}</p>
-              <span
-                class="{{ $area->state == 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
-                {{ $area->state == 1 ? 'Activo' : 'Inactivo' }}
-              </span>
+              <h3 class="mb-2 text-lg font-semibold text-gray-900">{{ $area->name }}</h3>
+              <p class="block text-sm text-gray-600">
+                Estado:
+                <span
+                  class="{{ $area->state == 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
+                  {{ $area->state == 1 ? 'Activo' : 'Inactivo' }}
+                </span>
+              </p>
               <div class="mt-2 text-right">
                 <button
-                  class="rounded bg-cyan-400 px-2 py-1 font-bold text-white hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-300"
-                  wire:click="view({{ $area->id }})"><i class="fas fa-eye"></i></button>
+                  class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                  wire:click="edit({{ $area->id }})"><i class="fas fa-edit"></i></button>
+                <button
+                  class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
+                  wire:click="alertDelete({{ $area->id }})"><i class="fas fa-trash"></i></button>
+                <button
+                  class="rounded bg-purple-400 px-2 py-1 font-bold text-white hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-300"
+                  wire:click="selectedProducts({{ $area->id }})"><i class="fas fa-list-ul"></i></button>
               </div>
             </div>
           </div>

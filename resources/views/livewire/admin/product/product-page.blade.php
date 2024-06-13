@@ -80,9 +80,9 @@
                 <button
                   class="rounded bg-cyan-400 px-2 py-1 font-bold text-white hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-300"
                   wire:click="view({{ $product->id }})"><i class="fas fa-eye"></i></button>
-                <button
+                {{--                 <button
                   class="rounded bg-orange-400 px-2 py-1 font-bold text-white hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-300"
-                  wire:click="addInventory({{ $product->id }})"><i class="fas fa-cart-plus"></i></button>
+                  wire:click="addInventory({{ $product->id }})"><i class="fas fa-cart-plus"></i></button> --}}
               </td>
             </tr>
           @endforeach
@@ -93,14 +93,19 @@
         @foreach ($products as $product)
           <div class="overflow-hidden rounded-lg bg-white shadow-lg">
             <div class="p-6">
-              <h3 class="mb-2 text-lg font-semibold text-gray-900">{{ $product->name }}</h3>
-              <p class="text-sm text-gray-600">{{ $product->description }}</p>
-              <span
-                class="block text-sm text-gray-600">{{ $product->category ? $product->category->name : 'Sin Asignar' }}</span>
-              <span
-                class="{{ $product->state == 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
-                {{ $product->state == 1 ? 'Disponible' : 'Agotado' }}
+              <h3 class="mb-2 text-lg font-semibold text-gray-900">
+                {{ $product->name }}
+              </h3>
+              <span class="block text-sm text-gray-600">
+                Categoría: {{ $product->category ? $product->category->name : 'Sin Asignar' }}
               </span>
+              <p class="block text-sm text-gray-600">
+                Estado:
+                <span
+                  class="{{ $product->state == 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
+                  {{ $product->state == 1 ? 'Disponible' : 'Agotado' }}
+                </span>
+              </p>
               <div class="mt-2 text-right">
                 <button
                   class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
@@ -109,8 +114,11 @@
                   class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
                   wire:click="alertDelete({{ $product->id }})"><i class="fas fa-trash"></i></button>
                 <button
+                  class="rounded bg-cyan-400 px-2 py-1 font-bold text-white hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-300"
+                  wire:click="view({{ $product->id }})"><i class="fas fa-eye"></i></button>
+                {{--                 <button
                   class="rounded bg-orange-400 px-2 py-1 font-bold text-white hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-300"
-                  wire:click="addInventory({{ $product->id }})"><i class="fas fa-cart-plus"></i></button>
+                  wire:click="addInventory({{ $product->id }})"><i class="fas fa-cart-plus"></i></button> --}}
               </div>
             </div>
           </div>

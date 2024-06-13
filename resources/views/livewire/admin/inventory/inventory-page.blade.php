@@ -97,8 +97,13 @@
             <div class="p-6">
               <h3 class="mb-2 text-lg font-semibold text-gray-900">{{ $inventory->product->name }}</h3>
               <span class="block text-sm text-gray-600">Cantidad: {{ $inventory->quantity }}</span>
-              <span class="block text-sm text-gray-600">Movimiento:
-                {{ $inventory->movement_type == 1 ? 'Entrada' : 'Salida' }}</span>
+              <p class="block text-sm text-gray-600">
+                Movimiento:
+                <span
+                  class="{{ $inventory->movement_type == 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
+                  {{ $inventory->movement_type == 1 ? 'Entrada' : 'Salida' }}
+                </span>
+              </p>
               <span class="block text-sm text-gray-600">Precio Unitario: {{ $inventory->unit_price }}</span>
               <span class="block text-sm text-gray-600">Unidad: {{ $inventory->unit->abbreviation }}</span>
               <p class="mt-2 text-sm text-gray-600">{{ $inventory->description }}</p>

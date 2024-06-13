@@ -77,9 +77,9 @@
                 <button
                   class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
                   wire:click="alertDelete({{ $unit->id }})"><i class="fas fa-trash"></i></button>
-                <button
+                {{--                 <button
                   class="rounded bg-cyan-400 px-2 py-1 font-bold text-white hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-300"
-                  wire:click="view({{ $unit->id }})"><i class="fas fa-eye"></i></button>
+                  wire:click="view({{ $unit->id }})"><i class="fas fa-eye"></i></button> --}}
               </td>
             </tr>
           @endforeach
@@ -91,10 +91,13 @@
           <div class="overflow-hidden rounded-lg bg-white shadow-lg">
             <div class="p-6">
               <h3 class="mb-2 text-lg font-semibold text-gray-900">{{ $unit->name }}</h3>
-              <span
-                class="{{ $unit->state ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
-                {{ $unit->state ? 'Activo' : 'Inactivo' }}
-              </span>
+              <p class="block text-sm text-gray-600">
+                Estado:
+                <span
+                  class="{{ $unit->state == 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
+                  {{ $unit->state == 1 ? 'Activo' : 'Inactivo' }}
+                </span>
+              </p>
               <div class="text-right">
                 <button
                   class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
@@ -102,9 +105,9 @@
                 <button
                   class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
                   wire:click="alertDelete({{ $unit->id }})"><i class="fas fa-trash"></i></button>
-                <button
+                {{--                 <button
                   class="rounded bg-cyan-400 px-2 py-1 font-bold text-white hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-300"
-                  wire:click="view({{ $unit->id }})"><i class="fas fa-eye"></i></button>
+                  wire:click="view({{ $unit->id }})"><i class="fas fa-eye"></i></button> --}}
               </div>
             </div>
           </div>
