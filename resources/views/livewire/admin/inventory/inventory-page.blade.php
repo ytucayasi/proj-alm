@@ -69,11 +69,15 @@
             <tr class="hover:bg-gray-100">
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $inventory->id }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $inventory->product->name }}</td>
+                {{ $inventory->product ? $inventory->product->name : 'Sin Asignar' }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
                 {{ $inventory->quantity }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $inventory->movement_type == 1 ? 'Entrada' : 'Salida' }}</td>
+                <span
+                  class="{{ $inventory->movement_type == 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
+                  {{ $inventory->movement_type == 1 ? 'Entrada' : 'Salida' }}
+                </span>
+              </td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
                 {{ $inventory->unit_price == 0 ? 'No Aplica' : $inventory->unit_price }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
@@ -95,7 +99,8 @@
         @foreach ($inventories as $inventory)
           <div class="overflow-hidden rounded-lg bg-white shadow-lg">
             <div class="p-6">
-              <h3 class="mb-2 text-lg font-semibold text-gray-900">{{ $inventory->product->name }}</h3>
+              <h3 class="mb-2 text-lg font-semibold text-gray-900">
+                {{ $inventory->product ? $inventory->product->name : 'Sin Asignar' }}</h3>
               <span class="block text-sm text-gray-600">Cantidad: {{ $inventory->quantity }}</span>
               <p class="block text-sm text-gray-600">
                 Movimiento:
@@ -106,7 +111,6 @@
               </p>
               <span class="block text-sm text-gray-600">Precio Unitario: {{ $inventory->unit_price }}</span>
               <span class="block text-sm text-gray-600">Unidad: {{ $inventory->unit->abbreviation }}</span>
-              <p class="mt-2 text-sm text-gray-600">{{ $inventory->description }}</p>
               <div class="mt-2 text-right">
                 <button
                   class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"

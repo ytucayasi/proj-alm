@@ -128,6 +128,11 @@ class InventoryForm extends Form
 
     $this->inventory->update($this->all());
 
+    if ($originalUnitId != $this->unit_id) {
+      $this->updateProductPriceBase($originalVariation);
+      $this->updateProductPriceBase($newVariation);
+    }
+
     $this->reset();
   }
 
