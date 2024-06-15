@@ -35,7 +35,8 @@ class ProductShow extends Component
         $query->join('units', 'inventories.unit_id', '=', 'units.id')
           ->where('units.abbreviation', 'like', '%' . $this->searchInventory . '%')
           ->select('inventories.*'); // Selecciona solo las columnas de inventories
-      });
+      })
+      ->orderBy('created_at', 'desc');
     return view('livewire.admin.product.product-show', [
       'inventories' => $inventoriesQuery->paginate(5, pageName: 'inventories-page'),
       'variations' => $variationsQuery->paginate(5, pageName: 'variations-page'),

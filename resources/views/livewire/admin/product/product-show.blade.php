@@ -45,7 +45,7 @@
               Precio</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody wire:poll>
           @foreach ($variations as $variation)
             <tr class="hover:bg-gray-100 dark:hover:bg-gray-800">
               <td
@@ -90,10 +90,10 @@
               Unidad de Medida</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
-              Tipo</th>
+              Fecha de Ingreso</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody wire:poll>
           @foreach ($inventories as $inventory)
             <tr class="{{ $inventory->movement_type == '1' ? 'bg-green-200' : 'bg-red-200' }}">
               <td

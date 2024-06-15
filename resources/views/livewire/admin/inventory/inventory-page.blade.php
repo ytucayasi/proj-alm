@@ -14,10 +14,10 @@
           placeholder="Buscar..." wire:model.live="search">
         <select wire:model.live="perPage"
           class="form-select rounded-md border-gray-300 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
-          <option value="5">5</option>
           <option value="10">10</option>
-          <option value="15">15</option>
           <option value="20">20</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
         </select>
       </div>
       <div class="flex items-center justify-center gap-2">
@@ -69,7 +69,10 @@
             <tr class="hover:bg-gray-100">
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $inventory->id }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $inventory->product ? $inventory->product->name : 'Sin Asignar' }}</td>
+                <a class="text-blue-500 underline transition duration-300 ease-in-out hover:text-blue-700 hover:no-underline"
+                  href="/products/{{ $inventory->product->id }}"
+                  wire:navigate>{{ $inventory->product ? $inventory->product->name : 'Sin Asignar' }}</a>
+              </td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
                 {{ $inventory->quantity }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
@@ -79,7 +82,7 @@
                 </span>
               </td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $inventory->unit_price == 0 ? 'No Aplica' : $inventory->unit_price }}</td>
+                {{ $inventory->movement_type == 2 ? 'No Aplica' : $inventory->unit_price }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
                 {{ $inventory->unit->abbreviation }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center">

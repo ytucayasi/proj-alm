@@ -13,10 +13,10 @@
           placeholder="Buscar..." wire:model.live="search">
         <select wire:model.live="perPage"
           class="form-select rounded-md border-gray-300 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
-          <option value="5">5</option>
           <option value="10">10</option>
-          <option value="15">15</option>
           <option value="20">20</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
         </select>
       </div>
       <div class="flex items-center justify-center gap-2">
@@ -61,7 +61,9 @@
           @foreach ($products as $product)
             <tr class="hover:bg-gray-100">
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $product->id }}</td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $product->name }}</td>
+              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                {{ $product->name }}
+              </td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
                 {{ $product->category ? $product->category->name : 'Sin Asignar' }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">

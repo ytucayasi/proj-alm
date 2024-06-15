@@ -107,8 +107,15 @@ class InventoryPage extends Component
 
   public function render()
   {
+    $inventories = Inventory::query()
+      ->when($this->search, function ($query) {
+        $query->join('products', 'inventories.product_id', '=', 'products.id')
+          ->where('products.name', 'like', '%' . $this->search . '%')
+          ->select('inventories.*'); // Selecciona solo las columnas de variations
+      })
+      ->orderBy('created_at', 'desc'); // Ordenar por la columna de fecha en orden descendente
     return view('livewire.admin.inventory.inventory-page', [
-      'inventories' => Inventory::where('description', 'like', '%' . $this->search . '%')
+      'inventories' => $inventories
         ->paginate($this->perPage),
       'products' => Product::all(),
       'units' => Unit::all(),

@@ -13,10 +13,10 @@
           placeholder="Buscar..." wire:model.live="search">
         <select wire:model.live="perPage"
           class="form-select rounded-md border-gray-300 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
-          <option value="5">5</option>
           <option value="10">10</option>
-          <option value="15">15</option>
           <option value="20">20</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
         </select>
       </div>
       <div class="flex items-center justify-center gap-2">
