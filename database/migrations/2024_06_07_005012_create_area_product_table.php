@@ -12,14 +12,14 @@ return new class extends Migration {
   {
     Schema::create('area_product', function (Blueprint $table) {
       $table->id();
-      $table->unsignedBigInteger('area_id')->nullable();
-      $table->unsignedBigInteger('product_id')->nullable();
+      $table->unsignedBigInteger('area_id');
+      $table->unsignedBigInteger('product_id');
       $table->unsignedBigInteger('unit_id')->nullable();
       $table->unsignedBigInteger('quantity');
       $table->decimal('price', 10, 2)->unsigned();
       $table->tinyInteger('state')->default(1);
-      $table->foreign('area_id')->references('id')->on('areas')->onDelete('set null');
-      $table->foreign('product_id')->references('id')->on('products')->onDelete('set null');
+      $table->foreign('area_id')->references('id')->on('areas')->onDelete('cascade');
+      $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
       $table->foreign('unit_id')->references('id')->on('units')->onDelete('set null');
       $table->timestamps();
     });
