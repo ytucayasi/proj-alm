@@ -55,7 +55,7 @@
           <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
             {{ $areaProduct->product->name }}</td>
           <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-            {{ $areaProduct->unit->name }}</td>
+            {{ $areaProduct->unit->abbreviation }}</td>
           <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $areaProduct->quantity }}
           </td>
           <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $areaProduct->price }}
@@ -82,7 +82,7 @@
       <div class="text-lg font-medium text-gray-900">{{ $form->id ? 'Editar Producto' : 'Agregar Producto' }}</div>
       <div class="mt-4">
         <label class="block text-sm font-medium text-gray-700">Producto</label>
-        <select wire:model="form.product_id" class="form-select mt-1 block w-full rounded-md shadow-sm">
+        <select wire:model.live="form.product_id" class="form-select mt-1 block w-full rounded-md shadow-sm">
           <option value="">Seleccione un producto</option>
           @foreach ($products as $product)
             <option value="{{ $product->id }}">{{ $product->name }}</option>
@@ -94,10 +94,12 @@
       </div>
       <div class="mt-4">
         <label class="block text-sm font-medium text-gray-700">Unidad</label>
-        <select wire:model="form.unit_id" class="form-select mt-1 block w-full rounded-md shadow-sm">
-          <option value="">Seleccione una unidad</option>
+        <select wire:model.live="form.unit_id" class="form-select mt-1 block w-full rounded-md shadow-sm">
+          @if ($units->count() == 0)
+            <option>Seleccione primero un producto</option>
+          @endif
           @foreach ($units as $unit)
-            <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+            <option value="{{ $unit->id }}">{{ $unit->name }} - {{ $unit->abbreviation }}</option>
           @endforeach
         </select>
         @error('form.unit_id')

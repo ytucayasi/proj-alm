@@ -5,21 +5,24 @@
   </x-slot>
 
   {{-- Contenido --}}
-  <div class="mb-4 flex flex-wrap justify-between gap-2">
-    <span class="text-xl font-semibold leading-tight text-gray-800">Datos generales</span>
-  </div>
-  <ul class="mb-8 flex flex-wrap gap-2 sm:flex-row sm:flex-nowrap">
-    <li class="w-full rounded-md bg-gray-100 px-4 py-2">Categoría: {{ $this->form->product->category->name }}</li>
-    <li class="w-full rounded-md bg-gray-100 px-4 py-2">Nombre: {{ $this->form->product->name }}</li>
-    <li class="w-full rounded-md bg-gray-100 px-4 py-2">Descripción: {{ $this->form->product->description }}</li>
-    <li class="w-full rounded-md bg-gray-100 px-4 py-2">
-      Estado: <span
-        class="{{ $this->form->product->state ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
-        {{ $this->form->product->state ? 'Activo' : 'Inactivo' }}
-      </span>
-    </li>
-  </ul>
-  <div class="flex flex-wrap gap-8 md:flex-nowrap">
+
+  <div class="flex flex-col flex-wrap gap-8 md:flex-nowrap">
+    <div class="w-full">
+      <div class="mb-4 flex flex-wrap justify-between gap-2">
+        <span class="text-xl font-semibold leading-tight text-gray-800">Datos generales</span>
+      </div>
+      <ul class="flex flex-wrap gap-2 sm:flex-row sm:flex-nowrap">
+        <li class="w-full rounded-md bg-gray-100 px-4 py-2">Categoría: {{ $this->form->product->category ? $this->form->product->category->name : 'Sin Asignar' }}</li>
+        <li class="w-full rounded-md bg-gray-100 px-4 py-2">Nombre: {{ $this->form->product->name }}</li>
+        <li class="w-full rounded-md bg-gray-100 px-4 py-2">Descripción: {{ $this->form->product->description ? $this->form->product->description : 'N.A.' }}</li>
+        <li class="w-full rounded-md bg-gray-100 px-4 py-2">
+          Estado: <span
+            class="{{ $this->form->product->state ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
+            {{ $this->form->product->state ? 'Activo' : 'Inactivo' }}
+          </span>
+        </li>
+      </ul>
+    </div>
     <div class="w-full">
       <div class="mb-4 flex flex-wrap justify-between gap-2">
         <span class="text-xl font-semibold leading-tight text-gray-800">Variaciones</span>

@@ -22,6 +22,24 @@ class AreaProductPage extends Component
   public function mount($areaId)
   {
     $this->form->setArea($areaId);
+    $this->form->init();
+  }
+  public function updating($property, $value)
+  {
+    if ($property == "form.product_id") {
+      $this->form->units = [];
+      $this->form->unit_id = null;
+      $this->form->price = 0;
+    }
+  }
+  public function updated($name, $value)
+  {
+    if ($name == "form.product_id") {
+      $this->form->updatedProductId($value);
+    }
+    if ($name == "form.unit_id") {
+      $this->form->updatedUnitId($value);
+    }
   }
   public function openModal($modalName)
   {
@@ -65,13 +83,12 @@ class AreaProductPage extends Component
       })
       ->paginate($this->perPage);
 
-    $products = Product::all();
-    $units = Unit::all();
+    $products = $this->form->products;
 
     return view('livewire.admin.area.area-product-page', [
       'areaProducts' => $areaProducts,
       'products' => $products,
-      'units' => $units,
+      'units' => $this->form->units,
     ]);
   }
 }

@@ -117,8 +117,8 @@ class InventoryPage extends Component
     return view('livewire.admin.inventory.inventory-page', [
       'inventories' => $inventories
         ->paginate($this->perPage),
-      'products' => Product::all(),
-      'units' => Unit::all(),
+      'products' => Product::where("state", 1)->get(),
+      'units' => Unit::where("state", 1)->get(),
     ]);
   }
 }
