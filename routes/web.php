@@ -10,7 +10,7 @@ use App\Livewire\Admin\Product\ProductShow;
 use App\Livewire\Admin\Unit\UnitPage;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome');
+require __DIR__ . '/auth.php';
 
 Route::view('dashboard', 'dashboard')
   ->middleware(['auth', 'verified'])
@@ -44,5 +44,3 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/{inventoryId}', InventoryPage::class)->name('show');
   });
 });
-
-require __DIR__ . '/auth.php';
