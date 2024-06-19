@@ -8,11 +8,12 @@ use App\Livewire\Admin\Inventory\InventoryPage;
 use App\Livewire\Admin\Product\ProductPage;
 use App\Livewire\Admin\Product\ProductShow;
 use App\Livewire\Admin\Unit\UnitPage;
+use App\Livewire\Dashboard;
 use Illuminate\Support\Facades\Route;
 
 require __DIR__ . '/auth.php';
 
-Route::view('dashboard', 'dashboard')
+Route::get('dashboard', Dashboard::class)
   ->middleware(['auth', 'verified'])
   ->name('dashboard');
 
