@@ -59,7 +59,7 @@
         </thead>
         <tbody>
           @foreach ($units as $unit)
-            <tr class="hover:bg-gray-100">
+            <tr>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $unit->id }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $unit->name }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $unit->abbreviation }}

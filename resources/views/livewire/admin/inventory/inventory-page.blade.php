@@ -66,7 +66,7 @@
         </thead>
         <tbody>
           @foreach ($inventories as $inventory)
-            <tr class="hover:bg-gray-100">
+            <tr>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $inventory->id }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
                 <a class="text-blue-500 underline transition duration-300 ease-in-out hover:text-blue-700 hover:no-underline"

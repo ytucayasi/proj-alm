@@ -56,7 +56,7 @@
         </thead>
         <tbody>
           @foreach ($areas as $area)
-            <tr class="hover:bg-gray-100">
+            <tr>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $area->id }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $area->name }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">

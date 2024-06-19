@@ -50,7 +50,7 @@
         </thead>
         <tbody wire:poll>
           @foreach ($variations as $variation)
-            <tr class="hover:bg-gray-100 dark:hover:bg-gray-800">
+            <tr>
               <td
                 class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900 dark:border-gray-700 dark:text-gray-300">
                 {{ $variation->unit->abbreviation }}</td>
