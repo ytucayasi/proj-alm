@@ -19,7 +19,7 @@ new class extends Component {
   <!-- Primary Navigation Menu -->
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="flex h-16 justify-between">
-      <div class="flex">
+      <div class="flex gap-6">
         <!-- Logo -->
         <div class="flex shrink-0 items-center">
           <a href="{{ route('dashboard') }}" wire:navigate>
@@ -28,40 +28,52 @@ new class extends Component {
         </div>
 
         <!-- Navigation Links -->
-        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+        <div class="hidden space-x-8 sm:-my-px sm:flex">
           <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
             {{ __('Dashboard') }}
           </x-nav-link>
         </div>
-        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-          <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.*')" wire:navigate>
-            {{ __('Productos') }}
-          </x-nav-link>
-        </div>
-        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+        <div class="hidden space-x-8 sm:-my-px sm:flex">
           <x-nav-link :href="route('inventories.index')" :active="request()->routeIs('inventories.*')" wire:navigate>
             {{ __('Inventarios') }}
           </x-nav-link>
         </div>
-        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+        <div class="hidden space-x-8 sm:-my-px sm:flex">
           <x-nav-link :href="route('reservations.index')" :active="request()->routeIs('reservations.*')" wire:navigate>
             {{ __('Reservas') }}
           </x-nav-link>
         </div>
-        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-          <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')" wire:navigate>
-            {{ __('Categorías') }}
-          </x-nav-link>
-        </div>
-        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-          <x-nav-link :href="route('units.index')" :active="request()->routeIs('units.*')" wire:navigate>
-            {{ __('Unidades') }}
-          </x-nav-link>
-        </div>
-        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+        <div class="hidden space-x-8 sm:-my-px sm:flex">
           <x-nav-link :href="route('areas.index')" :active="request()->routeIs('areas.*')" wire:navigate>
             {{ __('Areas') }}
           </x-nav-link>
+        </div>
+        <div class="hidden space-x-8 sm:-my-px sm:flex">
+          <x-nav-dropdown label="{{ __('Más') }}" :active="request()->routeIs('categories.*') ||
+              request()->routeIs('products.*') ||
+              request()->routeIs('units.*') ||
+              request()->routeIs('reports.*')" :links="[
+              [
+                  'href' => route('categories.index'),
+                  'text' => 'Categorías',
+                  'activeRoutes' => ['categories.index', 'categories.show'],
+              ],
+              [
+                  'href' => route('products.index'),
+                  'text' => 'Productos',
+                  'activeRoutes' => ['products.index', 'products.show'],
+              ],
+              [
+                  'href' => route('units.index'),
+                  'text' => 'Unidades',
+                  'activeRoutes' => ['units.index', 'units.show'],
+              ],
+              [
+                  'href' => route('reports.index'),
+                  'text' => 'Reportes',
+                  'activeRoutes' => ['reports.index'],
+              ],
+          ]" />
         </div>
       </div>
 
