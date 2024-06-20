@@ -44,6 +44,11 @@ new class extends Component {
           </x-nav-link>
         </div>
         <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+          <x-nav-link :href="route('reservations.index')" :active="request()->routeIs('reservations.*')" wire:navigate>
+            {{ __('Reservas') }}
+          </x-nav-link>
+        </div>
+        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
           <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')" wire:navigate>
             {{ __('Categorías') }}
           </x-nav-link>
@@ -119,6 +124,9 @@ new class extends Component {
       </x-responsive-nav-link>
       <x-responsive-nav-link :href="route('inventories.index')" :active="request()->routeIs('inventories.*')" wire:navigate>
         {{ __('Inventarios') }}
+      </x-responsive-nav-link>
+      <x-responsive-nav-link :href="route('reservations.index')" :active="request()->routeIs('reservations.*')" wire:navigate>
+        {{ __('Reservas') }}
       </x-responsive-nav-link>
       <x-responsive-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')" wire:navigate>
         {{ __('Categorías') }}

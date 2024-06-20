@@ -7,11 +7,10 @@ use App\Livewire\Admin\Category\CategoryShow;
 use App\Livewire\Admin\Inventory\InventoryPage;
 use App\Livewire\Admin\Product\ProductPage;
 use App\Livewire\Admin\Product\ProductShow;
+use App\Livewire\Admin\Reservation\ReservationPage;
 use App\Livewire\Admin\Unit\UnitPage;
 use App\Livewire\Dashboard;
 use Illuminate\Support\Facades\Route;
-
-require __DIR__ . '/auth.php';
 
 Route::get('dashboard', Dashboard::class)
   ->middleware(['auth', 'verified'])
@@ -44,4 +43,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', InventoryPage::class)->name('index');
     Route::get('/{inventoryId}', InventoryPage::class)->name('show');
   });
+  Route::prefix('reservations')->name('reservations.')->group(function () {
+    Route::get('/', ReservationPage::class)->name('index');
+    Route::get('/{reservationId}', ReservationPage::class)->name('show');
+  });
 });
+
+require __DIR__ . '/auth.php';
