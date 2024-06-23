@@ -37,20 +37,16 @@
       </button>
     </div>
   </div>
-  <div x-show="openAreas" class="mb-4 flex justify-between rounded bg-slate-100 p-4 shadow-md">
-    <div class="flex space-x-2">
-      <button class="flex items-center rounded px-4 py-2 text-sm hover:bg-slate-200">
-        <i class="fas fa-utensils"></i>
-        <span class="ml-2">Variado</span>
-      </button>
-      <button class="flex items-center rounded px-4 py-2 text-sm hover:bg-slate-200">
-        <i class="fas fa-utensils"></i>
-        <span class="ml-2">Variado</span>
-      </button>
-      <button class="flex items-center rounded px-4 py-2 text-sm hover:bg-slate-200">
-        <i class="fas fa-utensils"></i>
-        <span class="ml-2">Variado</span>
-      </button>
+  <div x-show="openAreas"
+    class="mb-4 flex justify-between rounded-lg bg-slate-100 p-4 shadow-lg transition-all duration-300">
+    <div class="flex space-x-4">
+      @foreach ($areas as $area)
+        <button
+          class="flex items-center rounded-lg px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300">
+          <i class="fas fa-utensils text-slate-500"></i>
+          <span class="ml-2">{{ $area->name }}</span>
+        </button>
+      @endforeach
     </div>
   </div>
 

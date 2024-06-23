@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin\Reservation;
 
 use App\Livewire\Forms\ReservationForm;
+use App\Models\Area;
 use App\Models\Product;
 use Livewire\Component;
 
@@ -37,6 +38,7 @@ class ReservationCU extends Component
   {
     return view('livewire.admin.reservation.reservation-c-u', [
       "products" => Product::where("state", 1)->get(),
+      "areas" => Area::where("state", 1)->get(),
       "variations" => $this->form->variations,
       "selectedProducts" => $this->form->selectedProducts
     ]);
