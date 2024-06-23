@@ -8,6 +8,7 @@ use App\Livewire\Admin\Inventory\InventoryPage;
 use App\Livewire\Admin\Product\ProductPage;
 use App\Livewire\Admin\Product\ProductShow;
 use App\Livewire\Admin\Report\ReportPage;
+use App\Livewire\Admin\Reservation\ReservationCU;
 use App\Livewire\Admin\Reservation\ReservationPage;
 use App\Livewire\Admin\Unit\UnitPage;
 use App\Livewire\Dashboard;
@@ -46,6 +47,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
   });
   Route::prefix('reservations')->name('reservations.')->group(function () {
     Route::get('/', ReservationPage::class)->name('index');
+    Route::get('/form', ReservationCU::class)->name('form');
     Route::get('/{reservationId}', ReservationPage::class)->name('show');
   });
   Route::prefix('reports')->name('reports.')->group(function () {

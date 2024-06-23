@@ -73,18 +73,20 @@
                 </span>
               </td>
               <td class="border-b border-gray-200 px-5 py-2 text-center">
-                <button
-                  class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
-                  wire:click="edit({{ $product->id }})"><i class="fas fa-edit"></i></button>
-                <button
-                  class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
-                  wire:click="alertDelete({{ $product->id }})"><i class="fas fa-trash"></i></button>
-                <button
-                  class="rounded bg-cyan-400 px-2 py-1 font-bold text-white hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-300"
-                  wire:click="view({{ $product->id }})"><i class="fas fa-eye"></i></button>
-                {{--                 <button
+                <div class="flex gap-1">
+                  <button
+                    class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                    wire:click="edit({{ $product->id }})"><i class="fas fa-edit"></i></button>
+                  <button
+                    class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
+                    wire:click="alertDelete({{ $product->id }})"><i class="fas fa-trash"></i></button>
+                  <button
+                    class="rounded bg-cyan-400 px-2 py-1 font-bold text-white hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-300"
+                    wire:click="view({{ $product->id }})"><i class="fas fa-eye"></i></button>
+                  {{--                 <button
                   class="rounded bg-orange-400 px-2 py-1 font-bold text-white hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-300"
                   wire:click="addInventory({{ $product->id }})"><i class="fas fa-cart-plus"></i></button> --}}
+                </div>
               </td>
             </tr>
           @endforeach

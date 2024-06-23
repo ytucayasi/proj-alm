@@ -68,6 +68,11 @@ class ReservationPage extends Component
     $this->redirectRoute('reservations.show', ['reservationId' => $reservationId], navigate: true);
   }
 
+  public function formCU($reservationId = null)
+  {
+    $this->redirectRoute('reservations.form', ['reservationId' => $reservationId], navigate: true);
+  }
+
   #[On('delete')]
   public function delete($data)
   {

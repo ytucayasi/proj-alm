@@ -20,7 +20,7 @@
       <div class="flex items-center justify-center gap-2">
         <button
           class="flex items-center gap-2 rounded-md bg-green-500 px-4 py-2 text-white shadow-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300"
-          wire:click.prevent="openModal('{{ $modalCreateOrUpdate }}')">
+          wire:click="formCU()">
           <i class="fas fa-plus-square fa-lg flex h-7 w-5 items-center justify-center"></i> Crear
         </button>
         <button
@@ -102,13 +102,17 @@
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
                 <span
                   class="{{ $reservation->payment_status == 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
-                  {{ $reservation->payment_status == 1 ? 'Pagado' : 'Pendiente de Pago' }}
+                  {{ $reservation->payment_status == 1 ? 'Pagado' : 'Pendiente' }}
                 </span>
               </td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $reservation->order_date->format('d/m/Y H:i') }}</td>
+                <span class="block">{{ $reservation->order_date->format('d/m/Y') }}</span>
+                <span>({{ $reservation->order_date->format('H:i') }})</span>
+              </td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $reservation->execution_date ? $reservation->execution_date->format('d/m/Y H:i') : 'N/A' }}</td>
+                <span class="block">{{ $reservation->execution_date ? $reservation->execution_date->format('d/m/Y') : 'N/A' }}</span>
+                <span>({{ $reservation->execution_date ? $reservation->execution_date->format('H:i') : 'N/A' }})</span>
+              </td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
                 {{ number_format($reservation->total_cost, 2) }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
@@ -116,15 +120,20 @@
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
                 {{ $reservation->total_products }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center">
-                <button
-                  class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
-                  wire:click="edit({{ $reservation->id }})"><i class="fas fa-edit"></i></button>
-                <button
-                  class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
-                  wire:click="alertDelete({{ $reservation->id }})"><i class="fas fa-trash"></i></button>
-                <button
-                  class="rounded bg-cyan-400 px-2 py-1 font-bold text-white hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-300"
-                  wire:click="view({{ $reservation->id }})"><i class="fas fa-eye"></i></button>
+                <div class="flex gap-1">
+                  <button
+                    class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                    wire:click="edit({{ $reservation->id }})"><i class="fas fa-edit"></i></button>
+                  <button
+                    class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
+                    wire:click="alertDelete({{ $reservation->id }})"><i class="fas fa-trash"></i></button>
+                  <button
+                    class="rounded bg-cyan-400 px-2 py-1 font-bold text-white hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-300"
+                    wire:click="view({{ $reservation->id }})"><i class="fas fa-eye"></i></button>
+                  <button
+                    class="rounded bg-cyan-400 px-2 py-1 font-bold text-white hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-300"
+                    wire:click="view({{ $reservation->id }})"><i class="fas fa-eye"></i></button>
+                </div>
               </td>
             </tr>
           @endforeach
@@ -212,7 +221,8 @@
         <div class="text-lg font-medium text-gray-900">{{ $form->id ? 'Editar Reserva' : 'Crear Reserva' }}</div>
         <div class="mt-4">
           <label class="block text-sm font-medium text-gray-700">Empresa</label>
-          <input type="text" wire:model="form.company_name" class="form-input mt-1 block w-full rounded-md shadow-sm">
+          <input type="text" wire:model="form.company_name"
+            class="form-input mt-1 block w-full rounded-md shadow-sm">
           @error('form.company_name')
             <span class="text-sm text-red-500">{{ $message }}</span>
           @enderror
