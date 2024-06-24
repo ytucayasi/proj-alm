@@ -55,13 +55,17 @@ class AreaProductPage extends Component
   }
   public function save()
   {
-    if ($this->form->area_product) {
-      $this->form->update();
-    } else {
-      $this->form->store();
+    try {
+      if ($this->form->area_product) {
+        $this->form->update();
+      } else {
+        $this->form->store();
+      }
+      $this->alert('success', 'Se creó/actualizó con éxito');
+      $this->closeModal($this->modalCreateOrUpdate);
+    } catch (\Exception $e) {
+      $this->alert('error', $e->getMessage());
     }
-    $this->alert('success', 'Se creó/actualizó con éxito');
-    $this->closeModal($this->modalCreateOrUpdate);
   }
   public function edit($areaProductId)
   {

@@ -14,6 +14,15 @@ export default {
       fontFamily: {
         sans: ['Figtree', ...defaultTheme.fontFamily.sans],
       },
+      keyframes: {
+        progress: {
+          '0%': { width: '100%' },
+          '100%': { width: '0%' },
+        },
+      },
+      animation: {
+        progress: 'progress 5s linear forwards',
+      },
     },
   },
   darkMode: "class",

@@ -25,6 +25,7 @@ class AreaProductForm extends Form
   public $unit_id = null;
   public $quantity = 0;
   public $price = 0;
+  public $stock = 0;
   public function rules()
   {
     return [
@@ -44,23 +45,35 @@ class AreaProductForm extends Form
   {
     $product = Product::find($productId);
     if ($product) {
-      $variations = $product->variations;
-      $unitIds = $variations->pluck('unit_id')->unique();
-      $units = Unit::whereIn('id', $unitIds)->get();
-      $this->units = $units;
-      if ($units->isNotEmpty()) {
-        $this->unit_id = $units->first()->id;
+      $variations = $product->variations()->with('unit')->get();
+      $this->units = $variations->pluck('unit')->unique();
+      if ($variations->isNotEmpty()) {
+        $firstVariation = $variations->first();
+        $this->unit_id = $firstVariation->unit_id;
+        $this->price = $firstVariation->price_base;
+        $this->stock = $firstVariation->quantity_base;
         $this->updatedUnitId($this->unit_id);
       }
     } else {
       $this->units = collect();
       $this->unit_id = null;
       $this->price = 0;
+      $this->stock = 0;
+      $this->unit_name = '';
     }
   }
   public function updatedUnitId($unitId)
   {
-    $this->price = Variation::where("unit_id", $unitId)->first()->price_base;
+    $variation = Variation::where('product_id', $this->product_id)
+      ->where('unit_id', $unitId)
+      ->first();
+    if ($variation) {
+      $this->price = $variation->price_base;
+      $this->stock = $variation->quantity_base;
+    } else {
+      $this->price = 0;
+      $this->stock = 0;
+    }
   }
   public function setArea($areaId)
   {
@@ -79,14 +92,22 @@ class AreaProductForm extends Form
   public function store()
   {
     $this->validate();
+    $this->verifyStock();
     AreaProduct::create($this->all());
     $this->resetOnly();
   }
   public function update()
   {
     $this->validate();
+    $this->verifyStock();
     $this->area_product->update($this->all());
     $this->resetOnly();
+  }
+  public function verifyStock()
+  {
+    if ($this->quantity > $this->stock || $this->quantity <= 0) {
+      throw new Exception('La cantidad es mayor al stock.');
+    }
   }
   public function delete($id)
   {
@@ -96,6 +117,7 @@ class AreaProductForm extends Form
   }
   public function resetOnly()
   {
-    $this->reset(["area_product", "id", "product_id", "unit_id", "quantity", "price"]);
+    $this->reset(["area_product", "id", "product_id", "unit_id", "quantity", "price", "stock"]);
+    $this->units = collect();
   }
 }

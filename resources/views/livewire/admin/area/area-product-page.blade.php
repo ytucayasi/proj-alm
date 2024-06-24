@@ -121,6 +121,14 @@
           <span class="text-sm text-red-500">{{ $message }}</span>
         @enderror
       </div>
+      <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700">Stock</label>
+        <input disabled type="number" wire:model="form.stock"
+          class="form-input mt-1 block w-full cursor-not-allowed rounded-md bg-gray-100 opacity-70 shadow-sm">
+        @error('form.stock')
+          <span class="text-sm text-red-500">{{ $message }}</span>
+        @enderror
+      </div>
       <div class="mt-6 flex justify-end">
         <x-secondary-button wire:click="closeModal('{{ $modalCreateOrUpdate }}')">
           {{ __('Cancelar') }}

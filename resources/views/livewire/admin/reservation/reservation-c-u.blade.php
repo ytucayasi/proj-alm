@@ -41,8 +41,8 @@
     class="mb-4 flex justify-between rounded-lg bg-slate-100 p-4 shadow-lg transition-all duration-300">
     <div class="flex space-x-4">
       @foreach ($areas as $area)
-        <button
-          class="flex items-center rounded-lg px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300">
+        <button wire:click="selectArea({{ $area->id }})"
+          class="flex items-center rounded-lg px-4 py-2 text-sm font-medium uppercase text-slate-700 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300">
           <i class="fas fa-utensils text-slate-500"></i>
           <span class="ml-2">{{ $area->name }}</span>
         </button>
@@ -83,23 +83,23 @@
       <!-- Selected Product List as Table -->
       <div class="rounded bg-white p-4 shadow-md">
         <h2 class="mb-4 font-bold">Productos Disponibles</h2>
-        <input type="text" placeholder="Buscar en productos seleccionados..."
+        <input type="text" placeholder="Buscar en productos seleccionados..." wire:model.live="form.searchP"
           class="mb-4 w-full rounded border border-gray-300 p-2 text-xs">
         <div class="overflow-x-auto">
           <table class="min-w-full bg-white text-xs" x-show="!showVariations">
             <thead>
               <tr>
-                <th class="bg-gray-200 px-4 py-2 text-center">Producto</th>
-                <th class="bg-gray-200 px-4 py-2 text-center">Unidades</th>
+                <th class="select-none bg-gray-200 px-4 py-2 text-center">Producto</th>
+                <th class="select-none bg-gray-200 px-4 py-2 text-center">Unidades</th>
               </tr>
             </thead>
             <tbody>
               @foreach ($products as $product)
                 <tr wire:click="showVariations({{ $product->id }})" @click="showVariations = true"
                   class="cursor-pointer hover:bg-gray-100">
-                  <td class="border-b px-4 py-2 text-center">{{ $product->name }}</td>
-                  <td class="border-b px-4 py-2 text-center">
-                    <div class="flex items-center justify-center space-x-2">
+                  <td class="select-none border-b px-4 py-2 text-center">{{ $product->name }}</td>
+                  <td class="select-none border-b px-4 py-2 text-center">
+                    <div class="flex select-none items-center justify-center space-x-2">
                       <span>{{ $product->variations()->count() }}</span>
                     </div>
                   </td>
@@ -107,35 +107,59 @@
               @endforeach
             </tbody>
           </table>
-
           <!-- Variations Table -->
           <table class="min-w-full bg-white text-xs" x-show="showVariations" wire:loading.remove>
             <thead>
               <tr>
-                <th class="bg-gray-200 px-4 py-2 text-center">Unidad</th>
-                <th class="bg-gray-200 px-4 py-2 text-center">Stock</th>
+                <th class="select-none bg-gray-200 px-4 py-2 text-center">Unidad</th>
+                <th class="select-none bg-gray-200 px-4 py-2 text-center">Stock</th>
               </tr>
             </thead>
             <tbody>
               @foreach ($variations as $variation)
                 <tr class="cursor-pointer hover:bg-gray-100" wire:key="{{ $variation->id }}"
                   wire:click="selectVariation({{ $variation->id }}, 'create')" @click="showVariations = false">
-                  <td class="border-b px-4 py-2 text-center">{{ $variation->unit->abbreviation }}</td>
-                  <td class="border-b px-4 py-2 text-center">
+                  <td class="select-none border-b px-4 py-2 text-center">{{ $variation->unit->abbreviation }}</td>
+                  <td class="select-none border-b px-4 py-2 text-center">
                     <span>{{ $variation->quantity_base }}</span>
                   </td>
                 </tr>
               @endforeach
             </tbody>
           </table>
+          <div x-show="showVariations" class="mt-2 flex justify-center" wire:loading.remove>
+            <span @click="showVariations = false"
+              class="cursor-pointer text-blue-500 underline hover:text-blue-700">Atrás</span>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="w-full lg:w-2/3">
       <div class="rounded bg-white p-4 shadow-md">
+        <div>
+          @if (!empty($form->productsExceedingStock))
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => { $wire.clearErrorStock() }, 5000)"
+              @clear-error-stock.window="show = false" id="alert"
+              class="relative mb-4 rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700" role="alert">
+              <strong class="font-bold">Error:</strong><br>
+              <ul class="mt-2 list-inside list-disc">
+                @foreach ($form->productsExceedingStock as $product)
+                  <li>
+                    Excede el {{ $product['product_name'] }} por {{ $product['exceeded_quantity'] }} de cantidad.
+                  </li>
+                @endforeach
+              </ul>
+              <div class="absolute bottom-0 left-0 h-1 animate-progress bg-red-500"></div>
+              <span class="absolute bottom-0 right-0 top-0 px-4 py-3">
+                <i class="fas fa-times cursor-pointer text-red-500"
+                  @click="show = false; Livewire.emit('clearErrorStock')"></i>
+              </span>
+            </div>
+          @endif
+        </div>
         <h2 class="mb-4 font-bold">Productos Seleccionados</h2>
-        <input type="text" placeholder="Buscar en productos seleccionados..."
+        <input type="text" wire:model.live="form.searchS" placeholder="Buscar en productos seleccionados..."
           class="mb-4 w-full rounded border border-gray-300 p-2 text-xs">
         <div class="overflow-x-auto">
           <table class="min-w-full bg-white text-xs">
@@ -149,7 +173,8 @@
               </tr>
             </thead>
             <tbody>
-              @foreach ($selectedProducts as $index => $product)
+
+              @forelse ($selectedProducts as $index => $product)
                 <tr wire:key="product-{{ $product['index'] }}">
                   <td class="border-b px-4 py-2 text-center">{{ $product['product_name'] }}</td>
                   <td class="border-b px-4 py-2 text-center">
@@ -190,12 +215,23 @@
                     </button>
                   </td>
                 </tr>
-              @endforeach
+              @empty
+                <tr>
+                  <td colspan="5" class="border-b px-4 py-2 text-center">
+                    <div class="flex flex-col items-center justify-center">
+                      <img src="{{ asset('images/vacia.webp') }}" alt="No hay productos seleccionados"
+                        class="rounded-lg mx-auto mb-2 w-20" />
+                      <p class="text-sm text-gray-500">No hay productos seleccionados</p>
+                    </div>
+                  </td>
+
+                </tr>
+              @endforelse
             </tbody>
           </table>
-          <div>
-            {{-- Paginacion --}}
-          </div>
+        </div>
+        <div class="mt-5">
+          {{ $selectedProducts->links() }}
         </div>
       </div>
     </div>
