@@ -10,7 +10,8 @@
         <i class="fas fa-broom"></i>
         <span class="ml-2">Limpiar</span>
       </button>
-      <button class="flex items-center rounded bg-green-500 px-4 py-2 text-white">
+      <button wire:click="save"
+        class="flex items-center rounded bg-green-500 px-4 py-2 text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300">
         <i class="fas fa-plus"></i>
         <span class="ml-2">Guardar</span>
       </button>
@@ -40,13 +41,15 @@
   <div x-show="openAreas"
     class="mb-4 flex justify-between rounded-lg bg-slate-100 p-4 shadow-lg transition-all duration-300">
     <div class="flex space-x-4">
-      @foreach ($areas as $area)
+      @forelse ($areas as $area)
         <button wire:click="selectArea({{ $area->id }})"
           class="flex items-center rounded-lg px-4 py-2 text-sm font-medium uppercase text-slate-700 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300">
           <i class="fas fa-utensils text-slate-500"></i>
           <span class="ml-2">{{ $area->name }}</span>
         </button>
-      @endforeach
+      @empty
+        <p class="text-sm text-gray-500">No hay areas registradas</p>
+      @endforelse
     </div>
   </div>
 
@@ -58,24 +61,55 @@
         <h2 class="mb-4 font-bold">Datos Generales del Buffet</h2>
         <form class="text-xs">
           <div class="mb-4">
-            <label class="mb-1 block font-bold">Nombre del Evento</label>
-            <input type="text" class="w-full rounded border border-gray-300 p-2">
+            <label class="mb-1 block font-bold">Empresa</label>
+            <input wire:model="form.company_name" type="text" placeholder="Ingrese el nombre de la empresa"
+              class="w-full rounded border border-gray-300 p-2 text-xs">
           </div>
           <div class="mb-4">
-            <label class="mb-1 block font-bold">Fecha del Evento</label>
-            <input type="date" class="w-full rounded border border-gray-300 p-2">
+            <label class="mb-1 block font-bold">Pack</label>
+            <input wire:model="form.people_count" type="number" placeholder="Ingrese la cantidad de personas"
+              class="w-full rounded border border-gray-300 p-2 text-xs">
           </div>
           <div class="mb-4">
-            <label class="mb-1 block font-bold">Número de Invitados</label>
-            <input type="number" class="w-full rounded border border-gray-300 p-2">
+            <label class="mb-1 block font-bold">Costo Total</label>
+            <input wire:model="form.total_cost" type="text"
+              class="w-full cursor-not-allowed rounded border border-gray-300 p-2 text-xs opacity-70" readonly disabled>
           </div>
           <div class="mb-4">
-            <label class="mb-1 block font-bold">Ubicación</label>
-            <input type="text" class="w-full rounded border border-gray-300 p-2">
+            <label class="mb-1 block font-bold">Total de Productos</label>
+            <input wire:model="form.total_products" type="text"
+              class="w-full cursor-not-allowed rounded border border-gray-300 p-2 text-xs opacity-70" readonly disabled>
           </div>
-          <div>
+          <div class="mb-4">
+            <label class="mb-1 block font-bold">Fecha del Pedido</label>
+            <input wire:model="form.order_date" type="datetime-local"
+              class="w-full rounded border border-gray-300 p-2 text-xs">
+          </div>
+          <div class="mb-4">
+            <label class="mb-1 block font-bold">Fecha de Ejecución</label>
+            <input wire:model="form.execution_date" type="datetime-local"
+              class="w-full rounded border border-gray-300 p-2 text-xs">
+          </div>
+          <div class="mb-4">
             <label class="mb-1 block font-bold">Comentarios</label>
-            <textarea class="w-full rounded border border-gray-300 p-2"></textarea>
+            <textarea wire:model="form.description" class="w-full rounded border border-gray-300 p-2 text-xs">
+            </textarea>
+          </div>
+          <div class="mb-4">
+            <label class="mb-1 block font-bold">Estado</label>
+            <select wire:model="form.status" class="w-full rounded border border-gray-300 p-2 text-xs">
+              <option value="1">Realizado</option>
+              <option value="2">En Ejecución</option>
+              <option value="3">Pendiente</option>
+              <option value="4">Pospuesto</option>
+            </select>
+          </div>
+          <div class="mb-4">
+            <label class="mb-1 block font-bold">Estado de Pago</label>
+            <select wire:model="form.payment_status" class="w-full rounded border border-gray-300 p-2 text-xs">
+              <option value="1">Pagado</option>
+              <option value="2">Pendiente</option>
+            </select>
           </div>
         </form>
       </div>
@@ -94,17 +128,21 @@
               </tr>
             </thead>
             <tbody>
+            <tbody>
               @foreach ($products as $product)
-                <tr wire:click="showVariations({{ $product->id }})" @click="showVariations = true"
-                  class="cursor-pointer hover:bg-gray-100">
-                  <td class="select-none border-b px-4 py-2 text-center">{{ $product->name }}</td>
-                  <td class="select-none border-b px-4 py-2 text-center">
-                    <div class="flex select-none items-center justify-center space-x-2">
-                      <span>{{ $product->variations()->count() }}</span>
-                    </div>
-                  </td>
-                </tr>
+                @if ($product)
+                  <tr wire:click="showVariations({{ $product->id }})" @click="showVariations = true"
+                    class="cursor-pointer hover:bg-gray-100">
+                    <td class="select-none border-b px-4 py-2 text-center">{{ $product->name }}</td>
+                    <td class="select-none border-b px-4 py-2 text-center">
+                      <div class="flex select-none items-center justify-center space-x-2">
+                        <span>{{ $product->variations()->count() }}</span>
+                      </div>
+                    </td>
+                  </tr>
+                @endif
               @endforeach
+            </tbody>
             </tbody>
           </table>
           <!-- Variations Table -->
@@ -168,12 +206,13 @@
                 <th class="bg-gray-200 px-4 py-2 text-center">Producto</th>
                 <th class="bg-gray-200 px-4 py-2 text-center">Precio</th>
                 <th class="bg-gray-200 px-4 py-2 text-center">Cantidad</th>
+                <th class="bg-gray-200 px-4 py-2 text-center">Stock</th>
+                <th class="bg-gray-200 px-4 py-2 text-center">Stock Inicial</th>
                 <th class="bg-gray-200 px-4 py-2 text-center">Unidad de Medida</th>
                 <th class="bg-gray-200 px-4 py-2 text-center">Acciones</th>
               </tr>
             </thead>
             <tbody>
-
               @forelse ($selectedProducts as $index => $product)
                 <tr wire:key="product-{{ $product['index'] }}">
                   <td class="border-b px-4 py-2 text-center">{{ $product['product_name'] }}</td>
@@ -200,6 +239,8 @@
                       </button>
                     </div>
                   </td>
+                  <td class="border-b px-4 py-2 text-center">{{ $product['variation_stock'] }}</td>
+                  <td class="border-b px-4 py-2 text-center">{{ $product['initial_stock'] }}</td>
                   <td class="border-b px-4 py-2 text-center">{{ $product['unit_abbreviation'] }}</td>
                   <td class="border-b px-4 py-2 text-center">
                     <button
@@ -217,14 +258,9 @@
                 </tr>
               @empty
                 <tr>
-                  <td colspan="5" class="border-b px-4 py-2 text-center">
-                    <div class="flex flex-col items-center justify-center">
-                      <img src="{{ asset('images/vacia.webp') }}" alt="No hay productos seleccionados"
-                        class="rounded-lg mx-auto mb-2 w-20" />
-                      <p class="text-sm text-gray-500">No hay productos seleccionados</p>
-                    </div>
+                  <td colspan="7" class="border-b px-4 py-2 text-center">
+                    <p class="text-sm text-gray-500">No hay productos seleccionados</p>
                   </td>
-
                 </tr>
               @endforelse
             </tbody>

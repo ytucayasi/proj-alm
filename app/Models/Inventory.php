@@ -19,4 +19,8 @@ class Inventory extends Model
   {
     return $this->belongsTo(Unit::class);
   }
+  public function reservation()
+  {
+    return $this->belongsTo(Reservation::class);
+  }
 }

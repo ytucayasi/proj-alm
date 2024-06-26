@@ -47,7 +47,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
   });
   Route::prefix('reservations')->name('reservations.')->group(function () {
     Route::get('/', ReservationPage::class)->name('index');
-    Route::get('/form', ReservationCU::class)->name('form');
+    Route::get('/form/{reservationId?}', ReservationCU::class)->name('form');
     Route::get('/{reservationId}', ReservationPage::class)->name('show');
   });
   Route::prefix('reports')->name('reports.')->group(function () {

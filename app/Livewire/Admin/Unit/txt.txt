@@ -10,6 +10,7 @@ use App\Models\Variation;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Locked;
 use Livewire\Form;
 use App\Models\Reservation;
@@ -40,7 +41,7 @@ class ReservationForm extends Form
   public $searchS = "";
   public $searchP = "";
 
-  public function init($reservationId = null)
+  public function init($reservationId)
   {
     $this->selectedProducts = collect();
     $this->selectedAreas = collect();
@@ -57,15 +58,14 @@ class ReservationForm extends Form
       'description' => 'nullable|string',
       'status' => 'required|integer|in:1,2,3,4',
       'payment_status' => 'required|integer|in:1,2',
-      'order_date' => 'required|date',
       'type' => 'required|integer',
+      'order_date' => 'required|date',
       'execution_date' => 'required|date',
       'total_cost' => 'required|numeric|min:0',
       'people_count' => 'required|integer|min:1',
       'total_products' => 'required|integer|min:0',
     ];
   }
-
   public function setArea($areaId)
   {
     $this->selectedAreas->push([
@@ -79,7 +79,6 @@ class ReservationForm extends Form
       $this->addProductToSelected($variation, $areaProduct->price, $areaProduct->quantity);
     }
   }
-
   public function addProduct($variationId)
   {
     $variation = Variation::findOrFail($variationId);
@@ -87,37 +86,45 @@ class ReservationForm extends Form
     $quantity = 1;
     $this->addProductToSelected($variation, $price, $quantity);
   }
-
   private function addProductToSelected(Variation $variation, $price, $quantity)
   {
+    // Verificar si la variación ya está en la lista de productos seleccionados
     $existingProduct = $this->selectedProducts->firstWhere('variation_id', $variation->id);
 
-    // Definir initialStock y variationStock dependiendo de si es una edición
-    if ($this->id && $existingProduct) {
-      $initialStock = $existingProduct['initial_stock'];
-      $variationStock = $initialStock - $existingProduct['quantity'];
-    } else {
-      $initialStock = $variation->quantity_base;
-      $variationStock = $variation->quantity_base;
-    }
-
     if ($existingProduct) {
+      // Sumar la cantidad y validar contra el stock
       $newQuantity = $existingProduct['quantity'] + $quantity;
-      if ($newQuantity > $initialStock) {
-        $this->addProductExceedingStock($variation, $newQuantity - $initialStock);
+      if ($newQuantity > $variation->quantity_base) {
+        $existingExceededProduct = collect($this->productsExceedingStock)->firstWhere('product_name', $variation->product->name);
+        if (!$existingExceededProduct) {
+          // Agregar a la lista de productos que exceden el stock
+          $this->productsExceedingStock[] = [
+            "product_name" => $variation->product->name,
+            "exceeded_quantity" => $newQuantity - $variation->quantity_base
+          ];
+        }
       } else {
-        $this->selectedProducts = $this->selectedProducts->map(function ($product) use ($variation, $newQuantity, $variationStock) {
+        // Actualizar la cantidad en la lista de productos seleccionados
+        $this->selectedProducts = $this->selectedProducts->map(function ($product) use ($variation, $newQuantity) {
           if ($product['variation_id'] === $variation->id) {
             $product['quantity'] = $newQuantity;
-            $product['variation_stock'] = $variationStock - $newQuantity;
           }
           return $product;
         });
       }
     } else {
-      if ($quantity > $variationStock) {
-        $this->addProductExceedingStock($variation, $quantity - $variationStock);
+      // Verificar contra el stock antes de agregar
+      if ($quantity > $variation->quantity_base) {
+        $existingExceededProduct = collect($this->productsExceedingStock)->firstWhere('product_name', $variation->product->name);
+        if (!$existingExceededProduct) {
+          // Agregar a la lista de productos que exceden el stock
+          $this->productsExceedingStock[] = [
+            "product_name" => $variation->product->name,
+            "exceeded_quantity" => $quantity - $variation->quantity_base
+          ];
+        }
       } else {
+        // Agregar la variación a la lista
         $this->selectedProducts->push([
           "variation_id" => $variation->id,
           "product_id" => $variation->product->id,
@@ -127,11 +134,10 @@ class ReservationForm extends Form
           "unit_abbreviation" => $variation->unit->abbreviation,
           "quantity" => $quantity,
           "variation_price" => $price,
-          "variation_stock" => $variationStock - $quantity,
+          "variation_stock" => $variation->quantity_base,
           "price_edit" => true,
           "quantity_edit" => true,
-          "index" => $this->uniqueIndex,
-          "initial_stock" => $initialStock // Agregar initial_stock
+          "index" => $this->uniqueIndex
         ]);
         $this->uniqueIndex += 1;
       }
@@ -140,18 +146,6 @@ class ReservationForm extends Form
     $this->reindexProducts();
     $this->calculateTotals();
   }
-
-  private function addProductExceedingStock($variation, $exceededQuantity)
-  {
-    $existingExceededProduct = collect($this->productsExceedingStock)->firstWhere('product_name', $variation->product->name);
-    if (!$existingExceededProduct) {
-      $this->productsExceedingStock[] = [
-        "product_name" => $variation->product->name,
-        "exceeded_quantity" => $exceededQuantity
-      ];
-    }
-  }
-
   public function setProduct($productId)
   {
     $selectedProduct = Product::findOrFail($productId);
@@ -187,9 +181,9 @@ class ReservationForm extends Form
       if ($product['variation_id'] === $variationId) {
         if (!$product['price_edit'] && !$product['quantity_edit']) {
           if ($product['quantity'] <= 0) {
-            return null;
-          } elseif ($product['quantity'] > $product['initial_stock']) {
-            $product['quantity'] = $product['initial_stock'];
+            return null; // Eliminar el producto de la lista
+          } elseif ($product['quantity'] > $product['variation_stock']) {
+            $product['quantity'] = $product['variation_stock'];
           }
           if ($product['variation_price'] <= 0) {
             $product['variation_price'] = 1;
@@ -198,7 +192,6 @@ class ReservationForm extends Form
         $product['price_edit'] = !$product['price_edit'];
         $product['quantity_edit'] = !$product['quantity_edit'];
       }
-      $product['variation_stock'] = $product['initial_stock'] - $product['quantity'];
       return $product;
     })->filter();
     $this->reindexProducts();
@@ -211,12 +204,11 @@ class ReservationForm extends Form
     if ($existingVariation) {
       $this->selectedProducts = $this->selectedProducts->map(function ($product) use ($variationId) {
         if ($product['variation_id'] === $variationId) {
-          if ($product['quantity'] < $product['initial_stock']) {
+          if ($product['quantity'] < $product['variation_stock']) {
             $product['quantity'] += 1;
           } else {
-            $product['quantity'] = $product['initial_stock'];
+            $product['quantity'] = $product['variation_stock'];
           }
-          $product['variation_stock'] = $product['initial_stock'] - $product['quantity'];
         }
         return $product;
       });
@@ -233,9 +225,8 @@ class ReservationForm extends Form
         if ($product['quantity'] > 1) {
           $product['quantity'] -= 1;
         } else {
-          return null;
+          return null; // Remover el producto de la lista si la cantidad es menor que 1
         }
-        $product['variation_stock'] = $product['initial_stock'] - $product['quantity'];
       }
       return $product;
     })->filter()->values();
@@ -267,6 +258,7 @@ class ReservationForm extends Form
     $this->people_count = $this->reservation->people_count;
     $this->total_products = $this->reservation->total_products;
 
+    // Agregar los productos
     foreach ($this->reservation->inventories as $inventory) {
       $variation = Variation::where('product_id', $inventory->product_id)
         ->where('unit_id', $inventory->unit_id)
@@ -283,22 +275,22 @@ class ReservationForm extends Form
         "variation_stock" => $variation->quantity_base,
         "price_edit" => true,
         "quantity_edit" => true,
-        "index" => $this->uniqueIndex++,
-        "initial_stock" => $variation->quantity_base + $inventory->quantity // Definir initial_stock
+        "index" => $this->uniqueIndex++
       ]);
     }
     $this->calculateTotals();
   }
-
   public function store()
   {
     $this->validate();
-    $this->calculateTotals();
     if ($this->selectedProducts->isEmpty()) {
       throw new Exception('Debe agregar al menos un producto a la reserva.');
     }
 
     DB::transaction(function () {
+      $this->calculateTotals();
+
+      // Crear la reserva
       $reservation = Reservation::create($this->only([
         'company_name',
         'description',
@@ -319,6 +311,7 @@ class ReservationForm extends Form
           throw new Exception('El producto ' . $variation->product->name . ' excede el stock disponible.');
         }
 
+        // Restar la cantidad de quantity_base en la tabla product_variations
         $variation->quantity_base -= $product['quantity'];
         $variation->save();
 
@@ -326,18 +319,19 @@ class ReservationForm extends Form
           'product_id' => $product['product_id'],
           'unit_id' => $product['unit_id'],
           'reservation_id' => $reservation->id,
-          'movement_type' => 2,
+          'movement_type' => 2, // Salida
           'quantity' => $product['quantity'],
           'unit_price' => $product['variation_price'],
-          'type_action' => 2,
+          'type_action' => 2, // Reserva
           'description' => $this->description,
           'created_at' => now(),
           'updated_at' => now(),
         ]);
       }
+
+      $this->reset();
     });
   }
-
   private function calculateTotals()
   {
     $totalCost = 0;
@@ -351,19 +345,16 @@ class ReservationForm extends Form
     $this->total_cost = $totalCost;
     $this->total_products = $totalProducts;
   }
-
   public function update()
   {
     $this->validate();
-    $this->calculateTotals();
     if ($this->selectedProducts->isEmpty()) {
       throw new Exception('Debe agregar al menos un producto a la reserva.');
     }
 
     DB::transaction(function () {
-
-      // Obtener los productos actuales en la reserva
-      $currentProducts = $this->reservation->inventories()->get();
+      // Calcular totales
+      $this->calculateTotals();
 
       // Actualizar la reserva
       $this->reservation->update($this->only([
@@ -371,23 +362,13 @@ class ReservationForm extends Form
         'description',
         'status',
         'payment_status',
+        'type',
         'order_date',
         'execution_date',
         'total_cost',
         'people_count',
         'total_products'
       ]));
-
-      // Reponer el stock de los productos que ya no están en la lista de selectedProducts
-      foreach ($currentProducts as $currentProduct) {
-        if (!$this->selectedProducts->firstWhere('variation_id', $currentProduct->variation_id)) {
-          $variation = Variation::where('product_id', $currentProduct->product_id)
-            ->where('unit_id', $currentProduct->unit_id)
-            ->first();
-          $variation->quantity_base += $currentProduct->quantity;
-          $variation->save();
-        }
-      }
 
       // Eliminar productos antiguos en la tabla de inventarios para esta reserva
       DB::table('inventories')->where('type_action', 2)
@@ -397,17 +378,11 @@ class ReservationForm extends Form
       foreach ($this->selectedProducts as $product) {
         $variation = Variation::findOrFail($product['variation_id']);
 
-        // Reponer la cantidad inicial del stock antes de cualquier modificación
-        $currentProduct = $currentProducts->firstWhere('variation_id', $product['variation_id']);
-        if ($currentProduct) {
-          $variation->quantity_base += $currentProduct->quantity;
-        }
-
         if ($product['quantity'] > $variation->quantity_base) {
           throw new Exception('El producto ' . $variation->product->name . ' excede el stock disponible.');
         }
 
-        // Actualizar el stock con la nueva cantidad
+        // Restar la cantidad de quantity_base en la tabla product_variations
         $variation->quantity_base -= $product['quantity'];
         $variation->save();
 
@@ -415,15 +390,17 @@ class ReservationForm extends Form
           'product_id' => $product['product_id'],
           'unit_id' => $product['unit_id'],
           'reservation_id' => $this->id,
-          'movement_type' => 2,
+          'movement_type' => 2, // Salida
           'quantity' => $product['quantity'],
           'unit_price' => $product['variation_price'],
-          'type_action' => 2,
+          'type_action' => 2, // Reserva
           'description' => $this->description,
           'created_at' => now(),
           'updated_at' => now(),
         ]);
       }
+
+      $this->reset();
     });
   }
   public function delete()
@@ -431,7 +408,3 @@ class ReservationForm extends Form
     $this->reservation->delete();
   }
 }
-
-
-
-

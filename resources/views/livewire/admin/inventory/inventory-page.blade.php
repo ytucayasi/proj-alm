@@ -82,16 +82,20 @@
                 </span>
               </td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $inventory->movement_type == 2 ? 'No Aplica' : $inventory->unit_price }}</td>
+                {{ $inventory->movement_type == 2 ? '-' : $inventory->unit_price }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
                 {{ $inventory->unit->abbreviation }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center">
-                <button
-                  class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
-                  wire:click="edit({{ $inventory->id }})"><i class="fas fa-edit"></i></button>
-                <button
-                  class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
-                  wire:click="alertDelete({{ $inventory->id }})"><i class="fas fa-trash"></i></button>
+                @if ($inventory->type_action != 2)
+                  <button
+                    class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                    wire:click="edit({{ $inventory->id }})"><i class="fas fa-edit"></i></button>
+                  <button
+                    class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
+                    wire:click="alertDelete({{ $inventory->id }})"><i class="fas fa-trash"></i></button>
+                @else
+                {{-- Agregar interfaz de Ver una Reserva --}}
+                @endif
               </td>
             </tr>
           @endforeach
@@ -114,14 +118,16 @@
               </p>
               <span class="block text-sm text-gray-600">Precio Unitario: {{ $inventory->unit_price }}</span>
               <span class="block text-sm text-gray-600">Unidad: {{ $inventory->unit->abbreviation }}</span>
-              <div class="mt-2 text-right">
-                <button
-                  class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
-                  wire:click="edit({{ $inventory->id }})"><i class="fas fa-edit"></i></button>
-                <button
-                  class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
-                  wire:click="alertDelete({{ $inventory->id }})"><i class="fas fa-trash"></i></button>
-              </div>
+              @if ($inventory->type_action != 2)
+                <div class="mt-2 text-right">
+                  <button
+                    class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                    wire:click="edit({{ $inventory->id }})"><i class="fas fa-edit"></i></button>
+                  <button
+                    class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
+                    wire:click="alertDelete({{ $inventory->id }})"><i class="fas fa-trash"></i></button>
+                </div>
+              @endif
             </div>
           </div>
         @endforeach

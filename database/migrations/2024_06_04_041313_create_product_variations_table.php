@@ -13,7 +13,7 @@ return new class extends Migration {
     Schema::create('product_variations', function (Blueprint $table) {
       $table->id();
       $table->unsignedBigInteger('product_id');
-      $table->unsignedBigInteger('unit_id');
+      $table->unsignedBigInteger('unit_id'); //Cambio que hice recientemente
       $table->unsignedBigInteger('quantity_base');
       $table->decimal('price_base', 10, 2)->unsigned();
       $table->foreign('unit_id')->references('id')->on('units')->onDelete('cascade');

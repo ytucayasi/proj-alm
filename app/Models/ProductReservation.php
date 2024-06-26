@@ -7,5 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductReservation extends Model
 {
-    use HasFactory;
+  use HasFactory;
+  protected $guarded = [
+    "id"
+  ];
+
+  public function reservation()
+  {
+    return $this->belongsTo(Reservation::class);
+  }
+
 }

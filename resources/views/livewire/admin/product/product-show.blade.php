@@ -12,9 +12,11 @@
         <span class="text-xl font-semibold leading-tight text-gray-800">Datos generales</span>
       </div>
       <ul class="flex flex-wrap gap-2 sm:flex-row sm:flex-nowrap">
-        <li class="w-full rounded-md bg-gray-100 px-4 py-2">Categoría: {{ $this->form->product->category ? $this->form->product->category->name : 'Sin Asignar' }}</li>
+        <li class="w-full rounded-md bg-gray-100 px-4 py-2">Categoría:
+          {{ $this->form->product->category ? $this->form->product->category->name : 'Sin Asignar' }}</li>
         <li class="w-full rounded-md bg-gray-100 px-4 py-2">Nombre: {{ $this->form->product->name }}</li>
-        <li class="w-full rounded-md bg-gray-100 px-4 py-2">Descripción: {{ $this->form->product->description ? $this->form->product->description : 'N.A.' }}</li>
+        <li class="w-full rounded-md bg-gray-100 px-4 py-2">Descripción:
+          {{ $this->form->product->description ? $this->form->product->description : 'N.A.' }}</li>
         <li class="w-full rounded-md bg-gray-100 px-4 py-2">
           Estado: <span
             class="{{ $this->form->product->state ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
@@ -90,6 +92,9 @@
               Cantidad</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
+              Precio</th>
+            <th
+              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
               Unidad de Medida</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
@@ -105,6 +110,9 @@
               <td
                 class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900 dark:border-gray-700 dark:text-gray-300">
                 {{ $inventory->quantity }}</td>
+              <td
+                class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900 dark:border-gray-700 dark:text-gray-300">
+                {{ $inventory->unit_price }}</td>
               <td
                 class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900 dark:border-gray-700 dark:text-gray-300">
                 {{ $inventory->unit->abbreviation }}</td>

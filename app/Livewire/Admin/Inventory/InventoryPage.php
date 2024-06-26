@@ -113,7 +113,7 @@ class InventoryPage extends Component
           ->where('products.name', 'like', '%' . $this->search . '%')
           ->select('inventories.*'); // Selecciona solo las columnas de variations
       })
-      ->orderBy('created_at', 'desc'); // Ordenar por la columna de fecha en orden descendente
+      ->orderBy('id', 'desc'); // Ordenar por la columna de fecha en orden descendente
     return view('livewire.admin.inventory.inventory-page', [
       'inventories' => $inventories
         ->paginate($this->perPage),

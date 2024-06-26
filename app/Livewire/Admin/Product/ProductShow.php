@@ -27,7 +27,7 @@ class ProductShow extends Component
         $query->join('units', 'product_variations.unit_id', '=', 'units.id')
           ->where('units.abbreviation', 'like', '%' . $this->searchVariation . '%')
           ->select('product_variations.*'); // Selecciona solo las columnas de variations
-      });
+      })->orderBy('id', 'desc');
 
     $inventoriesQuery = Inventory::query()
       ->where("product_id", $this->form->product->id)
@@ -36,7 +36,7 @@ class ProductShow extends Component
           ->where('units.abbreviation', 'like', '%' . $this->searchInventory . '%')
           ->select('inventories.*'); // Selecciona solo las columnas de inventories
       })
-      ->orderBy('created_at', 'desc');
+      ->orderBy('id', 'desc');
     return view('livewire.admin.product.product-show', [
       'inventories' => $inventoriesQuery->paginate(5, pageName: 'inventories-page'),
       'variations' => $variationsQuery->paginate(5, pageName: 'variations-page'),
