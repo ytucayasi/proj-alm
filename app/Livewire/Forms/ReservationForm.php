@@ -426,12 +426,22 @@ class ReservationForm extends Form
       }
     });
   }
-  public function delete()
+  public function delete($reservationId)
   {
-    $this->reservation->delete();
+    $this->reservation = Reservation::findOrFail($reservationId);
+    DB::transaction(function () {
+      $currentProducts = $this->reservation->inventories()->get();
+      foreach ($currentProducts as $currentProduct) {
+        $variation = Variation::where('product_id', $currentProduct->product_id)
+          ->where('unit_id', $currentProduct->unit_id)
+          ->first();
+        $variation->quantity_base += $currentProduct->quantity;
+        $variation->save();
+      }
+      DB::table('inventories')->where('type_action', 2)
+        ->where('reservation_id', $this->id)
+        ->delete();
+      $this->reservation->delete();
+    });
   }
 }
-
-
-
-

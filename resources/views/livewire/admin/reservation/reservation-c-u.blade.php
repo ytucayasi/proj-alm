@@ -2,16 +2,16 @@
 <div x-data="{ open: false, showVariations: false, openAreas: false }">
   <div class="mb-4 flex justify-between">
     <div class="flex items-center gap-2">
-      <button @click="open = !open" class="flex items-center rounded bg-blue-500 px-4 py-2 text-white">
+      <button @click="open = !open" class="flex items-center rounded bg-blue-500 px-4 py-2 text-white text-xs">
         <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
         <span class="ml-2">Reserva</span>
       </button>
-      <button class="flex items-center rounded bg-purple-500 px-4 py-2 text-white">
+      <button class="flex items-center rounded bg-purple-500 px-4 py-2 text-white text-xs">
         <i class="fas fa-broom"></i>
         <span class="ml-2">Limpiar</span>
       </button>
       <button wire:click="save"
-        class="flex items-center rounded bg-green-500 px-4 py-2 text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300">
+        class="flex items-center rounded bg-green-500 px-4 py-2 text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 text-xs">
         <i class="fas fa-plus"></i>
         <span class="ml-2">Guardar</span>
       </button>
@@ -32,7 +32,7 @@
       </div>
     </div>
     <div class="flex space-x-2">
-      <button @click="openAreas = !openAreas" class="flex items-center rounded bg-orange-500 px-4 py-2 text-white">
+      <button @click="openAreas = !openAreas" class="flex items-center rounded bg-orange-500 px-4 py-2 text-white text-xs">
         <i class="fas" :class="openAreas ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
         <span class="ml-2">Areas</span>
       </button>
@@ -146,7 +146,7 @@
             </tbody>
           </table>
           <!-- Variations Table -->
-          <table class="min-w-full bg-white text-xs" x-show="showVariations" wire:loading.remove>
+          <table class="min-w-full bg-white text-xs" x-show="showVariations" wire:loading.class="hidden">
             <thead>
               <tr>
                 <th class="select-none bg-gray-200 px-4 py-2 text-center">Unidad</th>
@@ -165,14 +165,13 @@
               @endforeach
             </tbody>
           </table>
-          <div x-show="showVariations" class="mt-2 flex justify-center" wire:loading.remove>
+          <div x-show="showVariations" class="mt-2 flex justify-center" wire:loading.class="hidden">
             <span @click="showVariations = false"
               class="cursor-pointer text-blue-500 underline hover:text-blue-700">Atrás</span>
           </div>
         </div>
       </div>
     </div>
-
     <div class="w-full lg:w-2/3">
       <div class="rounded bg-white p-4 shadow-md">
         <div>

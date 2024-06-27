@@ -76,8 +76,7 @@ class ReservationPage extends Component
   #[On('delete')]
   public function delete($data)
   {
-    $this->form->setReservation(Reservation::findOrFail($data['id']));
-    $this->form->delete();
+    $this->form->delete($data['id']);
     $this->alert('success', 'Reserva eliminada con éxito');
   }
 
@@ -109,6 +108,7 @@ class ReservationPage extends Component
   {
     return view('livewire.admin.reservation.reservation-page', [
       'reservations' => Reservation::where('company_name', 'like', '%' . $this->search . '%')
+        ->orderBy('id', 'desc')
         ->paginate($this->perPage),
     ]);
   }

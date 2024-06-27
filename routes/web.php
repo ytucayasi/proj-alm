@@ -10,6 +10,7 @@ use App\Livewire\Admin\Product\ProductShow;
 use App\Livewire\Admin\Report\ReportPage;
 use App\Livewire\Admin\Reservation\ReservationCU;
 use App\Livewire\Admin\Reservation\ReservationPage;
+use App\Livewire\Admin\Reservation\ReservationShow;
 use App\Livewire\Admin\Unit\UnitPage;
 use App\Livewire\Dashboard;
 use Illuminate\Support\Facades\Route;
@@ -48,7 +49,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
   Route::prefix('reservations')->name('reservations.')->group(function () {
     Route::get('/', ReservationPage::class)->name('index');
     Route::get('/form/{reservationId?}', ReservationCU::class)->name('form');
-    Route::get('/{reservationId}', ReservationPage::class)->name('show');
+    Route::get('/{reservationId}', ReservationShow::class)->name('show');
   });
   Route::prefix('reports')->name('reports.')->group(function () {
     Route::get('/', ReportPage::class)->name('index');
