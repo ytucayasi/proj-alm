@@ -31,12 +31,23 @@ class Dashboard extends Component
   public function updateTotalQuantity()
   {
     if ($this->selectedProduct) {
-      $this->totalQuantity = Inventory::where('product_id', $this->selectedProduct)
+      $totalQuantityIn = Inventory::where('product_id', $this->selectedProduct)
         ->where('movement_type', 1)
         ->sum('quantity');
-    } else {
-      $this->totalQuantity = Inventory::where('movement_type', 1)
+
+      $totalQuantityOut = Inventory::where('product_id', $this->selectedProduct)
+        ->where('movement_type', 2)
         ->sum('quantity');
+
+      $this->totalQuantity = $totalQuantityIn - $totalQuantityOut;
+    } else {
+      $totalQuantityIn = Inventory::where('movement_type', 1)
+        ->sum('quantity');
+
+      $totalQuantityOut = Inventory::where('movement_type', 2)
+        ->sum('quantity');
+
+      $this->totalQuantity = $totalQuantityIn - $totalQuantityOut;
     }
   }
 
