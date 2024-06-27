@@ -104,7 +104,10 @@ class InventoryPage extends Component
     $this->viewMode = $this->viewMode === 'table' ? 'grid' : 'table';
     $this->updatedViewMode($this->viewMode);
   }
-
+  public function reservation($reservationId)
+  {
+    $this->redirectRoute('reservations.form', ['reservationId' => $reservationId], navigate: true);
+  }
   public function render()
   {
     $inventories = Inventory::query()

@@ -19,7 +19,7 @@ new class extends Component {
   <!-- Primary Navigation Menu -->
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="flex h-16 justify-between">
-      <div class="flex gap-6">
+      <div class="flex gap-6 uppercase">
         <!-- Logo -->
         <div class="flex shrink-0 items-center">
           <a href="{{ route('dashboard') }}" wire:navigate>
@@ -49,7 +49,7 @@ new class extends Component {
           </x-nav-link>
         </div>
         <div class="hidden space-x-8 sm:-my-px sm:flex">
-          <x-nav-dropdown label="{{ __('Más') }}" :active="request()->routeIs('categories.*') ||
+          <x-nav-dropdown label="{{ __('MAS') }}" :active="request()->routeIs('categories.*') ||
               request()->routeIs('products.*') ||
               request()->routeIs('units.*') ||
               request()->routeIs('reports.*')" :links="[

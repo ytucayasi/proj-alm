@@ -1,7 +1,3 @@
-  {{-- Encabezado --}}
-  <x-slot name="header">
-    Dashboard
-  </x-slot>
 
   {{-- Contenido --}}
   <div x-data="{ showFilters: false }" class="p-4">

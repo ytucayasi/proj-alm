@@ -52,13 +52,13 @@
               Cantidad</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Tipo de Movimiento</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
               Precio Unitario</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
               Unidad</th>
+            <th
+              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+              Fecha de Creación</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
               Acciones</th>
@@ -66,7 +66,7 @@
         </thead>
         <tbody>
           @foreach ($inventories as $inventory)
-            <tr>
+            <tr class="{{ $inventory->movement_type == '1' ? 'bg-green-200' : 'bg-red-200' }}">
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $inventory->id }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
                 <a class="text-blue-500 underline transition duration-300 ease-in-out hover:text-blue-700 hover:no-underline"
@@ -76,15 +76,15 @@
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
                 {{ $inventory->quantity }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                <span
-                  class="{{ $inventory->movement_type == 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
-                  {{ $inventory->movement_type == 1 ? 'Entrada' : 'Salida' }}
+                {{ $inventory->movement_type == 2 && $inventory->type_action != 2 ? '-' : 'S/. ' . $inventory->unit_price }}</td>
+              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                {{ $inventory->unit->name }}
+                <span class="font-bold">
+                  ({{ $inventory->unit->abbreviation }})
                 </span>
               </td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $inventory->movement_type == 2 ? '-' : $inventory->unit_price }}</td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $inventory->unit->abbreviation }}</td>
+                {{ $inventory->created_at }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center">
                 @if ($inventory->type_action != 2)
                   <button
@@ -94,7 +94,10 @@
                     class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
                     wire:click="alertDelete({{ $inventory->id }})"><i class="fas fa-trash"></i></button>
                 @else
-                {{-- Agregar interfaz de Ver una Reserva --}}
+                  <button
+                    class="rounded bg-orange-400 px-2 py-1 font-bold text-white hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-300"
+                    wire:click="reservation({{ $inventory->reservation_id }})"><i
+                      class="fas fa-external-link-alt"></i></button>
                 @endif
               </td>
             </tr>

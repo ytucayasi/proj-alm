@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Forms;
 
+use App\Models\Inventory;
+use App\Models\Variation;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -17,6 +19,9 @@ class ProductForm extends Form
   public $description = '';
   public $category_id = null;
   public $state = 1;
+  public $price_base = 0;
+  public $variationId = null;
+  public $variation = null;
 
   public function rules()
   {
@@ -42,21 +47,27 @@ class ProductForm extends Form
     $this->category_id = $product->category_id;
     $this->state = $product->state;
   }
-
+  public function setVariation($variationId)
+  {
+    $this->variation = Variation::findOrFail($variationId);
+    $this->price_base = $this->variation->price_base;
+  }
+  public function updateVariation()
+  {
+    $this->variation->update($this->only(['price_base']));
+  }
   public function store()
   {
     $this->validate();
     Product::create($this->all());
     $this->reset();
   }
-
   public function update()
   {
     $this->validate();
     $this->product->update($this->all());
     $this->reset();
   }
-
   public function delete()
   {
     $this->product->delete();

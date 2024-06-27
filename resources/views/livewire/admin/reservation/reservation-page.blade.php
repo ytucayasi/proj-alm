@@ -43,25 +43,22 @@
               ID</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Estado</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Estado de Pago</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
               Fecha de Pedido</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
               Fecha de Ejecución</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Costo Total</th>
+              Total Pago</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
               Número de Personas</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
               Total de Productos</th>
+            <th
+              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+              Estado</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
               Acciones</th>
@@ -73,52 +70,48 @@
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $reservation->id }}
               </td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                <span class="block">{{ $reservation->order_date->format('d/m/Y') }}</span>
+                <span class="text-xs font-bold">({{ $reservation->order_date->format('H:i') }})</span>
+              </td>
+              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
                 <span
-                  class="{{ $reservation->status == 1 ? 'text-green-400' : '' }} {{ $reservation->status == 2 ? 'text-blue-400' : '' }} {{ $reservation->status == 3 ? 'text-yellow-400' : '' }} {{ $reservation->status == 4 ? 'text-red-400' : '' }} {{ $reservation->status == 5 ? 'text-purple-400' : '' }} text-lg font-semibold leading-5">
+                  class="block">{{ $reservation->execution_date ? $reservation->execution_date->format('d/m/Y') : 'N/A' }}</span>
+                <span
+                  class="text-xs font-bold">({{ $reservation->execution_date ? $reservation->execution_date->format('H:i') : 'N/A' }})</span>
+              </td>
+
+              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                S/. {{ number_format($reservation->total_cost, 2) }}</td>
+              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                {{ $reservation->people_count }} (pack)</td>
+              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                {{ $reservation->total_products }} productos</td>
+              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                <span
+                  class="{{ $reservation->status == 1 ? 'bg-green-100 text-green-800' : '' }} {{ $reservation->status == 2 ? 'bg-blue-100 text-blue-800' : '' }} {{ $reservation->status == 3 ? 'bg-yellow-100 text-yellow-800' : '' }} {{ $reservation->status == 5 ? 'bg-red-100 text-red-800' : '' }} {{ $reservation->status == 4 ? 'bg-purple-100 text-purple-800' : '' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
                   @switch($reservation->status)
                     @case(1)
-                      <i class="fas fa-check-circle"></i> <!-- Realizada -->
+                      En Proceso
                     @break
 
                     @case(2)
-                      <i class="fas fa-play-circle"></i> <!-- En Ejecución -->
+                      En Ejecución
                     @break
 
                     @case(3)
-                      <i class="fas fa-clock"></i> <!-- Pendiente -->
+                      Pendiente
                     @break
 
                     @case(4)
-                      <i class="fas fa-times-circle"></i> <!-- Cancelada -->
+                      Pospuesto
                     @break
 
                     @case(5)
-                      <i class="fas fa-pause-circle"></i> <!-- Pospuesta -->
+                      Cancelado
                     @break
                   @endswitch
                 </span>
-
               </td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                <span
-                  class="{{ $reservation->payment_status == 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
-                  {{ $reservation->payment_status == 1 ? 'Pagado' : 'Pendiente' }}
-                </span>
-              </td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                <span class="block">{{ $reservation->order_date->format('d/m/Y') }}</span>
-                <span>({{ $reservation->order_date->format('H:i') }})</span>
-              </td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                <span class="block">{{ $reservation->execution_date ? $reservation->execution_date->format('d/m/Y') : 'N/A' }}</span>
-                <span>({{ $reservation->execution_date ? $reservation->execution_date->format('H:i') : 'N/A' }})</span>
-              </td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ number_format($reservation->total_cost, 2) }}</td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $reservation->people_count }}</td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $reservation->total_products }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center">
                 <div class="flex gap-1">
                   <button

@@ -109,7 +109,7 @@ class ReservationForm extends Form
         $this->selectedProducts = $this->selectedProducts->map(function ($product) use ($variation, $newQuantity, $variationStock) {
           if ($product['variation_id'] === $variation->id) {
             $product['quantity'] = $newQuantity;
-            $product['variation_stock'] = $variationStock - $newQuantity;
+            $product['variation_stock'] = $product['initial_stock'] - $newQuantity;
           }
           return $product;
         });
@@ -127,7 +127,7 @@ class ReservationForm extends Form
           "unit_abbreviation" => $variation->unit->abbreviation,
           "quantity" => $quantity,
           "variation_price" => $price,
-          "variation_stock" => $variationStock - $quantity,
+          "variation_stock" => $variationStock - $quantity, //cambio
           "price_edit" => true,
           "quantity_edit" => true,
           "index" => $this->uniqueIndex,
