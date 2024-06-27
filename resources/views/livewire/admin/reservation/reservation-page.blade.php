@@ -1,6 +1,6 @@
 <div>
   <x-slot name="header">
-    {{ __('Reservas (Falta)') }}
+    {{ __('Reservas') }}
   </x-slot>
 
   <div>
