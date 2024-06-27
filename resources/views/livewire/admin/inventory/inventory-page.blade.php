@@ -188,7 +188,7 @@
           <select wire:model="form.unit_id" class="form-select mt-1 block w-full rounded-md shadow-sm">
             <option>Seleccionar Unidad de Medida</option>
             @foreach ($units as $unit)
-              <option value="{{ $unit->id }}">{{ $unit->abbreviation }}</option>
+              <option value="{{ $unit->id }}">{{ $unit->name }} ({{ $unit->abbreviation }})</option>
             @endforeach
           </select>
           @error('form.unit_id')
