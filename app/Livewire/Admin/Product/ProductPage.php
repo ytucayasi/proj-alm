@@ -29,6 +29,13 @@ class ProductPage extends Component
     $this->viewMode = Cache::get('product_view_mode', 'table');
   }
 
+  public function updating($name, $value)
+  {
+    if ($name == "search") {
+      $this->setPage(1);
+    }
+  }
+
   public function updatingPerPage($value)
   {
     Cache::put('product_per_page', $value);
