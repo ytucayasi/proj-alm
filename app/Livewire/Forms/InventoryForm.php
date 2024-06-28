@@ -167,7 +167,7 @@ class InventoryForm extends Form
 
   private function validateUnitPrice()
   {
-    if ($this->movement_type == self::MOVEMENT_TYPE_ENTRY && $this->unit_price < 1) {
+    if ($this->movement_type == self::MOVEMENT_TYPE_ENTRY && $this->unit_price < 0.01) {
       throw new Exception('El precio es necesario.');
     }
   }
