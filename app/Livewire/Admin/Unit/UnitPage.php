@@ -26,7 +26,12 @@ class UnitPage extends Component
     $this->perPage = Cache::get('unit_per_page', 10);
     $this->viewMode = Cache::get('unit_view_mode', 'table');
   }
-
+  public function updating($name, $value)
+  {
+    if ($name == "search") {
+      $this->setPage(1);
+    }
+  }
   public function updatingPerPage($value)
   {
     Cache::put('unit_per_page', $value);

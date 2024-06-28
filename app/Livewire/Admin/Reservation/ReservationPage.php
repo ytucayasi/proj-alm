@@ -26,19 +26,22 @@ class ReservationPage extends Component
     $this->perPage = Cache::get('reservation_per_page', 10);
     $this->viewMode = Cache::get('reservation_view_mode', 'table');
   }
-
+  public function updating($name, $value)
+  {
+    if ($name == "search") {
+      $this->setPage(1);
+    }
+  }
   public function updatingPerPage($value)
   {
     Cache::put('reservation_per_page', $value);
     $this->resetPage();
   }
-
   public function updatedViewMode($value)
   {
     Cache::put('reservation_view_mode', $value);
     $this->resetPage();
   }
-
   public function openModal($modalName)
   {
     $this->resetValidation();
