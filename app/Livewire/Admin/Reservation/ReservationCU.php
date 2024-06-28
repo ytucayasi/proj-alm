@@ -43,6 +43,22 @@ class ReservationCU extends Component
     }
   }
 
+  public function updated($name, $value)
+  {
+    if ($name == "form.cost_pack" || $name == "form.people_count") {
+      if ($value < 0) {
+        $this->alert('error', 'Los valores no pueden ser negativos.');
+        $this->form->total_pack = 0;  // Reiniciar a cero si el valor es negativo
+        return;
+      }
+      $this->form->validateOnly($name, [
+        'cost_pack' => 'required|numeric|min:0',
+        'people_count' => 'required|integer|min:1',
+      ]);
+      $this->form->total_pack = $this->form->cost_pack * $this->form->people_count;
+    }
+  }
+
   public function selectVariation($variationId, $action)
   {
     $this->form->setVariation($variationId, $action);

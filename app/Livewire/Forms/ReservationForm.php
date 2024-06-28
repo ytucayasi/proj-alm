@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Locked;
+use Livewire\Attributes\Validate;
 use Livewire\Form;
 use App\Models\Reservation;
 use Illuminate\Support\Collection;
@@ -30,6 +31,8 @@ class ReservationForm extends Form
   public $total_cost = 0.00;
   public $people_count = 0;
   public $total_products = 0;
+  public $cost_pack = 0;
+  public $total_pack = 0;
   public $variations = [];
   public $selectedVariation = null;
   public $selectedProducts;
@@ -61,6 +64,8 @@ class ReservationForm extends Form
       'type' => 'required|integer',
       'execution_date' => 'required|date',
       'total_cost' => 'required|numeric|min:0',
+      'cost_pack' => 'required|numeric|min:0',
+      'total_pack' => 'required|numeric|min:0',
       'people_count' => 'required|integer|min:1',
       'total_products' => 'required|numeric|min:0',
     ];
@@ -264,6 +269,8 @@ class ReservationForm extends Form
     $this->order_date = Carbon::parse($this->reservation->order_date)->format('Y-m-d\TH:i'); // Formatear la fecha correctamente
     $this->execution_date = Carbon::parse($this->reservation->execution_date)->format('Y-m-d\TH:i'); // Formatear la fecha correctamente
     $this->total_cost = $this->reservation->total_cost;
+    $this->cost_pack = $this->reservation->cost_pack;
+    $this->total_pack = $this->reservation->total_pack;
     $this->people_count = $this->reservation->people_count;
     $this->total_products = $this->reservation->total_products;
 
@@ -308,6 +315,8 @@ class ReservationForm extends Form
         'order_date',
         'execution_date',
         'total_cost',
+        'cost_pack',
+        'total_pack',
         'people_count',
         'total_products'
       ]));
@@ -374,6 +383,8 @@ class ReservationForm extends Form
         'order_date',
         'execution_date',
         'total_cost',
+        'cost_pack',
+        'total_pack',
         'people_count',
         'total_products'
       ]));

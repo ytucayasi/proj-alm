@@ -2,16 +2,16 @@
 <div x-data="{ open: false, showVariations: false, openAreas: false }">
   <div class="mb-4 flex justify-between">
     <div class="flex items-center gap-2">
-      <button @click="open = !open" class="flex items-center rounded bg-blue-500 px-4 py-2 text-white text-xs">
+      <button @click="open = !open" class="flex items-center rounded bg-blue-500 px-4 py-2 text-xs text-white">
         <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
         <span class="ml-2">Reserva</span>
       </button>
-      <button class="flex items-center rounded bg-purple-500 px-4 py-2 text-white text-xs">
+      <button class="flex items-center rounded bg-purple-500 px-4 py-2 text-xs text-white">
         <i class="fas fa-broom"></i>
         <span class="ml-2">Limpiar</span>
       </button>
       <button wire:click="save"
-        class="flex items-center rounded bg-green-500 px-4 py-2 text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 text-xs">
+        class="flex items-center rounded bg-green-500 px-4 py-2 text-xs text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300">
         <i class="fas fa-plus"></i>
         <span class="ml-2">Guardar</span>
       </button>
@@ -32,7 +32,8 @@
       </div>
     </div>
     <div class="flex space-x-2">
-      <button @click="openAreas = !openAreas" class="flex items-center rounded bg-orange-500 px-4 py-2 text-white text-xs">
+      <button @click="openAreas = !openAreas"
+        class="flex items-center rounded bg-orange-500 px-4 py-2 text-xs text-white">
         <i class="fas" :class="openAreas ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
         <span class="ml-2">Areas</span>
       </button>
@@ -52,50 +53,54 @@
       @endforelse
     </div>
   </div>
-
   <div class="flex flex-col lg:flex-row lg:space-x-4">
     <!-- Left Section: Selected Products and Search -->
     <div class="w-full lg:w-1/3">
       <!-- Buffet General Data Form -->
       <div x-show="open" class="mb-4 rounded bg-white p-4 shadow-md">
         <h2 class="mb-4 font-bold">Datos Generales del Buffet</h2>
-        <form class="text-xs">
-          <div class="mb-4">
+        <form class="flex flex-wrap text-xs">
+          <div class="w-full p-2">
             <label class="mb-1 block font-bold">Empresa</label>
             <input wire:model="form.company_name" type="text" placeholder="Ingrese el nombre de la empresa"
               class="w-full rounded border border-gray-300 p-2 text-xs">
           </div>
-          <div class="mb-4">
+          <div class="w-full p-2 md:w-1/2">
             <label class="mb-1 block font-bold">Pack</label>
-            <input wire:model="form.people_count" type="number" placeholder="Ingrese la cantidad de personas"
+            <input wire:model.live="form.people_count" type="number" placeholder="Ingrese la cantidad de personas"
               class="w-full rounded border border-gray-300 p-2 text-xs">
           </div>
-          <div class="mb-4">
+          <div class="w-full p-2 md:w-1/2">
+            <label class="mb-1 block font-bold">Costo por Pack</label>
+            <input wire:model.live="form.cost_pack" type="number" placeholder="Ingrese la cantidad de personas"
+              class="w-full rounded border border-gray-300 p-2 text-xs">
+          </div>
+          <div class="w-full p-2 md:w-1/2">
+            <label class="mb-1 block font-bold">Total Pack</label>
+            <input wire:model="form.total_pack" type="number" placeholder="Ingrese la cantidad de personas"
+              class="w-full cursor-not-allowed rounded border border-gray-300 p-2 text-xs opacity-70" readonly disabled>
+          </div>
+          <div class="w-full p-2 md:w-1/2">
             <label class="mb-1 block font-bold">Costo Total</label>
-            <input wire:model="form.total_cost" type="text"
+            <input wire:model="form.total_cost" type="number"
               class="w-full cursor-not-allowed rounded border border-gray-300 p-2 text-xs opacity-70" readonly disabled>
           </div>
-          <div class="mb-4">
+          <div class="w-full p-2 md:w-1/2">
             <label class="mb-1 block font-bold">Total de Productos</label>
-            <input wire:model="form.total_products" type="text"
+            <input wire:model="form.total_products" type="number"
               class="w-full cursor-not-allowed rounded border border-gray-300 p-2 text-xs opacity-70" readonly disabled>
           </div>
-          <div class="mb-4">
+          <div class="w-full p-2 md:w-1/2">
             <label class="mb-1 block font-bold">Fecha del Pedido</label>
             <input wire:model="form.order_date" type="datetime-local"
               class="w-full rounded border border-gray-300 p-2 text-xs">
           </div>
-          <div class="mb-4">
+          <div class="w-full p-2 md:w-1/2">
             <label class="mb-1 block font-bold">Fecha de Ejecución</label>
             <input wire:model="form.execution_date" type="datetime-local"
               class="w-full rounded border border-gray-300 p-2 text-xs">
           </div>
-          <div class="mb-4">
-            <label class="mb-1 block font-bold">Comentarios</label>
-            <textarea wire:model="form.description" class="w-full rounded border border-gray-300 p-2 text-xs">
-            </textarea>
-          </div>
-          <div class="mb-4">
+          <div class="w-full p-2 md:w-1/2">
             <label class="mb-1 block font-bold">Estado</label>
             <select wire:model="form.status" class="w-full rounded border border-gray-300 p-2 text-xs">
               <option value="1">Realizado</option>
@@ -104,16 +109,19 @@
               <option value="4">Pospuesto</option>
             </select>
           </div>
-          <div class="mb-4">
+          <div class="w-full p-2 md:w-1/2">
             <label class="mb-1 block font-bold">Estado de Pago</label>
             <select wire:model="form.payment_status" class="w-full rounded border border-gray-300 p-2 text-xs">
               <option value="1">Pagado</option>
               <option value="2">Pendiente</option>
             </select>
           </div>
+          <div class="w-full p-2">
+            <label class="mb-1 block font-bold">Comentarios</label>
+            <textarea wire:model="form.description" class="w-full rounded border border-gray-300 p-2 text-xs"></textarea>
+          </div>
         </form>
       </div>
-
       <!-- Selected Product List as Table -->
       <div class="rounded bg-white p-4 shadow-md">
         <h2 class="mb-4 font-bold">Productos Disponibles</h2>
