@@ -22,6 +22,7 @@ class InventoryPage extends Component
   public InventoryForm $form;
   public $viewMode;
   public $modalCreateOrUpdate = 'modal-create-or-update';
+  public $productSearch = '';
 
   public function mount()
   {
@@ -44,8 +45,12 @@ class InventoryPage extends Component
   public function selectProduct($productId, $productName)
   {
     $this->form->product_id = $productId;
-    $this->search = $productName;
+    $this->productSearch = $productName;
     $this->products = [];
+  }
+  public function searchProducts()
+  {
+    return Product::where('name', 'like', '%' . $this->productSearch . '%')->take(5)->get();
   }
   public function openModal($modalName)
   {
@@ -110,25 +115,26 @@ class InventoryPage extends Component
     $this->viewMode = $this->viewMode === 'table' ? 'grid' : 'table';
     $this->updatedViewMode($this->viewMode);
   }
+
   public function reservation($reservationId)
   {
     $this->redirectRoute('reservations.form', ['reservationId' => $reservationId], navigate: true);
   }
+
   public function render()
   {
     $inventories = Inventory::query()
       ->when($this->search, function ($query) {
         $query->join('products', 'inventories.product_id', '=', 'products.id')
           ->where('products.name', 'like', '%' . $this->search . '%')
-          ->select('inventories.*'); // Selecciona solo las columnas de variations
+          ->select('inventories.*');
       })
-      ->orderBy('id', 'desc'); // Ordenar por la columna de fecha en orden descendente
+      ->orderBy('id', 'desc');
     return view('livewire.admin.inventory.inventory-page', [
-      'inventories' => $inventories
-        ->paginate($this->perPage),
+      'inventories' => $inventories->paginate($this->perPage),
       'products' => Product::where("state", 1)->get(),
       'units' => Unit::where("state", 1)->get(),
+      'searchResults' => $this->searchProducts(),
     ]);
   }
 }
-

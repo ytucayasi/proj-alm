@@ -76,7 +76,8 @@
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
                 {{ $inventory->quantity }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $inventory->movement_type == 2 && $inventory->type_action != 2 ? '-' : 'S/. ' . $inventory->unit_price }}</td>
+                {{ $inventory->movement_type == 2 && $inventory->type_action != 2 ? '-' : 'S/. ' . $inventory->unit_price }}
+              </td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
                 {{ $inventory->unit->name }}
                 <span class="font-bold">
@@ -142,27 +143,41 @@
     <x-modal maxWidth="lg" name="{{ $modalCreateOrUpdate }}" :show="false" focusable>
       <form wire:submit.prevent="save" class="p-6">
         <div class="text-lg font-medium text-gray-900">{{ $form->id ? 'Editar Inventario' : 'Crear Inventario' }}</div>
+
         @if (!$form->id)
-          <div class="mt-4">
+          <div class="mt-4" x-data="{ open: false }">
             <label class="block text-sm font-medium text-gray-700">Producto</label>
-            <select wire:model="form.product_id" class="form-select mt-1 block w-full rounded-md shadow-sm">
-              <option>Seleccionar Producto</option>
-              @foreach ($products as $product)
-                <option value="{{ $product->id }}">{{ $product->name }}</option>
-              @endforeach
-            </select>
+            <input type="text" wire:model.live="productSearch" @focus="open = true"
+              @blur="setTimeout(() => open = false, 200)" class="form-input mt-1 block w-full rounded-md shadow-sm"
+              placeholder="Buscar producto...">
+            @if ($productSearch)
+              <ul class="mt-1 max-h-60 overflow-auto rounded-md border border-gray-300 bg-white shadow-lg"
+                x-show="open">
+                @forelse ($searchResults as $product)
+                  <li wire:click="selectProduct({{ $product->id }}, '{{ $product->name }}')"
+                    class="cursor-pointer px-4 py-2 hover:bg-gray-200">
+                    {{ $product->name }}
+                  </li>
+                @empty
+                  <li class="px-4 py-2 text-gray-500">No se encontraron productos</li>
+                @endforelse
+              </ul>
+            @endif
             @error('form.product_id')
               <span class="text-sm text-red-500">{{ $message }}</span>
             @enderror
           </div>
         @endif
+
         <div class="mt-4">
           <label class="block text-sm font-medium text-gray-700">Cantidad</label>
-          <input type="number" step="0.01" wire:model="form.quantity" class="form-input mt-1 block w-full rounded-md shadow-sm">
+          <input type="number" step="0.01" wire:model="form.quantity"
+            class="form-input mt-1 block w-full rounded-md shadow-sm">
           @error('form.quantity')
             <span class="text-sm text-red-500">{{ $message }}</span>
           @enderror
         </div>
+
         <div class="mt-4">
           <label class="block text-sm font-medium text-gray-700">Tipo de Movimiento</label>
           <select wire:model.live="form.movement_type" class="form-select mt-1 block w-full rounded-md shadow-sm">
@@ -173,6 +188,7 @@
             <span class="text-sm text-red-500">{{ $message }}</span>
           @enderror
         </div>
+
         @if ($form->movement_type == 1)
           <div class="mt-4">
             <label class="block text-sm font-medium text-gray-700">Precio Unitario</label>
@@ -183,6 +199,7 @@
             @enderror
           </div>
         @endif
+
         <div class="mt-4">
           <label class="block text-sm font-medium text-gray-700">Unidad</label>
           <select wire:model="form.unit_id" class="form-select mt-1 block w-full rounded-md shadow-sm">
@@ -195,6 +212,7 @@
             <span class="text-sm text-red-500">{{ $message }}</span>
           @enderror
         </div>
+
         <div class="mt-4">
           <label class="block text-sm font-medium text-gray-700">Descripción</label>
           <textarea wire:model="form.description" class="form-input mt-1 block w-full rounded-md shadow-sm"></textarea>
@@ -202,6 +220,7 @@
             <span class="text-sm text-red-500">{{ $message }}</span>
           @enderror
         </div>
+
         <div class="mt-6 flex justify-end">
           <x-secondary-button wire:click="closeModal('{{ $modalCreateOrUpdate }}')">
             {{ __('Cancelar') }}
