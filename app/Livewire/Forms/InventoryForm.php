@@ -194,7 +194,7 @@ class InventoryForm extends Form
       ->firstOrFail();
   }
 
-  private function updateProductQuantity(Variation $variation, string $action, int $originalQuantity = 0, int $originalMovementType = 0)
+  private function updateProductQuantity(Variation $variation, string $action, float $originalQuantity = 0, int $originalMovementType = 0)
   {
     if ($action === 'create') {
       $this->updateQuantityForCreateAction($variation);
@@ -233,7 +233,7 @@ class InventoryForm extends Form
     }
   }
 
-  private function updateQuantityForUpdateAction(Variation $variation, int $originalQuantity, int $originalMovementType)
+  private function updateQuantityForUpdateAction(Variation $variation, float $originalQuantity, int $originalMovementType)
   {
     /* Si el tipo de movimiento era de tipo entrada y no cambió entonce se prosigue con esto */
     if ($originalMovementType == self::MOVEMENT_TYPE_ENTRY && $this->movement_type == self::MOVEMENT_TYPE_ENTRY) {
@@ -270,7 +270,7 @@ class InventoryForm extends Form
     }
   }
 
-  private function updateQuantityForDeleteAction(Variation $variation, int $originalQuantity)
+  private function updateQuantityForDeleteAction(Variation $variation, float $originalQuantity)
   {
     /* Cuando se envía la variación y la cantidad inicial, se debe de validar si es de tipo entrada o salida */
     if ($this->inventory->movement_type == self::MOVEMENT_TYPE_ENTRY) {

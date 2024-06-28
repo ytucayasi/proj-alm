@@ -32,7 +32,7 @@ class AreaProductForm extends Form
       'area_id' => 'required|integer|exists:areas,id',
       'product_id' => 'required|integer|exists:products,id',
       'unit_id' => 'required|integer|exists:units,id',
-      'quantity' => 'required|integer|min:1',
+      'quantity' => 'required|numeric|min:0.01',
       'price' => 'required|numeric|min:0.01',
     ];
   }

@@ -62,7 +62,7 @@ class ReservationForm extends Form
       'execution_date' => 'required|date',
       'total_cost' => 'required|numeric|min:0',
       'people_count' => 'required|integer|min:1',
-      'total_products' => 'required|integer|min:0',
+      'total_products' => 'required|numeric|min:0',
     ];
   }
 
