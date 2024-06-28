@@ -32,7 +32,7 @@ class InventoryForm extends Form
       'unit_id' => 'required|integer|exists:units,id',
       'movement_type' => ['required', 'integer', Rule::in([self::MOVEMENT_TYPE_ENTRY, self::MOVEMENT_TYPE_EXIT])],
       'quantity' => 'required|numeric|min:0.01',
-      'unit_price' => 'required|numeric|min:0',
+      'unit_price' => 'required|numeric|min:0.01',
       'description' => 'nullable|string',
     ];
   }
@@ -40,7 +40,7 @@ class InventoryForm extends Form
   {
     return [
       'unit_price.required' => 'El :attribute es necesario.',
-      'unit_price.min' => 'El :attribute debe ser mayor a 0.',
+      'unit_price.min' => 'El :attribute debe ser mayor a 0.01.',
       'unit_price.numeric' => 'El :attribute debe ser un número.',
       'quantity.required' => 'La :attribute es necesario.',
       'quantity.min' => 'La :attribute debe ser mayor a 0.01.',
