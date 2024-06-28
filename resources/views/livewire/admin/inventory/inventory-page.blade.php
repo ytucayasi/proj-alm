@@ -158,7 +158,7 @@
         @endif
         <div class="mt-4">
           <label class="block text-sm font-medium text-gray-700">Cantidad</label>
-          <input type="number" wire:model="form.quantity" class="form-input mt-1 block w-full rounded-md shadow-sm">
+          <input type="number" step="0.01" wire:model="form.quantity" class="form-input mt-1 block w-full rounded-md shadow-sm">
           @error('form.quantity')
             <span class="text-sm text-red-500">{{ $message }}</span>
           @enderror
