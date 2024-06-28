@@ -23,7 +23,7 @@
       <div class="flex items-center justify-center gap-2">
         <button
           class="flex items-center gap-2 rounded-md bg-green-500 px-4 py-2 text-white shadow-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300"
-          wire:click.prevent="openModal('{{ $modalCreateOrUpdate }}')">
+          wire:click.prevent="openModal('{{ $modalCreateOrUpdate }}')" id="createButton">
           <i class="fas fa-plus-square fa-lg flex h-7 w-5 items-center justify-center"></i> Crear
         </button>
         <button
@@ -233,3 +233,13 @@
     </x-modal>
   </div>
 </div>
+@script
+  <script>
+    document.addEventListener('keydown', function(event) {
+      if (event.ctrlKey && event.key === '4') {
+        event.preventDefault();
+        document.getElementById('createButton').click();
+      }
+    });
+  </script>
+@endscript

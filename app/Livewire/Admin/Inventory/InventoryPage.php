@@ -97,7 +97,10 @@ class InventoryPage extends Component
         $this->form->store();
       }
       $this->alert('success', 'Se creó/actualizó con éxito');
-      $this->closeModal($this->modalCreateOrUpdate);
+      $this->resetValidation();
+      $this->form->reset();
+      $this->productSearch = "";
+      /* $this->closeModal($this->modalCreateOrUpdate); */
     } catch (\Exception $e) {
       $this->alert('error', $e->getMessage());
     }
