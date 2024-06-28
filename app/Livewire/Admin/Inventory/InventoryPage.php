@@ -56,6 +56,7 @@ class InventoryPage extends Component
   {
     $this->resetValidation();
     $this->form->reset();
+    $this->productSearch = "";
     $this->dispatch('open-modal', $modalName);
   }
 
@@ -63,6 +64,7 @@ class InventoryPage extends Component
   {
     $this->resetValidation();
     $this->form->reset();
+    $this->productSearch = "";
     $this->dispatch('close-modal', $modalName);
   }
 
