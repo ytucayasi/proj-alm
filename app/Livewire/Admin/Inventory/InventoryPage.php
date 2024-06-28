@@ -53,7 +53,7 @@ class InventoryPage extends Component
   {
     $this->form->product_id = $productId;
     $this->productSearch = $productName;
-    $this->products = [];
+    /* $this->products = []; */
   }
   public function searchProducts()
   {

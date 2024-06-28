@@ -143,7 +143,6 @@
     <x-modal maxWidth="lg" name="{{ $modalCreateOrUpdate }}" :show="false" focusable>
       <form wire:submit.prevent="save" class="p-6">
         <div class="text-lg font-medium text-gray-900">{{ $form->id ? 'Editar Inventario' : 'Crear Inventario' }}</div>
-
         @if (!$form->id)
           <div class="mt-4" x-data="{ open: false }">
             <label class="block text-sm font-medium text-gray-700">Producto</label>

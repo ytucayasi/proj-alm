@@ -62,8 +62,34 @@
         <form class="flex flex-wrap text-xs">
           <div class="w-full p-2">
             <label class="mb-1 block font-bold">Empresa</label>
-            <input wire:model="form.company_name" type="text" placeholder="Ingrese el nombre de la empresa"
-              class="w-full rounded border border-gray-300 p-2 text-xs">
+            <div x-data="{ open: false }" class="relative">
+              <div class="flex items-center">
+                <input type="text" wire:model.live="companySearch" @focus="open = true"
+                  @blur="setTimeout(() => open = false, 200)"
+                  class="w-full rounded-l border border-r-0 border-gray-300 p-2 text-xs"
+                  placeholder="Buscar empresa...">
+                <button wire:click.prevent="openModal('{{ $modalCreateCompany }}')"
+                  class="flex h-9 w-10 items-center justify-center rounded-r bg-blue-500 text-white hover:bg-blue-600">
+                  <i class="fas fa-building"></i>
+                </button>
+              </div>
+              @if ($companySearch)
+                <div class="relative w-full">
+                  <ul
+                    class="absolute z-20 mt-1 max-h-60 w-full overflow-auto rounded-md border border-gray-300 bg-white shadow-lg"
+                    x-show="open">
+                    @forelse ($searchResults as $company)
+                      <li wire:click="selectCompany({{ $company->id }}, '{{ $company->name }}')"
+                        class="cursor-pointer px-4 py-2 hover:bg-gray-200">
+                        {{ $company->name }}
+                      </li>
+                    @empty
+                      <li class="px-4 py-2 text-gray-500">No se encontró la empresa (registrar)</li>
+                    @endforelse
+                  </ul>
+                </div>
+              @endif
+            </div>
           </div>
           <div class="w-full p-2 md:w-1/2">
             <label class="mb-1 block font-bold">Pack</label>
@@ -250,12 +276,12 @@
                   <td class="border-b px-4 py-2 text-center">{{ $product['initial_stock'] }}</td>
                   <td class="border-b px-4 py-2 text-center">{{ $product['unit_abbreviation'] }}</td>
                   <td class="border-b px-4 py-2 text-center">
-                    <button
+                    {{-- <button
                       class="{{ $product['quantity_edit'] && $product['price_edit'] ? 'bg-yellow-400 hover:bg-yellow-500 focus:ring-yellow-300' : 'bg-green-400 hover:bg-green-500 focus:ring-green-300' }} h-7 w-7 rounded px-2 py-1 font-bold text-white focus:outline-none focus:ring-2"
                       wire:click="selectVariation({{ $product['variation_id'] }}, 'edit')">
                       <i
                         class="fas {{ $product['quantity_edit'] && $product['price_edit'] ? 'fa-edit' : 'fa-check' }}"></i>
-                    </button>
+                    </button> --}}
                     <button
                       class="h-7 w-7 rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
                       wire:click="selectVariation({{ $product['variation_id'] }}, 'delete')">
@@ -279,4 +305,25 @@
       </div>
     </div>
   </div>
+  <x-modal maxWidth="sm" name="{{ $modalCreateCompany }}" :show="false" focusable>
+    <form wire:submit.prevent="saveCompany" class="p-6">
+      <div class="text-lg font-medium text-gray-900">Crear Empresa</div>
+      <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700">Empresa</label>
+        <input type="text" wire:model="name"
+          class="form-input mt-1 block w-full rounded-md shadow-sm">
+        @error('name')
+          <span class="text-sm text-red-500">{{ $message }}</span>
+        @enderror
+      </div>
+      <div class="mt-6 flex justify-end">
+        <x-secondary-button wire:click="closeModal('{{ $modalCreateCompany }}')">
+          {{ __('Cancelar') }}
+        </x-secondary-button>
+        <x-primary-button class="ms-3" wire:loading.class="opacity-50" wire:loading.attr="disabled">
+          {{ __('Guardar') }}
+        </x-primary-button>
+      </div>
+    </form>
+  </x-modal>
 </div>

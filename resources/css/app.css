@@ -4,9 +4,42 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Estilizar el scrollbar vertical */
 ::-webkit-scrollbar {
-  display: none;
+  width: 8px; /* Ajusta el ancho del scrollbar vertical */
 }
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Color de fondo del track del scrollbar */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3730a3; /* Color del thumb del scrollbar */
+  border-radius: 10px; /* Redondear los bordes del thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #312e81; /* Color del thumb cuando se pasa el mouse sobre él (un tono más oscuro) */
+}
+
+/* Estilizar el scrollbar horizontal (opcional) */
+::-webkit-scrollbar-horizontal {
+  height: 5px; /* Ajusta la altura del scrollbar horizontal */
+}
+
+::-webkit-scrollbar-horizontal-track {
+  background: #f1f1f1; /* Color de fondo del track del scrollbar horizontal */
+}
+
+::-webkit-scrollbar-horizontal-thumb {
+  background: #3730a3; /* Color del thumb del scrollbar horizontal */
+  border-radius: 10px; /* Redondear los bordes del thumb */
+}
+
+::-webkit-scrollbar-horizontal-thumb:hover {
+  background: #312e81; /* Color del thumb cuando se pasa el mouse sobre él (un tono más oscuro) */
+}
+
 
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
