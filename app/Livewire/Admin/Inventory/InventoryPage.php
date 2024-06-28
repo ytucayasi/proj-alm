@@ -22,7 +22,6 @@ class InventoryPage extends Component
   public InventoryForm $form;
   public $viewMode;
   public $modalCreateOrUpdate = 'modal-create-or-update';
-  public $products = [];
 
   public function mount()
   {
@@ -41,10 +40,7 @@ class InventoryPage extends Component
     Cache::put('inventory_view_mode', $value);
     $this->resetPage();
   }
-  public function updatingSearch()
-  {
-    $this->products = Product::where('name', 'like', '%' . $this->search . '%')->where('state', 1)->get();
-  }
+
   public function selectProduct($productId, $productName)
   {
     $this->form->product_id = $productId;
