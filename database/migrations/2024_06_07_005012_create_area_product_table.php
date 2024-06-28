@@ -15,7 +15,7 @@ return new class extends Migration {
       $table->unsignedBigInteger('area_id');
       $table->unsignedBigInteger('product_id');
       $table->unsignedBigInteger('unit_id')->nullable();
-      $table->unsignedBigInteger('quantity');
+      $table->decimal('quantity', 8, 2)->unsigned();
       $table->decimal('price', 10, 2)->unsigned();
       $table->tinyInteger('state')->default(1);
       $table->foreign('area_id')->references('id')->on('areas')->onDelete('cascade');

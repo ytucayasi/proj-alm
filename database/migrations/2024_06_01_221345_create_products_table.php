@@ -14,6 +14,7 @@ return new class extends Migration {
       $table->id();
       $table->unsignedBigInteger('category_id')->nullable();
       $table->string('name', 150)->unique();
+      $table->decimal('stock_min', 8, 2)->default(5);
       $table->text('description')->nullable();
       $table->tinyInteger('state')->comment('1: Disponible, 2: Agotado');
       $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');

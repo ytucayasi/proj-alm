@@ -13,15 +13,17 @@ return new class extends Migration {
     Schema::create('reservations', function (Blueprint $table) {
       $table->id();
       $table->string('company_name');
-      $table->text('description')->nullable(); 
+      $table->text('description')->nullable();
       $table->tinyInteger('status')->default(3)->comment('Reservation status: 1=realized, 2=in execution, 3=pending, 4=canceled, 5=postponed'); // Reservation status
-      $table->tinyInteger('payment_status')->default(2)->comment('Payment status: 1=paid, 2=payment pending'); 
-      $table->tinyInteger('type')->default(1); 
-      $table->datetime('order_date'); 
-      $table->datetime('execution_date')->nullable(); 
-      $table->decimal('total_cost', 10, 2); 
-      $table->unsignedInteger('people_count')->comment('pack'); 
-      $table->unsignedInteger('total_products'); 
+      $table->tinyInteger('payment_status')->default(2)->comment('Payment status: 1=paid, 2=payment pending');
+      $table->tinyInteger('type')->default(1);
+      $table->datetime('order_date');
+      $table->datetime('execution_date')->nullable();
+      $table->decimal('total_cost', 10, 2);
+      $table->unsignedInteger('people_count')->comment('pack');
+      $table->decimal('cost_pack', 10, 2);
+      $table->decimal('total_pack', 10, 2);
+      $table->unsignedInteger('total_products');
       $table->timestamps();
     });
   }

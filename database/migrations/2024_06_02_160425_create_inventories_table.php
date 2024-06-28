@@ -16,10 +16,12 @@ return new class extends Migration {
       $table->unsignedBigInteger('unit_id'); // cambio reciente era "nullable"
       $table->unsignedBigInteger('reservation_id')->nullable(); // cambio reciente era "nullable"
       $table->tinyInteger('movement_type')->comment('1: Entrada, 2: Salida');
-      $table->integer('quantity');
+      $table->decimal('quantity', 8, 2)->unsigned();
       $table->decimal('unit_price', 8, 2);
       $table->tinyInteger('type_action')->default(1)->comment('1: Normal, 2: Reserva');
       $table->tinyInteger('status')->default(1)->comment('1: Relación, 2: Sin Relación');
+      $table->tinyInteger('type')->default(1)->comment('1: Inventario, 2: Activo');
+      $table->unsignedBigInteger('type_area')->default(1)->comment('ID del Area Seleccionada');
       $table->text('description')->nullable();
       $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
       $table->foreign('reservation_id')->references('id')->on('reservations')->onDelete('cascade');

@@ -40,6 +40,7 @@ class DropAllTablesExcept extends Command
       'job_batches',
       'jobs',
       'password_reset_tokens',
+      'migrations'
     ];
 
     // Disable foreign key checks to avoid issues with foreign key constraints

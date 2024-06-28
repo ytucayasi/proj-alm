@@ -74,7 +74,7 @@
                   wire:navigate>{{ $inventory->product ? $inventory->product->name : 'Sin Asignar' }}</a>
               </td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $inventory->quantity }} productos</td>
+                {{ $inventory->quantity }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
                 {{ $inventory->movement_type == 2 && $inventory->type_action != 2 ? '-' : 'S/. ' . $inventory->unit_price }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">

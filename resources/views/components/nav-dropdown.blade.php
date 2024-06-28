@@ -4,11 +4,11 @@
   $buttonClasses =
       $active ?? false
           ? 'inline-flex items-center px-1 pt-1 border-b-2 border-indigo-400 text-sm font-medium leading-5 text-gray-900 focus:outline-none focus:border-indigo-700 transition duration-150 ease-in-out'
-          : 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out';
+          : 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700 transition duration-150 ease-in-out';
 @endphp
 
-<div x-data="{ open: false }" class="relative" @click.away="open = false">
-  <button @click="open = !open" class="{{ $buttonClasses }} h-full">
+<div x-data="{ open: false }" class="relative" @mouseover="open = true" @mouseleave="open = false">
+  <button class="{{ $buttonClasses }} h-full">
     {{ $label }}
     <div class="ms-1">
       <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">

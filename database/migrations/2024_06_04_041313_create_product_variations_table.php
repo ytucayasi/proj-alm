@@ -14,7 +14,7 @@ return new class extends Migration {
       $table->id();
       $table->unsignedBigInteger('product_id');
       $table->unsignedBigInteger('unit_id'); //Cambio que hice recientemente
-      $table->unsignedBigInteger('quantity_base');
+      $table->decimal('quantity_base', 8, 2)->unsigned();
       $table->decimal('price_base', 10, 2)->unsigned();
       $table->foreign('unit_id')->references('id')->on('units')->onDelete('cascade');
       $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
