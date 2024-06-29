@@ -64,7 +64,7 @@
       </tr>
     </thead>
     <tbody>
-      @foreach ($areaProducts as $areaProduct)
+      @forelse ($areaProducts as $areaProduct)
         <tr class="hover:bg-gray-100">
           <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $areaProduct->id }}</td>
           <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
@@ -84,7 +84,13 @@
               wire:click="delete({{ $areaProduct->id }})"><i class="fas fa-trash"></i></button>
           </td>
         </tr>
-      @endforeach
+      @empty
+        <tr>
+          <td colspan="6" class="border-b px-4 py-2 text-center">
+            <p class="text-sm text-gray-500">No se registraron aún datos</p>
+          </td>
+        </tr>
+      @endforelse
     </tbody>
   </table>
   <div class="mt-4">

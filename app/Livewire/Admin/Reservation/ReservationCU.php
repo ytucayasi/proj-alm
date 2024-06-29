@@ -91,6 +91,7 @@ class ReservationCU extends Component
       $this->alert('success', 'Se creó la empresa');
       $this->resetValidation();
       $this->companySearch = $company->name;
+      $this->form->company_name = $company->name;
       $this->closeModal($this->modalCreateCompany);
     } catch (\Exception $e) {
       $this->alert('error', $e->getMessage());
@@ -160,6 +161,8 @@ class ReservationCU extends Component
   {
     $products = Product::where('state', 1)
       ->where('name', 'like', '%' . $this->form->searchP . '%')
+      ->where('product_type', 1)
+      ->whereHas('variations') // Filtrar productos que tienen variaciones
       ->take(10)
       ->get();
     $filteredSelectedProducts = $this->filterAndPaginate($this->form->selectedProducts ?? collect());

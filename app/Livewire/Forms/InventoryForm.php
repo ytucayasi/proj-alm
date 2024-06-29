@@ -21,20 +21,25 @@ class InventoryForm extends Form
   public $unit_price = 0.0;
   public $unit_id = null;
   public $description = '';
-
+  public $type = 1;
   const MOVEMENT_TYPE_ENTRY = 1;
   const MOVEMENT_TYPE_EXIT = 2;
-
   public function rules()
   {
-    return [
+    $rules = [
       'product_id' => 'required|integer|exists:products,id',
       'unit_id' => 'required|integer|exists:units,id',
+      'type' => 'required|integer',
       'movement_type' => ['required', 'integer', Rule::in([self::MOVEMENT_TYPE_ENTRY, self::MOVEMENT_TYPE_EXIT])],
       'quantity' => 'required|numeric|min:0.01',
-      'unit_price' => 'required|numeric|min:0.01',
       'description' => 'nullable|string',
     ];
+    if ($this->type == 1 && $this->movement_type == 1) {
+      $rules['unit_price'] = 'required|numeric|min:0.01';
+    } else {
+      $rules['unit_price'] = 'nullable';
+    }
+    return $rules;
   }
   public function messages()
   {
@@ -68,6 +73,7 @@ class InventoryForm extends Form
     $this->unit_price = $inventory->unit_price;
     $this->unit_id = $inventory->unit_id;
     $this->description = $inventory->description;
+    $this->type = $inventory->type;
   }
 
   public function store()
@@ -75,8 +81,10 @@ class InventoryForm extends Form
     /* Validamos si se ingresaron todos los valores en el formulario */
     $this->validate();
 
-    /* Validamos el preccio */
-    $this->validateUnitPrice();
+    if ($this->type == 1) {
+      /* Validamos el preccio */
+      $this->validateUnitPrice();
+    }
 
     /* Crea o Encuentra un registro existente de variación */
     $variation = $this->getOrCreateVariation();
@@ -101,8 +109,10 @@ class InventoryForm extends Form
     /* Validamos si se ingresaron todos los valores en el formulario */
     $this->validate();
 
-    /* Validamos el preccio */
-    $this->validateUnitPrice();
+    if ($this->type == 1) {
+      /* Validamos el preccio */
+      $this->validateUnitPrice();
+    }
 
     /* guardamos en una variable la cantidad inicial del inventario */
     $originalQuantity = $this->inventory->quantity;

@@ -48,9 +48,9 @@
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
               Precio</th>
-            <th
+            {{-- <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
-              Acciones</th>
+              Acciones</th> --}}
           </tr>
         </thead>
         <tbody wire:poll>
@@ -69,12 +69,15 @@
               </td>
               <td
                 class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900 dark:border-gray-700 dark:text-gray-300">
-                S/. {{ $variation->price_base }}</td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center">
+                <span class="font-bold">
+                  {{ $variation->price_base == 0 ? '-' : 'S/.' . $variation->price_base }}
+                </span>
+              </td>
+              {{-- <td class="border-b border-gray-200 px-5 py-2 text-center">
                 <button
                   class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
                   wire:click="editVariation({{ $variation->id }})"><i class="fas fa-edit"></i></button>
-              </td>
+              </td> --}}
             </tr>
           @endforeach
         </tbody>
@@ -128,7 +131,7 @@
                 {{ $inventory->quantity }}</td>
               <td
                 class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900 dark:border-gray-700 dark:text-gray-300">
-                @if ($inventory->type_action != 2 && $inventory->movement_type == '2')
+                @if (($inventory->type_action != 2 && $inventory->movement_type == '2') || $inventory->type == 2)
                   -
                 @else
                   S/. {{ $inventory->unit_price }}

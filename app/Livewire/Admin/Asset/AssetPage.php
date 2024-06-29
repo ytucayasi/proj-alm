@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin\Inventory;
+namespace App\Livewire\Admin\Asset;
 
 use App\Livewire\Forms\InventoryForm;
 use App\Models\Inventory;
@@ -12,18 +12,16 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class InventoryPage extends Component
+class AssetPage extends Component
 {
   use WithPagination;
   use LivewireAlert;
-
   public $search = '';
   public $perPage;
   public InventoryForm $form;
   public $viewMode;
   public $modalCreateOrUpdate = 'modal-create-or-update';
   public $productSearch = '';
-
   public function mount()
   {
     $this->perPage = Cache::get('inventory_per_page', 10);
@@ -57,7 +55,7 @@ class InventoryPage extends Component
   }
   public function searchProducts()
   {
-    return Product::where('name', 'like', '%' . $this->productSearch . '%')->where("product_type", 1)->take(5)->get();
+    return Product::where('name', 'like', '%' . $this->productSearch . '%')->where("product_type", 2)->take(5)->get();
   }
   public function openModal($modalName)
   {
@@ -91,7 +89,7 @@ class InventoryPage extends Component
     try {
       $this->form->setInventory(Inventory::findOrFail($data['id']));
       $this->form->delete();
-      $this->alert('success', 'Inventario eliminado con éxito');
+      $this->alert('success', 'Activo eliminado con éxito');
     } catch (\Exception $e) {
       $this->alert('error', $e->getMessage());
     }
@@ -103,6 +101,7 @@ class InventoryPage extends Component
       if ($this->form->inventory) {
         $this->form->update();
       } else {
+        $this->form->type = 2;
         $this->form->store();
       }
       $this->alert('success', 'Se creó/actualizó con éxito');
@@ -132,7 +131,6 @@ class InventoryPage extends Component
   {
     $this->redirectRoute('reservations.form', ['reservationId' => $reservationId], navigate: true);
   }
-
   public function render()
   {
     $inventories = Inventory::query()
@@ -141,11 +139,11 @@ class InventoryPage extends Component
           ->where('products.name', 'like', '%' . $this->search . '%')
           ->select('inventories.*');
       })
-      ->where("type", 1)
+      ->where("type", 2)
       ->orderBy('id', 'desc');
-    return view('livewire.admin.inventory.inventory-page', [
+    return view('livewire.admin.asset.asset-page', [
       'inventories' => $inventories->paginate($this->perPage),
-      'products' => Product::where("state", 1)->where("product_type", 1)->get(),
+      'products' => Product::where("state", 1)->where("product_type", 2)->get(),
       'units' => Unit::where("state", 1)->get(),
       'searchResults' => $this->searchProducts(),
     ]);

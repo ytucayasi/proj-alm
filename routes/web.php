@@ -2,6 +2,7 @@
 
 use App\Livewire\Admin\Area\AreaPage;
 use App\Livewire\Admin\Area\AreaProductPage;
+use App\Livewire\Admin\Asset\AssetPage;
 use App\Livewire\Admin\Category\CategoryPage;
 use App\Livewire\Admin\Category\CategoryShow;
 use App\Livewire\Admin\Inventory\InventoryPage;
@@ -45,6 +46,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
   Route::prefix('inventories')->name('inventories.')->group(function () {
     Route::get('/', InventoryPage::class)->name('index');
     Route::get('/{inventoryId}', InventoryPage::class)->name('show');
+  });
+  Route::prefix('assets')->name('assets.')->group(function () {
+    Route::get('/', AssetPage::class)->name('index');
+    Route::get('/{assetId}', AssetPage::class)->name('show');
+  });
+  Route::prefix('companies')->name('companies.')->group(function () {
+    Route::get('/', AssetPage::class)->name('index');
+    Route::get('/{companyId}', AssetPage::class)->name('show');
   });
   Route::prefix('reservations')->name('reservations.')->group(function () {
     Route::get('/', ReservationPage::class)->name('index');

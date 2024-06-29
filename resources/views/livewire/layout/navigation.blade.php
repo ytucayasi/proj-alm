@@ -39,6 +39,11 @@ new class extends Component {
           </x-nav-link>
         </div>
         <div class="hidden space-x-8 sm:-my-px sm:flex">
+          <x-nav-link :href="route('assets.index')" :active="request()->routeIs('assets.*')" wire:navigate>
+            {{ __('Activos') }}
+          </x-nav-link>
+        </div>
+        <div class="hidden space-x-8 sm:-my-px sm:flex">
           <x-nav-link :href="route('reservations.index')" :active="request()->routeIs('reservations.*')" wire:navigate>
             {{ __('Reservas') }}
           </x-nav-link>
@@ -67,6 +72,11 @@ new class extends Component {
                   'href' => route('units.index'),
                   'text' => 'Unidades',
                   'activeRoutes' => ['units.index', 'units.show'],
+              ],
+              [
+                  'href' => route('companies.index'),
+                  'text' => 'Empresas',
+                  'activeRoutes' => ['companies.index'],
               ],
               [
                   'href' => route('reports.index'),

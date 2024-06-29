@@ -19,6 +19,7 @@ class ProductForm extends Form
   public $description = '';
   public $category_id = null;
   public $state = 1;
+  public $product_type = 1;
   public $price_base = 0;
   public $variationId = null;
   public $variation = null;
@@ -35,6 +36,7 @@ class ProductForm extends Form
       'description' => 'nullable|string',
       'category_id' => 'required|integer|exists:categories,id',
       'state' => 'required|integer|in:1,2',
+      'product_type' => 'required|integer|in:1,2',
     ];
   }
 
@@ -46,6 +48,7 @@ class ProductForm extends Form
     $this->description = $product->description;
     $this->category_id = $product->category_id;
     $this->state = $product->state;
+    $this->product_type = $product->product_type;
   }
   public function setVariation($variationId)
   {

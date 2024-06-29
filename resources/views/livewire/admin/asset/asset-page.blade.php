@@ -1,7 +1,8 @@
+<!-- resources/views/livewire/admin/inventory/inventory-page.blade.php -->
 <div>
   {{-- Encabezado --}}
   <x-slot name="header">
-    {{ __('Productos') }}
+    {{ __('Activos') }}
   </x-slot>
 
   {{-- Contenido --}}
@@ -38,7 +39,7 @@
       <div class="flex items-center justify-center gap-2">
         <button
           class="flex items-center gap-2 rounded-md bg-green-500 px-4 py-2 text-white shadow-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300"
-          wire:click.prevent="openModal('{{ $modalCreateOrUpdate }}')">
+          wire:click.prevent="openModal('{{ $modalCreateOrUpdate }}')" id="createButton">
           <i class="fas fa-plus-square fa-lg flex h-7 w-5 items-center justify-center"></i> Crear
         </button>
         <button
@@ -61,62 +62,65 @@
               ID</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Nombre</th>
+              Producto</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Categoría</th>
+              Cantidad</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Estado</th>
+              Precio Unitario</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Tipo</th>
+              Unidad</th>
+            <th
+              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+              Fecha de Creación</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
               Acciones</th>
           </tr>
         </thead>
         <tbody>
-          @forelse ($products as $product)
-            <tr>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $product->id }}</td>
+          @forelse ($inventories as $inventory)
+            <tr class="{{ $inventory->movement_type == '1' ? 'bg-green-200' : 'bg-red-200' }}">
+              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $inventory->id }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $product->name }}
+                <a class="text-blue-500 underline transition duration-300 ease-in-out hover:text-blue-700 hover:no-underline"
+                  href="/products/{{ $inventory->product->id }}"
+                  wire:navigate>{{ $inventory->product ? $inventory->product->name : 'Sin Asignar' }}</a>
               </td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $product->category ? $product->category->name : 'Sin Asignar' }}</td>
+                {{ $inventory->quantity }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                <span
-                  class="{{ $product->state == 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
-                  {{ $product->state == 1 ? 'Disponible' : 'Agotado' }}
+                {{ $inventory->movement_type == 2 && $inventory->type_action != 2 || $inventory->type == 2 ? '-' : 'S/. ' . $inventory->unit_price }}
+              </td>
+              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                {{ $inventory->unit->name }}
+                <span class="font-bold">
+                  ({{ $inventory->unit->abbreviation }})
                 </span>
               </td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                <span
-                  class="{{ $product->product_type == 1 ? 'bg-cyan-100 text-cyan-800' : 'bg-orange-100 text-orange-800' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
-                  {{ $product->product_type == 1 ? 'Inventario' : 'Activo' }}
-                </span>
-              </td>
+                {{ $inventory->created_at }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center">
-                <button
-                  class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
-                  wire:click="edit({{ $product->id }})"><i class="fas fa-edit"></i></button>
-                @if ($product->inventories->isEmpty() && $product->variations->isEmpty())
+                @if ($inventory->type_action != 2)
+                  <button
+                    class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                    wire:click="edit({{ $inventory->id }})"><i class="fas fa-edit"></i></button>
                   <button
                     class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
-                    wire:click="alertDelete({{ $product->id }})"><i class="fas fa-trash"></i></button>
+                    wire:click="alertDelete({{ $inventory->id }})"><i class="fas fa-trash"></i></button>
+                @else
+                  <button
+                    class="rounded bg-orange-400 px-2 py-1 font-bold text-white hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-300"
+                    wire:click="reservation({{ $inventory->reservation_id }})"><i
+                      class="fas fa-external-link-alt"></i></button>
                 @endif
-                <button
-                  class="rounded bg-cyan-400 px-2 py-1 font-bold text-white hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-300"
-                  wire:click="view({{ $product->id }})"><i class="fas fa-eye"></i></button>
-                {{--                 <button
-                  class="rounded bg-orange-400 px-2 py-1 font-bold text-white hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-300"
-                  wire:click="addInventory({{ $product->id }})"><i class="fas fa-cart-plus"></i></button> --}}
               </td>
             </tr>
           @empty
             <tr>
-              <td colspan="5" class="border-b px-4 py-2 text-center">
+              <td colspan="7" class="border-b px-4 py-2 text-center">
                 <p class="text-sm text-gray-500">No se registraron aún datos</p>
               </td>
             </tr>
@@ -125,38 +129,31 @@
       </table>
     @else
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        @forelse ($products as $product)
+        @forelse ($inventories as $inventory)
           <div class="overflow-hidden rounded-lg bg-white shadow-lg">
             <div class="p-6">
               <h3 class="mb-2 text-lg font-semibold text-gray-900">
-                {{ $product->name }}
-              </h3>
-              <span class="block text-sm text-gray-600">
-                Categoría: {{ $product->category ? $product->category->name : 'Sin Asignar' }}
-              </span>
+                {{ $inventory->product ? $inventory->product->name : 'Sin Asignar' }}</h3>
+              <span class="block text-sm text-gray-600">Cantidad: {{ $inventory->quantity }}</span>
               <p class="block text-sm text-gray-600">
-                Estado:
+                Movimiento:
                 <span
-                  class="{{ $product->state == 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
-                  {{ $product->state == 1 ? 'Disponible' : 'Agotado' }}
+                  class="{{ $inventory->movement_type == 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
+                  {{ $inventory->movement_type == 1 ? 'Entrada' : 'Salida' }}
                 </span>
               </p>
-              <div class="mt-2 text-right">
-                <button
-                  class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
-                  wire:click="edit({{ $product->id }})"><i class="fas fa-edit"></i></button>
-                @if ($product->inventories->isEmpty() && $product->variations->isEmpty())
+              <span class="block text-sm text-gray-600">Precio Unitario: {{ $inventory->unit_price }}</span>
+              <span class="block text-sm text-gray-600">Unidad: {{ $inventory->unit->abbreviation }}</span>
+              @if ($inventory->type_action != 2)
+                <div class="mt-2 text-right">
+                  <button
+                    class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                    wire:click="edit({{ $inventory->id }})"><i class="fas fa-edit"></i></button>
                   <button
                     class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
-                    wire:click="alertDelete({{ $product->id }})"><i class="fas fa-trash"></i></button>
-                @endif
-                <button
-                  class="rounded bg-cyan-400 px-2 py-1 font-bold text-white hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-300"
-                  wire:click="view({{ $product->id }})"><i class="fas fa-eye"></i></button>
-                {{--                 <button
-                  class="rounded bg-orange-400 px-2 py-1 font-bold text-white hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-300"
-                  wire:click="addInventory({{ $product->id }})"><i class="fas fa-cart-plus"></i></button> --}}
-              </div>
+                    wire:click="alertDelete({{ $inventory->id }})"><i class="fas fa-trash"></i></button>
+                </div>
+              @endif
             </div>
           </div>
         @empty
@@ -169,15 +166,72 @@
       </div>
     @endif
     <div class="mt-4">
-      {{ $products->links() }}
+      {{ $inventories->links() }}
     </div>
     <x-modal maxWidth="lg" name="{{ $modalCreateOrUpdate }}" :show="false" focusable>
       <form wire:submit.prevent="save" class="p-6">
-        <div class="text-lg font-medium text-gray-900">{{ $form->id ? 'Editar Producto' : 'Crear Producto' }}</div>
+        <div class="text-lg font-medium text-gray-900">{{ $form->id ? 'Editar Activo' : 'Crear Activo' }}</div>
+        @if (!$form->id)
+          <div class="mt-4" x-data="{ open: false }">
+            <label class="block text-sm font-medium text-gray-700">Producto</label>
+            <input type="text" wire:model.live="productSearch" @focus="open = true"
+              @blur="setTimeout(() => open = false, 200)" class="form-input mt-1 block w-full rounded-md shadow-sm"
+              placeholder="Buscar producto...">
+            @if ($productSearch)
+              <ul class="mt-1 max-h-60 overflow-auto rounded-md border border-gray-300 bg-white shadow-lg"
+                x-show="open">
+                @forelse ($searchResults as $product)
+                  <li wire:click="selectProduct({{ $product->id }}, '{{ $product->name }}')"
+                    class="cursor-pointer px-4 py-2 hover:bg-gray-200">
+                    {{ $product->name }}
+                  </li>
+                @empty
+                  <li class="px-4 py-2 text-gray-500">No se encontraron productos</li>
+                @endforelse
+              </ul>
+            @endif
+            @error('form.product_id')
+              <span class="text-sm text-red-500">{{ $message }}</span>
+            @enderror
+          </div>
+        @endif
         <div class="mt-4">
-          <label class="block text-sm font-medium text-gray-700">Nombre</label>
-          <input type="text" wire:model="form.name" class="form-input mt-1 block w-full rounded-md shadow-sm">
-          @error('form.name')
+          <label class="block text-sm font-medium text-gray-700">Cantidad</label>
+          <input type="number" step="0.01" wire:model="form.quantity"
+            class="form-input mt-1 block w-full rounded-md shadow-sm">
+          @error('form.quantity')
+            <span class="text-sm text-red-500">{{ $message }}</span>
+          @enderror
+        </div>
+        <div class="mt-4">
+          <label class="block text-sm font-medium text-gray-700">Tipo de Movimiento</label>
+          <select wire:model.live="form.movement_type" class="form-select mt-1 block w-full rounded-md shadow-sm">
+            <option value="1">Entrada</option>
+            <option value="2">Salida</option>
+          </select>
+          @error('form.movement_type')
+            <span class="text-sm text-red-500">{{ $message }}</span>
+          @enderror
+        </div>
+{{--         @if ($form->movement_type == 1)
+          <div class="mt-4">
+            <label class="block text-sm font-medium text-gray-700">Precio Unitario</label>
+            <input type="number" step="0.01" wire:model="form.unit_price"
+              class="form-input mt-1 block w-full rounded-md shadow-sm">
+            @error('form.unit_price')
+              <span class="text-sm text-red-500">{{ $message }}</span>
+            @enderror
+          </div>
+        @endif --}}
+        <div class="mt-4">
+          <label class="block text-sm font-medium text-gray-700">Unidad</label>
+          <select wire:model="form.unit_id" class="form-select mt-1 block w-full rounded-md shadow-sm">
+            <option>Seleccionar Unidad de Medida</option>
+            @foreach ($units as $unit)
+              <option value="{{ $unit->id }}">{{ $unit->name }} ({{ $unit->abbreviation }})</option>
+            @endforeach
+          </select>
+          @error('form.unit_id')
             <span class="text-sm text-red-500">{{ $message }}</span>
           @enderror
         </div>
@@ -185,42 +239,6 @@
           <label class="block text-sm font-medium text-gray-700">Descripción</label>
           <textarea wire:model="form.description" class="form-input mt-1 block w-full rounded-md shadow-sm"></textarea>
           @error('form.description')
-            <span class="text-sm text-red-500">{{ $message }}</span>
-          @enderror
-        </div>
-        <div class="mt-4">
-          <label class="block text-sm font-medium text-gray-700">Categoría</label>
-          <select wire:model="form.category_id" class="form-select mt-1 block w-full rounded-md shadow-sm">
-            <option>Seleccionar Categoría</option>
-            @foreach ($categories as $category)
-              <option value="{{ $category->id }}">{{ $category->name }}</option>
-            @endforeach
-          </select>
-          @error('form.category_id')
-            <span class="text-sm text-red-500">{{ $message }}</span>
-          @enderror
-        </div>
-        @if ($form->id)
-          @if ($form->product->inventories->isEmpty())
-            <div class="mt-4">
-              <label class="block text-sm font-medium text-gray-700">Tipo</label>
-              <select wire:model="form.product_type" class="form-select mt-1 block w-full rounded-md shadow-sm">
-                <option value="1">Inventario</option>
-                <option value="2">Activo</option>
-              </select>
-              @error('form.product_type')
-                <span class="text-sm text-red-500">{{ $message }}</span>
-              @enderror
-            </div>
-          @endif
-        @endif
-        <div class="mt-4">
-          <label class="block text-sm font-medium text-gray-700">Estado</label>
-          <select wire:model="form.state" class="form-select mt-1 block w-full rounded-md shadow-sm">
-            <option value="1">Disponible</option>
-            <option value="2">Agotado</option>
-          </select>
-          @error('form.state')
             <span class="text-sm text-red-500">{{ $message }}</span>
           @enderror
         </div>
@@ -236,3 +254,13 @@
     </x-modal>
   </div>
 </div>
+@script
+  <script>
+    document.addEventListener('keydown', function(event) {
+      if (event.ctrlKey && event.key === '4') {
+        event.preventDefault();
+        document.getElementById('createButton').click();
+      }
+    });
+  </script>
+@endscript

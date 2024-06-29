@@ -15,4 +15,8 @@ class Unit extends Model
   {
     return $this->hasMany(Variation::class);
   }
+  public function inventories()
+  {
+    return $this->hasMany(Inventory::class);
+  }
 }

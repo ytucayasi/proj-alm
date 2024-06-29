@@ -71,7 +71,7 @@
           </tr>
         </thead>
         <tbody>
-          @foreach ($categories as $category)
+          @forelse ($categories as $category)
             <tr>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $category->id }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $category->name }}
@@ -94,12 +94,18 @@
                   wire:click="view({{ $category->id }})"><i class="fas fa-eye"></i></button> --}}
               </td>
             </tr>
-          @endforeach
+          @empty
+            <tr>
+              <td colspan="4" class="border-b px-4 py-2 text-center">
+                <p class="text-sm text-gray-500">No se registraron aún datos</p>
+              </td>
+            </tr>
+          @endforelse
         </tbody>
       </table>
     @else
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        @foreach ($categories as $category)
+        @forelse ($categories as $category)
           <div class="overflow-hidden rounded-lg bg-white shadow-lg">
             <div class="p-6">
               <h3 class="mb-2 text-lg font-semibold text-gray-900">{{ $category->name }}</h3>
@@ -123,7 +129,13 @@
               </div>
             </div>
           </div>
-        @endforeach
+        @empty
+          <div class="col-span-1 sm:col-span-2 lg:col-span-3">
+            <div class="border-b px-4 py-2 text-center">
+              <p class="text-sm text-gray-500">No se registraron aún datos</p>
+            </div>
+          </div>
+        @endforelse
       </div>
     @endif
     <div class="mt-4">
