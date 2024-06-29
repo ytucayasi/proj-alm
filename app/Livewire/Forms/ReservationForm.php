@@ -188,24 +188,28 @@ class ReservationForm extends Form
 
   public function editProduct($variationId)
   {
-    $this->selectedProducts = $this->selectedProducts->map(function ($product) use ($variationId) {
-      if ($product['variation_id'] === $variationId) {
-        if (!$product['price_edit'] && !$product['quantity_edit']) {
-          if ($product['quantity'] <= 0) {
-            return null;
-          } elseif ($product['quantity'] > $product['initial_stock']) {
-            $product['quantity'] = $product['initial_stock'];
+    try {
+      $this->selectedProducts = $this->selectedProducts->map(function ($product) use ($variationId) {
+        if ($product['variation_id'] === $variationId) {
+          if (!$product['quantity_edit']) {
+            if ($product['quantity'] <= 0) {
+              $product['quantity'] = 1;
+            } elseif ($product['quantity'] > $product['initial_stock']) {
+              $product['quantity'] = $product['initial_stock'];
+            }
+            if ($product['variation_price'] <= 0) {
+              $product['variation_price'] = 1;
+            }
           }
-          if ($product['variation_price'] <= 0) {
-            $product['variation_price'] = 1;
-          }
+          /* $product['price_edit'] = !$product['price_edit']; */
+          $product['quantity_edit'] = !$product['quantity_edit'];
         }
-        $product['price_edit'] = !$product['price_edit'];
-        $product['quantity_edit'] = !$product['quantity_edit'];
-      }
-      $product['variation_stock'] = $product['initial_stock'] - $product['quantity'];
-      return $product;
-    })->filter();
+        $product['variation_stock'] = $product['initial_stock'] - $product['quantity'];
+        return $product;
+      })->filter();
+    } catch (\Throwable $th) {
+      throw new Exception('Realiza Operaciones Válidas');
+    }
     $this->reindexProducts();
     $this->calculateTotals();
   }

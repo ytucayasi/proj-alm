@@ -98,9 +98,14 @@ class ReservationCU extends Component
   }
   public function selectVariation($variationId, $action)
   {
-    $this->form->setVariation($variationId, $action);
-    if ($action == "delete") {
-      $this->resetPage();
+    try {
+      $this->form->setVariation($variationId, $action);
+      if ($action == "delete") {
+        $this->resetPage();
+      }
+    } catch (\Exception $e) {
+      \Log::error('Error de edición de tabla: ' . $e->getMessage());
+      $this->alert('error', $e->getMessage());
     }
   }
   public function incrementQuantity($variationId)

@@ -276,12 +276,12 @@
                   <td class="border-b px-4 py-2 text-center">{{ $product['initial_stock'] }}</td>
                   <td class="border-b px-4 py-2 text-center">{{ $product['unit_abbreviation'] }}</td>
                   <td class="border-b px-4 py-2 text-center">
-                    {{-- <button
+                    <button
                       class="{{ $product['quantity_edit'] && $product['price_edit'] ? 'bg-yellow-400 hover:bg-yellow-500 focus:ring-yellow-300' : 'bg-green-400 hover:bg-green-500 focus:ring-green-300' }} h-7 w-7 rounded px-2 py-1 font-bold text-white focus:outline-none focus:ring-2"
                       wire:click="selectVariation({{ $product['variation_id'] }}, 'edit')">
                       <i
                         class="fas {{ $product['quantity_edit'] && $product['price_edit'] ? 'fa-edit' : 'fa-check' }}"></i>
-                    </button> --}}
+                    </button>
                     <button
                       class="h-7 w-7 rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
                       wire:click="selectVariation({{ $product['variation_id'] }}, 'delete')">
