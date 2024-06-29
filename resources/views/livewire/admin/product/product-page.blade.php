@@ -200,19 +200,18 @@
             <span class="text-sm text-red-500">{{ $message }}</span>
           @enderror
         </div>
-        @if ($form->id)
-          @if ($form->product->inventories->isEmpty())
-            <div class="mt-4">
-              <label class="block text-sm font-medium text-gray-700">Tipo</label>
-              <select wire:model="form.product_type" class="form-select mt-1 block w-full rounded-md shadow-sm">
-                <option value="1">Inventario</option>
-                <option value="2">Activo</option>
-              </select>
-              @error('form.product_type')
-                <span class="text-sm text-red-500">{{ $message }}</span>
-              @enderror
-            </div>
-          @endif
+        @if ($form->id && !$form->product->inventories->isEmpty())
+        @else
+          <div class="mt-4">
+            <label class="block text-sm font-medium text-gray-700">Tipo</label>
+            <select wire:model="form.product_type" class="form-select mt-1 block w-full rounded-md shadow-sm">
+              <option value="1">Inventario</option>
+              <option value="2">Activo</option>
+            </select>
+            @error('form.product_type')
+              <span class="text-sm text-red-500">{{ $message }}</span>
+            @enderror
+          </div>
         @endif
         <div class="mt-4">
           <label class="block text-sm font-medium text-gray-700">Estado</label>

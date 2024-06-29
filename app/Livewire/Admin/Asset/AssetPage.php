@@ -24,8 +24,8 @@ class AssetPage extends Component
   public $productSearch = '';
   public function mount()
   {
-    $this->perPage = Cache::get('inventory_per_page', 10);
-    $this->viewMode = Cache::get('inventory_view_mode', 'table');
+    $this->perPage = Cache::get('asset_per_page', 10);
+    $this->viewMode = Cache::get('asset_view_mode', 'table');
   }
 
   public function updating($name, $value)
@@ -37,13 +37,13 @@ class AssetPage extends Component
 
   public function updatingPerPage($value)
   {
-    Cache::put('inventory_per_page', $value);
+    Cache::put('asset_per_page', $value);
     $this->resetPage();
   }
 
   public function updatedViewMode($value)
   {
-    Cache::put('inventory_view_mode', $value);
+    Cache::put('asset_view_mode', $value);
     $this->resetPage();
   }
 
