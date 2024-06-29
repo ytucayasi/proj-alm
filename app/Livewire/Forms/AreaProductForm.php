@@ -85,6 +85,7 @@ class AreaProductForm extends Form
     $this->area_product = AreaProduct::findOrFail($areaProductId);
     $this->id = $this->area_product->id;
     $this->product_id = $this->area_product->product_id;
+    $this->unit_id = $this->area_product->unit_id;
     $this->quantity = $this->area_product->quantity;
     $this->updatedUnitId($this->area_product->unit_id);
   }
