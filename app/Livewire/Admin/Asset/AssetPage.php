@@ -55,7 +55,11 @@ class AssetPage extends Component
   }
   public function searchProducts()
   {
-    return Product::where('name', 'like', '%' . $this->productSearch . '%')->where("product_type", 2)->take(5)->get();
+    return Product::where('name', 'like', '%' . $this->productSearch . '%')
+      ->where("product_type", 2)
+      ->orderBy('name', 'asc')
+      ->take(5)
+      ->get();
   }
   public function openModal($modalName)
   {

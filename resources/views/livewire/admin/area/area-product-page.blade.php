@@ -100,14 +100,23 @@
     <form wire:submit.prevent="save" class="p-6">
       <div class="text-lg font-medium text-gray-900">{{ $form->id ? 'Editar Producto' : 'Agregar Producto' }}</div>
       @if (!$form->id)
-        <div class="mt-4">
+        <div class="mt-4" x-data="{ open: false }">
           <label class="block text-sm font-medium text-gray-700">Producto</label>
-          <select wire:model.live="form.product_id" class="form-select mt-1 block w-full rounded-md shadow-sm">
-            <option value="">Seleccione un producto</option>
-            @foreach ($products as $product)
-              <option value="{{ $product->id }}">{{ $product->name }}</option>
-            @endforeach
-          </select>
+          <input type="text" wire:model.live="productSearch" @focus="open = true"
+            @blur="setTimeout(() => open = false, 200)" class="form-input mt-1 block w-full rounded-md shadow-sm"
+            placeholder="Buscar producto...">
+          @if ($productSearch)
+            <ul class="mt-1 max-h-60 overflow-auto rounded-md border border-gray-300 bg-white shadow-lg" x-show="open">
+              @forelse ($searchResults as $product)
+                <li wire:click="selectProduct({{ $product->id }}, '{{ $product->name }}')"
+                  class="cursor-pointer px-4 py-2 hover:bg-gray-200">
+                  {{ $product->name }}
+                </li>
+              @empty
+                <li class="px-4 py-2 text-gray-500">No se encontraron productos</li>
+              @endforelse
+            </ul>
+          @endif
           @error('form.product_id')
             <span class="text-sm text-red-500">{{ $message }}</span>
           @enderror

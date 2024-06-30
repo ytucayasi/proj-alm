@@ -19,6 +19,7 @@ class AreaProductPage extends Component
   public $perPage = 10;
   public $modalCreateOrUpdate = 'modal-create-or-update';
   public AreaProductForm $form;
+  public $productSearch = '';
   public function mount($areaId)
   {
     $this->form->setArea($areaId);
@@ -32,11 +33,29 @@ class AreaProductPage extends Component
       $this->form->price = 0;
     }
   }
+  public function searchProducts()
+  {
+    return Product::where('name', 'like', '%' . $this->productSearch . '%')
+      ->where("product_type", 1)
+      ->whereHas('variations', function ($query) {
+        $query->where('quantity_base', '>', 0);
+      })
+      ->orderBy('name', 'asc')
+      ->take(5)
+      ->get();
+  }
+  public function selectProduct($productId, $productName)
+  {
+    $this->form->product_id = $productId;
+    $this->form->updatedProductId($productId);
+    $this->productSearch = $productName;
+    /* $this->products = []; */
+  }
   public function updated($name, $value)
   {
-    if ($name == "form.product_id") {
+    /* if ($name == "form.product_id") {
       $this->form->updatedProductId($value);
-    }
+    } */
     if ($name == "form.unit_id") {
       $this->form->updatedUnitId($value);
     }
@@ -93,6 +112,7 @@ class AreaProductPage extends Component
       'areaProducts' => $areaProducts,
       'products' => $products,
       'units' => $this->form->units,
+      'searchResults' => $this->searchProducts(),
     ]);
   }
 }
