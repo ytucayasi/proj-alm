@@ -25,12 +25,15 @@ class AreaProductPage extends Component
     $this->form->setArea($areaId);
     $this->form->init();
   }
-  public function updating($property, $value)
+  public function updating($name, $value)
   {
-    if ($property == "form.product_id") {
+    if ($name == "form.product_id") { //cabie hace rato
       $this->form->units = [];
       $this->form->unit_id = null;
       $this->form->price = 0;
+    }
+    if ($name == "search") {
+      $this->setPage(1);
     }
   }
   public function searchProducts()
@@ -53,9 +56,9 @@ class AreaProductPage extends Component
   }
   public function updated($name, $value)
   {
-    /* if ($name == "form.product_id") {
+    if ($name == "productSearch") {
       $this->form->updatedProductId($value);
-    } */
+    }
     if ($name == "form.unit_id") {
       $this->form->updatedUnitId($value);
     }
