@@ -6,7 +6,8 @@
 
 /* Estilizar el scrollbar vertical */
 ::-webkit-scrollbar {
-  width: 8px; /* Ajusta el ancho del scrollbar vertical */
+  width: 7px; /* Ajusta el ancho del scrollbar vertical */
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
@@ -25,6 +26,7 @@
 /* Estilizar el scrollbar horizontal (opcional) */
 ::-webkit-scrollbar-horizontal {
   height: 5px; /* Ajusta la altura del scrollbar horizontal */
+  width: 1px;
 }
 
 ::-webkit-scrollbar-horizontal-track {
@@ -33,7 +35,7 @@
 
 ::-webkit-scrollbar-horizontal-thumb {
   background: #3730a3; /* Color del thumb del scrollbar horizontal */
-  border-radius: 10px; /* Redondear los bordes del thumb */
+  border-radius: 5px; /* Redondear los bordes del thumb */
 }
 
 ::-webkit-scrollbar-horizontal-thumb:hover {

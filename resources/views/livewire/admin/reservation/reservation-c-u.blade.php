@@ -40,8 +40,8 @@
     </div>
   </div>
   <div x-show="openAreas"
-    class="mb-4 flex justify-between rounded-lg bg-slate-100 p-4 shadow-lg transition-all duration-300">
-    <div class="flex space-x-4">
+    class="mb-4 flex justify-between rounded-lg bg-slate-100 shadow-lg transition-all duration-300">
+    <div class="flex space-x-4 overflow-y-auto px-4 py-2">
       @forelse ($areas as $area)
         <button wire:click="selectArea({{ $area->id }})"
           class="flex items-center rounded-lg px-4 py-2 text-sm font-medium uppercase text-slate-700 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300">
