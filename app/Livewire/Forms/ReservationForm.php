@@ -21,7 +21,7 @@ class ReservationForm extends Form
   public ?Reservation $reservation = null;
   #[Locked]
   public $id = null;
-  public $company_name = '';
+  public $company_name = 'NOT FOUND';
   public $description = '';
   public $status = 1;
   public $payment_status = 1;
@@ -38,6 +38,8 @@ class ReservationForm extends Form
   public $selectedProducts;
   public $uniqueIndex = 0;
   public $selectedAreas = [];
+  /*Aquí se guardan las empresas seleccionadas */
+  public $selectedCompanies = [];
   public $area = null;
   public $productsExceedingStock = [];
   public $searchS = "";
@@ -325,6 +327,8 @@ class ReservationForm extends Form
         'total_products'
       ]));
 
+      $this->id = $reservation->id;
+
       foreach ($this->selectedProducts as $product) {
         $variation = Variation::findOrFail($product['variation_id']);
 
@@ -454,6 +458,9 @@ class ReservationForm extends Form
         $variation->save();
       }
       DB::table('inventories')->where('type_action', 2)
+        ->where('reservation_id', $this->id)
+        ->delete();
+      DB::table('reservation_companies')
         ->where('reservation_id', $this->id)
         ->delete();
       $this->reservation->delete();

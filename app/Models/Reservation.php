@@ -17,6 +17,11 @@ class Reservation extends Model
     return $this->hasMany(Inventory::class);
   }
 
+  public function companies()
+  {
+    return $this->hasMany(ReservationCompany::class);
+  }
+
   protected $casts = [
     'order_date' => 'datetime',
     'execution_date' => 'datetime',

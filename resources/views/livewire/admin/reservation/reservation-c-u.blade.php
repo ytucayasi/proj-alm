@@ -91,30 +91,63 @@
               @endif
             </div>
           </div>
+          <div class="w-full p-2">
+            @foreach ($selectedCompanies as $index => $company)
+              <div class="mb-4 rounded-lg border bg-gray-50 p-4">
+                <div class="mb-2 flex items-center justify-between">
+                  <h3 class="text-sm font-bold">{{ $company['name'] }}</h3>
+                  <button wire:click.prevent="removeCompany({{ $index }})"
+                    class="text-red-500 hover:text-red-700">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+                <div class="flex flex-col md:flex-row md:space-x-4">
+                  <div class="mb-2 flex-1 md:mb-0">
+                    <label class="mb-1 block text-xs font-bold">Pack</label>
+                    <input type="number" wire:model.live="selectedCompanies.{{ $index }}.pack"
+                      class="w-full rounded border border-gray-300 p-2 text-xs">
+                  </div>
+                  <div class="mb-2 flex-1 md:mb-0">
+                    <label class="mb-1 block text-xs font-bold">Costo por Pack</label>
+                    <input type="number" wire:model.live="selectedCompanies.{{ $index }}.cost_pack"
+                      class="w-full rounded border border-gray-300 p-2 text-xs">
+                  </div>
+                  <div class="flex-1">
+                    <label class="mb-1 block text-xs font-bold">Total Pack</label>
+                    <input readonly disabled type="number" wire:model="selectedCompanies.{{ $index }}.total_pack"
+                      class="w-full cursor-not-allowed rounded border border-gray-300 p-2 text-xs opacity-70" readonly>
+                  </div>
+                </div>
+              </div>
+            @endforeach
+          </div>
           <div class="w-full p-2 md:w-1/2">
             <label class="mb-1 block font-bold">Pack</label>
-            <input wire:model.live="form.people_count" type="number" placeholder="Ingrese la cantidad de personas"
-              class="w-full rounded border border-gray-300 p-2 text-xs">
+            <input readonly disabled wire:model.live="form.people_count" type="number" placeholder="Ingrese la cantidad de personas"
+              class="w-full cursor-not-allowed rounded border border-gray-300 p-2 text-xs opacity-70">
           </div>
           <div class="w-full p-2 md:w-1/2">
             <label class="mb-1 block font-bold">Costo por Pack</label>
-            <input wire:model.live="form.cost_pack" type="number" placeholder="Ingrese la cantidad de personas"
-              class="w-full rounded border border-gray-300 p-2 text-xs">
+            <input readonly disabled wire:model.live="form.cost_pack" type="number" placeholder="Ingrese la cantidad de personas"
+              class="w-full cursor-not-allowed rounded border border-gray-300 p-2 text-xs opacity-70">
           </div>
           <div class="w-full p-2 md:w-1/2">
             <label class="mb-1 block font-bold">Total Pack</label>
             <input wire:model="form.total_pack" type="number" placeholder="Ingrese la cantidad de personas"
-              class="w-full cursor-not-allowed rounded border border-gray-300 p-2 text-xs opacity-70" readonly disabled>
+              class="w-full cursor-not-allowed rounded border border-gray-300 p-2 text-xs opacity-70" readonly
+              disabled>
           </div>
           <div class="w-full p-2 md:w-1/2">
             <label class="mb-1 block font-bold">Costo Total</label>
             <input wire:model="form.total_cost" type="number"
-              class="w-full cursor-not-allowed rounded border border-gray-300 p-2 text-xs opacity-70" readonly disabled>
+              class="w-full cursor-not-allowed rounded border border-gray-300 p-2 text-xs opacity-70" readonly
+              disabled>
           </div>
           <div class="w-full p-2 md:w-1/2">
             <label class="mb-1 block font-bold">Total de Productos</label>
             <input wire:model="form.total_products" type="number"
-              class="w-full cursor-not-allowed rounded border border-gray-300 p-2 text-xs opacity-70" readonly disabled>
+              class="w-full cursor-not-allowed rounded border border-gray-300 p-2 text-xs opacity-70" readonly
+              disabled>
           </div>
           <div class="w-full p-2 md:w-1/2">
             <label class="mb-1 block font-bold">Fecha del Pedido</label>
@@ -310,8 +343,7 @@
       <div class="text-lg font-medium text-gray-900">Crear Empresa</div>
       <div class="mt-4">
         <label class="block text-sm font-medium text-gray-700">Empresa</label>
-        <input type="text" wire:model="name"
-          class="form-input mt-1 block w-full rounded-md shadow-sm">
+        <input type="text" wire:model="name" class="form-input mt-1 block w-full rounded-md shadow-sm">
         @error('name')
           <span class="text-sm text-red-500">{{ $message }}</span>
         @enderror

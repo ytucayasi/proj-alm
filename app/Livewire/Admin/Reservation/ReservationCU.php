@@ -6,9 +6,11 @@ use App\Livewire\Forms\ReservationForm;
 use App\Models\Area;
 use App\Models\Company;
 use App\Models\Product;
+use App\Models\ReservationCompany;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\DB;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -22,6 +24,7 @@ class ReservationCU extends Component
   public $modalCreateCompany = 'modal-create-company';
   public $name = ""; // El nombre de la compania
   public $ruc = "NAN";
+  public $selectedCompanies = [];
   public function mount($reservationId = null)
   {
     $this->form->init($reservationId);
@@ -29,7 +32,16 @@ class ReservationCU extends Component
     if ($reservationId) {
       try {
         $this->form->setReservation($reservationId);
-        $this->companySearch = $this->form->company_name;
+        /* $this->companySearch = $this->form->company_name; */
+        foreach ($this->form->reservation->companies as $company) {
+          $this->selectedCompanies[] = [
+            'id' => $company->company->id,
+            'name' => $company->company->name,
+            'pack' => $company->pack,
+            'cost_pack' => $company->cost_pack,
+            'total_pack' => $company->total_pack,
+          ];
+        }
       } catch (\Exception $e) {
         $this->alert('error', $e->getMessage());
       }
@@ -41,7 +53,6 @@ class ReservationCU extends Component
     $this->name = "";
     $this->dispatch('open-modal', $modalName);
   }
-
   public function closeModal($modalName)
   {
     $this->resetValidation();
@@ -54,8 +65,34 @@ class ReservationCU extends Component
   }
   public function selectCompany($companyId, $companyName)
   {
-    $this->form->company_name = $companyName;
-    $this->companySearch = $companyName;
+    /* $this->form->company_name = $companyName;
+    $this->companySearch = $companyName; */
+    if ($this->validateCompany($companyId)) {
+      return;
+    } else {
+      $this->selectedCompanies[] = [
+        'id' => $companyId,
+        'name' => $companyName,
+        'pack' => 0,
+        'cost_pack' => 0,
+        'total_pack' => 0,
+      ];
+      $this->companySearch = "";
+    }
+  }
+  public function validateCompany($companyId)
+  {
+    foreach ($this->selectedCompanies as $company) {
+      if ($company['id'] == $companyId) {
+        return true;
+      }
+    }
+    return false;
+  }
+  public function removeCompany($index)
+  {
+    array_splice($this->selectedCompanies, $index, 1);
+    $this->updateFormTotals();
   }
   public function showVariations($productId)
   {
@@ -69,7 +106,7 @@ class ReservationCU extends Component
   }
   public function updated($name, $value)
   {
-    if ($name == "form.cost_pack" || $name == "form.people_count") {
+    /* if ($name == "form.cost_pack" || $name == "form.people_count") {
       if ($value < 0) {
         $this->alert('error', 'Los valores no pueden ser negativos.');
         $this->form->total_pack = 0;  // Reiniciar a cero si el valor es negativo
@@ -80,7 +117,55 @@ class ReservationCU extends Component
         'people_count' => 'required|integer|min:1',
       ]);
       $this->form->total_pack = $this->form->cost_pack * $this->form->people_count;
+    } */
+
+    // Detectar cambios en los campos pack y cost_pack dentro de selectedCompanies
+    /* selectedCompanies.0.pack */
+    if (strpos($name, 'selectedCompanies.') === 0) {
+      $parts = explode('.', $name);
+      if (isset($parts[1]) && isset($parts[2])) {
+        $index = $parts[1];
+        $field = $parts[2];
+
+        if ($field === 'pack' || $field === 'cost_pack') {
+          $pack = $this->selectedCompanies[$index]['pack'] ?? null;
+          $costPack = $this->selectedCompanies[$index]['cost_pack'] ?? null;
+
+          if (is_null($pack) || is_null($costPack) || $pack === '' || $costPack === '') {
+            $this->alert('error', 'Por favor, ingrese un valor para Pack y Costo por Pack.');
+            $this->selectedCompanies[$index]['total_pack'] = 0;
+            $this->updateFormTotals();
+            return;
+          }
+          // Calcular y actualizar total_pack
+          $this->selectedCompanies[$index]['total_pack'] = $pack * $costPack;
+        }
+        $this->updateFormTotals();
+      }
     }
+  }
+  protected function updateFormTotals()
+  {
+    $totalPack = 0;
+    $totalCostPack = 0;
+    $totalTotalPack = 0;
+    foreach ($this->selectedCompanies as $company) {
+      $pack = $company['pack'] ?? null;
+      $costPack = $company['cost_pack'] ?? null;
+      $totalPackVal = $company['total_pack'] ?? 0;
+      if ($pack === null || $pack === '' || $costPack === null || $costPack === '') {
+        $this->form->people_count = 0;
+        $this->form->cost_pack = 0;
+        $this->form->total_pack = 0;
+        return;
+      }
+      $totalPack += $pack;
+      $totalCostPack += $costPack;
+      $totalTotalPack += $totalPackVal;
+    }
+    $this->form->people_count = $totalPack;
+    $this->form->cost_pack = $totalCostPack;
+    $this->form->total_pack = $totalTotalPack;
   }
   public function saveCompany()
   {
@@ -90,8 +175,9 @@ class ReservationCU extends Component
       );
       $this->alert('success', 'Se creó la empresa');
       $this->resetValidation();
-      $this->companySearch = $company->name;
-      $this->form->company_name = $company->name;
+      /* $this->companySearch = $company->name; */
+      /* $this->form->company_name = $company->name; */
+      $this->selectCompany($company->id, $company->name);
       $this->closeModal($this->modalCreateCompany);
     } catch (\Exception $e) {
       $this->alert('error', $e->getMessage());
@@ -125,20 +211,53 @@ class ReservationCU extends Component
   {
     $this->form->productsExceedingStock = [];
   }
+  private function validateSelectedCompanies()
+  {
+    if (empty($this->selectedCompanies)) {
+      $this->alert('error', 'Debe seleccionar al menos una empresa.');
+      return false;
+    }
+    foreach ($this->selectedCompanies as $company) {
+      if (empty($company['id']) || empty($company['name']) || empty($company['pack']) || empty($company['cost_pack']) || empty($company['total_pack'])) {
+        $this->alert('error', 'Todos los campos de cada empresa seleccionada deben estar llenos.');
+        return false;
+      }
+    }
+    return true;
+  }
   public function save()
   {
+    if (!$this->validateSelectedCompanies()) {
+      return;
+    }
     try {
       if ($this->form->reservation) {
         \Log::info('Actualizando reserva: ', ['reservation' => $this->form->reservation]);
         $this->form->update();
+        DB::table('reservation_companies')->where('reservation_id', $this->form->id)
+          ->delete();
+        $this->saveCompaniesSelected();
       } else {
         \Log::info('Creando nueva reserva');
         $this->form->store();
+        $this->saveCompaniesSelected();
       }
       $this->redirectRoute('reservations.index', navigate: true);
     } catch (\Exception $e) {
       \Log::error('Error al guardar la reserva: ' . $e->getMessage());
       $this->alert('error', $e->getMessage());
+    }
+  }
+  private function saveCompaniesSelected()
+  {
+    foreach ($this->selectedCompanies as $company) {
+      DB::table('reservation_companies')->insert([
+        'reservation_id' => $this->form->id,
+        'company_id' => $company['id'],
+        'pack' => $company['pack'],
+        'cost_pack' => $company['cost_pack'],
+        'total_pack' => $company['total_pack'],
+      ]);
     }
   }
   private function filterAndPaginate($items, $perPage = 10, $page = null, $options = [])
