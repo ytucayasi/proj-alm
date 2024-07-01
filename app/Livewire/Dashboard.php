@@ -5,11 +5,14 @@ namespace App\Livewire;
 use App\Models\Product;
 use App\Models\Inventory;
 use App\Models\Reservation;
+use App\Models\Variation;
 use Illuminate\Support\Carbon;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Dashboard extends Component
 {
+  use WithPagination;
   /* Products */
   public $countProducts = 0;
   public $countInventory = 0;
@@ -29,6 +32,12 @@ class Dashboard extends Component
   public $startDate;
   public $endDate;
 
+  /* Búsqueda */
+  public $search = '';
+
+  /* Empresas con Reservaciones */
+  public $todayReservations = [];
+
   public function mount()
   {
     $this->startDate = Carbon::now()->startOfMonth(); // Por defecto, inicio del mes actual
@@ -36,6 +45,7 @@ class Dashboard extends Component
     $this->countProducts();
     $this->countReservations();
     $this->calculateProfits();
+    $this->loadTodayCompanies();
   }
   public function countProducts()
   {
@@ -69,7 +79,23 @@ class Dashboard extends Component
     $this->total_profits = number_format($this->total_profits, 2);
     $this->total_percentage = number_format($this->total_percentage, 2);
   }
-
+  public function loadTodayCompanies()
+  {
+    $today = Carbon::now()->format('Y-m-d');
+    $this->todayReservations = Reservation::with('companies.company')
+      ->whereDate('execution_date', $today)
+      ->get();
+  }
+  public function loadLowStockProducts()
+  {
+    return Variation::join('products', 'product_variations.product_id', '=', 'products.id')
+      ->where('product_variations.quantity_base', '<=', 'products.stock_min')
+      ->select('product_variations.*', 'products.name as product_name', 'products.stock_min', 'products.description', 'products.state')
+      ->when($this->search, function ($query) {
+        $query->where('products.name', 'like', '%' . $this->search . '%');
+      })
+      ->paginate(10);
+  }
   public function updatedStartDate()
   {
     $this->calculateProfits();
@@ -81,6 +107,8 @@ class Dashboard extends Component
   }
   public function render()
   {
-    return view('dashboard');
+    return view('dashboard', [
+      'lowStockProducts' => $this->loadLowStockProducts()
+    ]);
   }
 }
