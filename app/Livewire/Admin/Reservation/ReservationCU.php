@@ -65,20 +65,26 @@ class ReservationCU extends Component
   }
   public function selectCompany($companyId, $companyName)
   {
-    /* $this->form->company_name = $companyName;
-    $this->companySearch = $companyName; */
-    if ($this->validateCompany($companyId)) {
-      return;
-    } else {
-      $this->selectedCompanies[] = [
-        'id' => $companyId,
-        'name' => $companyName,
-        'pack' => 0,
-        'cost_pack' => 0,
-        'total_pack' => 0,
-      ];
-      $this->companySearch = "";
-    }
+    /*     if ($this->validateCompany($companyId)) {
+          return;
+        } else {
+          $this->selectedCompanies[] = [
+            'id' => $companyId,
+            'name' => $companyName,
+            'pack' => 0,
+            'cost_pack' => 0,
+            'total_pack' => 0,
+          ];
+          $this->companySearch = "";
+        } */
+    $this->selectedCompanies[] = [
+      'id' => $companyId,
+      'name' => $companyName,
+      'pack' => 0,
+      'cost_pack' => 0,
+      'total_pack' => 0,
+    ];
+    $this->companySearch = "";
   }
   public function validateCompany($companyId)
   {
