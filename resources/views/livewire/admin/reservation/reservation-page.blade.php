@@ -95,9 +95,8 @@
                 <span
                   class="text-xs font-bold">({{ $reservation->execution_date ? $reservation->execution_date->format('H:i') : 'N/A' }})</span>
               </td>
-
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                S/. {{ number_format($reservation->total_cost, 2) }}</td>
+                S/. {{ number_format($reservation->total_pack, 2) }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
                 {{ $reservation->people_count }} (pack)</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
@@ -107,7 +106,7 @@
                   class="{{ $reservation->status == 1 ? 'bg-green-100 text-green-800' : '' }} {{ $reservation->status == 2 ? 'bg-blue-100 text-blue-800' : '' }} {{ $reservation->status == 3 ? 'bg-yellow-100 text-yellow-800' : '' }} {{ $reservation->status == 5 ? 'bg-red-100 text-red-800' : '' }} {{ $reservation->status == 4 ? 'bg-purple-100 text-purple-800' : '' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
                   @switch($reservation->status)
                     @case(1)
-                      En Proceso
+                      Realizado
                     @break
 
                     @case(2)

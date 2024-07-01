@@ -11,7 +11,10 @@
     <h3 class="mb-4 text-lg font-bold text-gray-900">Detalles de la Reservación</h3>
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
       <div class="rounded-lg bg-blue-50 p-4 shadow">
-        <p class="text-gray-700"><strong>Nombre de la Empresa:</strong> {{ $reservation->company_name }}</p>
+        <p class="text-gray-700">
+          <strong>Empresas:</strong>
+          {{ implode(', ', $reservation->companies->pluck('company.name')->toArray()) }}
+        </p>
       </div>
       <div class="rounded-lg bg-blue-50 p-4 shadow">
         <p class="text-gray-700">
@@ -72,17 +75,20 @@
         </p>
       </div>
       <div class="rounded-lg bg-blue-50 p-4 shadow">
-        <p class="text-gray-700"><strong>Costo Total:</strong> S/. {{ $reservation->total_cost }}</p>
+        <p class="text-gray-700"><strong>Cantidad de Personas (pack):</strong> {{ $reservation->people_count }}
+          personas</p>
       </div>
       <div class="rounded-lg bg-blue-50 p-4 shadow">
-        <p class="text-gray-700"><strong>Cantidad de Personas:</strong> {{ $reservation->people_count }} personas</p>
+        <p class="text-gray-700"><strong>Total Pagado:</strong> S/. {{ $reservation->total_pack }}</p>
+      </div>
+      <div class="rounded-lg bg-blue-50 p-4 shadow">
+        <p class="text-gray-700"><strong>Costo Total:</strong> S/. {{ $reservation->total_cost }}</p>
       </div>
       <div class="rounded-lg bg-blue-50 p-4 shadow">
         <p class="text-gray-700"><strong>Total de Productos:</strong> {{ $reservation->total_products }} productos</p>
       </div>
     </div>
   </div>
-
   <div>
     <h3 class="mb-4 text-lg font-bold text-gray-900">Inventarios Registrados</h3>
     <div class="overflow-x-auto">

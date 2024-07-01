@@ -41,7 +41,7 @@
   </div>
   <div x-show="openAreas"
     class="mb-4 flex justify-between rounded-lg bg-slate-100 shadow-lg transition-all duration-300">
-    <div class="flex space-x-4 overflow-y-auto px-4 py-2">
+    <div class="flex space-x-4 overflow-x-auto whitespace-nowrap px-4 py-2">
       @forelse ($areas as $area)
         <button wire:click="selectArea({{ $area->id }})"
           class="flex items-center rounded-lg px-4 py-2 text-sm font-medium uppercase text-slate-700 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300">
@@ -114,7 +114,8 @@
                   </div>
                   <div class="flex-1">
                     <label class="mb-1 block text-xs font-bold">Total Pack</label>
-                    <input readonly disabled type="number" wire:model="selectedCompanies.{{ $index }}.total_pack"
+                    <input readonly disabled type="number"
+                      wire:model="selectedCompanies.{{ $index }}.total_pack"
                       class="w-full cursor-not-allowed rounded border border-gray-300 p-2 text-xs opacity-70" readonly>
                   </div>
                 </div>
@@ -123,12 +124,14 @@
           </div>
           <div class="w-full p-2 md:w-1/2">
             <label class="mb-1 block font-bold">Pack</label>
-            <input readonly disabled wire:model.live="form.people_count" type="number" placeholder="Ingrese la cantidad de personas"
+            <input readonly disabled wire:model.live="form.people_count" type="number"
+              placeholder="Ingrese la cantidad de personas"
               class="w-full cursor-not-allowed rounded border border-gray-300 p-2 text-xs opacity-70">
           </div>
           <div class="w-full p-2 md:w-1/2">
             <label class="mb-1 block font-bold">Costo por Pack</label>
-            <input readonly disabled wire:model.live="form.cost_pack" type="number" placeholder="Ingrese la cantidad de personas"
+            <input readonly disabled wire:model.live="form.cost_pack" type="number"
+              placeholder="Ingrese la cantidad de personas"
               class="w-full cursor-not-allowed rounded border border-gray-300 p-2 text-xs opacity-70">
           </div>
           <div class="w-full p-2 md:w-1/2">
