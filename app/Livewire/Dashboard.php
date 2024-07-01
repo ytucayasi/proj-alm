@@ -86,7 +86,7 @@ class Dashboard extends Component
       ->whereDate('execution_date', $today)
       ->get();
   }
-  public function loadLowStockProducts()
+/*   public function loadLowStockProducts()
   {
     return Variation::join('products', 'product_variations.product_id', '=', 'products.id')
       ->where('product_variations.quantity_base', '<=', 'products.stock_min')
@@ -95,7 +95,7 @@ class Dashboard extends Component
         $query->where('products.name', 'like', '%' . $this->search . '%');
       })
       ->paginate(10);
-  }
+  } */
   public function updatedStartDate()
   {
     $this->calculateProfits();
@@ -108,7 +108,7 @@ class Dashboard extends Component
   public function render()
   {
     return view('dashboard', [
-      'lowStockProducts' => $this->loadLowStockProducts()
+/*       'lowStockProducts' => $this->loadLowStockProducts() */
     ]);
   }
 }
