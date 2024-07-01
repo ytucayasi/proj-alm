@@ -68,6 +68,9 @@
               Total Pago</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+              Total Invertido</th>
+            <th
+              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
               Número de Personas</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -97,6 +100,8 @@
               </td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
                 S/. {{ number_format($reservation->total_pack, 2) }}</td>
+              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                S/. {{ number_format($reservation->total_cost, 2) }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
                 {{ $reservation->people_count }} (pack)</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">

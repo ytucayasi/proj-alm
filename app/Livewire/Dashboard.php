@@ -5,78 +5,82 @@ namespace App\Livewire;
 use App\Models\Product;
 use App\Models\Inventory;
 use App\Models\Reservation;
+use Illuminate\Support\Carbon;
 use Livewire\Component;
 
 class Dashboard extends Component
 {
-  public $selectedProduct;
-  public $totalQuantity = 0;
-  public $totalRevenue = 0;
-  public $totalReservations = 0;
+  /* Products */
+  public $countProducts = 0;
+  public $countInventory = 0;
+  public $countActive = 0;
+  /* Reservation */
+  public $countReservations = 0;
+  public $countReservationR = 0; // Realizados
+  public $countReservationE = 0; // En Ejecución
+  public $countReservationPo = 0; // Pospuestos
+  public $countReservationPe = 0; // Pendientes
+
+  /* Ganancias */
+  public $total_profits = 0;
+  public $total_percentage = 0;
+
+  /* Fecha */
+  public $startDate;
+  public $endDate;
 
   public function mount()
   {
-    $this->updateTotalQuantity();
-    $this->updateTotalRevenue();
-    $this->updateTotalReservations();
+    $this->startDate = Carbon::now()->startOfMonth(); // Por defecto, inicio del mes actual
+    $this->endDate = Carbon::now()->endOfMonth(); // Por defecto, fin del mes actual
+    $this->countProducts();
+    $this->countReservations();
+    $this->calculateProfits();
   }
-
-  public function updatedSelectedProduct()
+  public function countProducts()
   {
-    $this->updateTotalQuantity();
-    $this->updateTotalRevenue();
-    $this->updateTotalReservations();
+    $this->countProducts = Product::count();
+    $this->countInventory = Product::where('product_type', 1)->count();
+    $this->countActive = Product::where('product_type', 2)->count();
   }
-
-  public function updateTotalQuantity()
+  public function countReservations()
   {
-    if ($this->selectedProduct) {
-      $totalQuantityIn = Inventory::where('product_id', $this->selectedProduct)
-        ->where('movement_type', 1)
-        ->sum('quantity');
+    $this->countReservations = Reservation::count();
+    $this->countReservationR = Reservation::where('status', 1)->count();
+    $this->countReservationE = Reservation::where('status', 2)->count();
+    $this->countReservationPo = Reservation::where('status', 3)->count();
+    $this->countReservationPe = Reservation::where('status', 4)->count();
+  }
+  public function calculateProfits()
+  {
+    $reservations = Reservation::whereBetween('order_date', [$this->startDate, $this->endDate])->get();
 
-      $totalQuantityOut = Inventory::where('product_id', $this->selectedProduct)
-        ->where('movement_type', 2)
-        ->sum('quantity');
+    $total_cost = $reservations->sum('total_cost');
+    $total_pack = $reservations->sum('total_pack');
+    $this->total_profits = $total_pack - $total_cost;
 
-      $this->totalQuantity = $totalQuantityIn - $totalQuantityOut;
+    if ($total_pack > 0) {
+      $this->total_percentage = ($this->total_profits / $total_pack) * 100;
     } else {
-      $totalQuantityIn = Inventory::where('movement_type', 1)
-        ->sum('quantity');
-
-      $totalQuantityOut = Inventory::where('movement_type', 2)
-        ->sum('quantity');
-
-      $this->totalQuantity = $totalQuantityIn - $totalQuantityOut;
+      $this->total_percentage = 0;
     }
+
+    // Formatear los valores para la salida
+    $this->total_profits = number_format($this->total_profits, 2);
+    $this->total_percentage = number_format($this->total_percentage, 2);
   }
 
-  public function updateTotalRevenue()
+  public function updatedStartDate()
   {
-    $entriesRevenue = Inventory::where('movement_type', 1)
-      ->sum(\DB::raw('quantity * unit_price'));
-
-    $reservationsCost = Inventory::where('movement_type', 2)
-      ->where('type_action', 2)
-      ->sum(\DB::raw('quantity * unit_price'));
-
-    $this->totalRevenue = $entriesRevenue - $reservationsCost;
+    $this->calculateProfits();
   }
 
-  public function updateTotalReservations()
+  public function updatedEndDate()
   {
-    $this->totalReservations = Reservation::count();
+    $this->calculateProfits();
   }
-
   public function render()
   {
-    $products = Product::all();
-
-    return view('dashboard', [
-      'products' => $products,
-      'totalQuantity' => $this->totalQuantity,
-      'totalRevenue' => $this->totalRevenue,
-      'totalReservations' => $this->totalReservations,
-    ]);
+    return view('dashboard');
   }
 }

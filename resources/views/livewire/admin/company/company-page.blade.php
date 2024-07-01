@@ -80,9 +80,11 @@
                 <button
                   class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
                   wire:click="edit({{ $company->id }})"><i class="fas fa-edit"></i></button>
-                <button
-                  class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
-                  wire:click="alertDelete({{ $company->id }})"><i class="fas fa-trash"></i></button>
+                @if ($company->reservations->isEmpty())
+                  <button
+                    class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
+                    wire:click="alertDelete({{ $company->id }})"><i class="fas fa-trash"></i></button>
+                @endif
                 {{-- <button
                   class="rounded bg-cyan-400 px-2 py-1 font-bold text-white hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-300"
                   wire:click="view({{ $company->id }})"><i class="fas fa-eye"></i></button> --}}
@@ -113,9 +115,11 @@
                 <button
                   class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
                   wire:click="edit({{ $company->id }})"><i class="fas fa-edit"></i></button>
-                <button
-                  class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
-                  wire:click="alertDelete({{ $company->id }})"><i class="fas fa-trash"></i></button>
+                @if ($company->reservations->isEmpty())
+                  <button
+                    class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
+                    wire:click="alertDelete({{ $company->id }})"><i class="fas fa-trash"></i></button>
+                @endif
                 {{-- <button
                   class="rounded bg-cyan-400 px-2 py-1 font-bold text-white hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-300"
                   wire:click="view({{ $company->id }})"><i class="fas fa-eye"></i></button> --}}

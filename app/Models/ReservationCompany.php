@@ -16,4 +16,8 @@ class ReservationCompany extends Model
   {
     return $this->belongsTo(Company::class);
   }
+  public function reservation()
+  {
+    return $this->belongsTo(Reservation::class);
+  }
 }
