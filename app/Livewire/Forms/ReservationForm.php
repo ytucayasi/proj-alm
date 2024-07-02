@@ -97,6 +97,7 @@ class ReservationForm extends Form
     foreach ($this->selectedProducts as $product) {
       logger()->info('Producto actualizado: ', $product);
     }
+    $this->calculateTotals();
   }
   public function setArea($areaId)
   {
