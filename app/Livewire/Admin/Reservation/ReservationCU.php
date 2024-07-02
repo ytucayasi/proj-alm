@@ -86,6 +86,9 @@ class ReservationCU extends Component
     ];
     $this->companySearch = "";
   }
+  public function recargar_precios(){
+    $this->form->recargar_precios();
+  }
   public function validateCompany($companyId)
   {
     foreach ($this->selectedCompanies as $company) {

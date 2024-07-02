@@ -145,7 +145,7 @@
                 <button
                   class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
                   wire:click="edit({{ $product->id }})"><i class="fas fa-edit"></i></button>
-                @if ($product->inventories->isEmpty() && $product->variations->isEmpty())
+                @if ($product->inventories->isEmpty())
                   <button
                     class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
                     wire:click="alertDelete({{ $product->id }})"><i class="fas fa-trash"></i></button>

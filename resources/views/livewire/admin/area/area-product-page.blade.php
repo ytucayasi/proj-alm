@@ -73,7 +73,8 @@
             {{ $areaProduct->unit->abbreviation }}</td>
           <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $areaProduct->quantity }}
           </td>
-          <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $areaProduct->price }}
+          <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+            {{ $form->viewVariation($areaProduct->product_id, $areaProduct->unit_id)->price_base }}
           </td>
           <td class="border-b border-gray-200 px-5 py-2 text-center">
             <button

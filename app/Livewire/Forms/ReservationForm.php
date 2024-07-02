@@ -73,6 +73,31 @@ class ReservationForm extends Form
     ];
   }
 
+  public function recargar_precios()
+  {
+    // Asegúrate de que selectedProducts es una colección
+    if (!$this->selectedProducts instanceof Collection) {
+      $this->selectedProducts = collect($this->selectedProducts);
+    }
+
+    // Usa el método map para actualizar los precios
+    $this->selectedProducts = $this->selectedProducts->map(function ($product) {
+      $variation = Variation::where("product_id", $product["product_id"])
+        ->where("unit_id", $product["unit_id"])
+        ->first();
+
+      if ($variation) {
+        $product['variation_price'] = $variation->price_base;
+      }
+
+      return $product;
+    });
+
+    // Debugging: Verifica que los precios se actualizaron correctamente
+    foreach ($this->selectedProducts as $product) {
+      logger()->info('Producto actualizado: ', $product);
+    }
+  }
   public function setArea($areaId)
   {
     $this->selectedAreas->push([
@@ -83,7 +108,7 @@ class ReservationForm extends Form
       $variation = Variation::where('product_id', $areaProduct->product_id)
         ->where('unit_id', $areaProduct->unit_id)
         ->first();
-      $this->addProductToSelected($variation, $areaProduct->price, $areaProduct->quantity);
+      $this->addProductToSelected($variation, $variation->price_base, $areaProduct->quantity);
     }
   }
 
@@ -203,7 +228,7 @@ class ReservationForm extends Form
               $product['variation_price'] = 1;
             }
           }
-          /* $product['price_edit'] = !$product['price_edit']; */
+          $product['price_edit'] = !$product['price_edit'];
           $product['quantity_edit'] = !$product['quantity_edit'];
         }
         $product['variation_stock'] = $product['initial_stock'] - $product['quantity'];

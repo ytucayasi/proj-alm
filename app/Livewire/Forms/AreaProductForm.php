@@ -62,6 +62,10 @@ class AreaProductForm extends Form
       $this->unit_name = '';
     }
   }
+  public function viewVariation($product_id, $unit_id)
+  {
+    return Variation::where("product_id", $product_id)->where("unit_id", $unit_id)->first();
+  }
   public function updatedUnitId($unitId)
   {
     $variation = Variation::where('product_id', $this->product_id)
@@ -93,7 +97,8 @@ class AreaProductForm extends Form
   {
     $this->validate();
     $this->verifyStock();
-    AreaProduct::create($this->all());
+    $this->price = 0;
+    AreaProduct::create($this->only(["area_id", "product_id", "unit_id", "quantity", "price"]));
     $this->resetOnly();
   }
   public function update()
