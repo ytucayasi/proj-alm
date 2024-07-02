@@ -6,14 +6,14 @@
         <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
         <span class="ml-2">Reserva</span>
       </button>
-      <button class="flex items-center rounded bg-purple-500 px-4 py-2 text-xs text-white">
+{{--       <button class="flex items-center rounded bg-purple-500 px-4 py-2 text-xs text-white">
         <i class="fas fa-broom"></i>
         <span class="ml-2">Limpiar</span>
       </button>
       <button wire:click="recargar_precios" class="flex items-center rounded bg-cyan-500 px-4 py-2 text-xs text-white">
         <i class="fas fa-broom"></i>
         <span class="ml-2">Precios</span>
-      </button>
+      </button> --}}
       <button wire:click="save"
         class="flex items-center rounded bg-green-500 px-4 py-2 text-xs text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300">
         <i class="fas fa-plus"></i>
