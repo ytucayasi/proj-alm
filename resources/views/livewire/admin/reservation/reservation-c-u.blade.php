@@ -1,12 +1,12 @@
 {{-- Contenido --}}
-<div x-data="{ open: false, showVariations: false, openAreas: false }">
+<div x-data="{ open: false, openAreas: false }">
   <div class="mb-4 flex justify-between">
     <div class="flex items-center gap-2">
       <button @click="open = !open" class="flex items-center rounded bg-blue-500 px-4 py-2 text-xs text-white">
         <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
         <span class="ml-2">Reserva</span>
       </button>
-{{--       <button class="flex items-center rounded bg-purple-500 px-4 py-2 text-xs text-white">
+      {{--       <button class="flex items-center rounded bg-purple-500 px-4 py-2 text-xs text-white">
         <i class="fas fa-broom"></i>
         <span class="ml-2">Limpiar</span>
       </button>
@@ -194,55 +194,27 @@
         <input type="text" placeholder="Buscar en productos seleccionados..." wire:model.live="form.searchP"
           class="mb-4 w-full rounded border border-gray-300 p-2 text-xs">
         <div class="overflow-x-auto">
-          <table class="min-w-full bg-white text-xs" x-show="!showVariations">
-            <thead>
-              <tr>
-                <th class="select-none bg-gray-200 px-4 py-2 text-center">Producto</th>
-                <th class="select-none bg-gray-200 px-4 py-2 text-center">Unidades</th>
-              </tr>
-            </thead>
-            <tbody>
-            <tbody>
-              @foreach ($products as $product)
-                @if ($product)
-                  <tr wire:click="showVariations({{ $product->id }})" @click="showVariations = true"
-                    class="cursor-pointer hover:bg-gray-100">
-                    <td class="select-none border-b px-4 py-2 text-center">{{ $product->name }}</td>
-                    <td class="select-none border-b px-4 py-2 text-center">
-                      <div class="flex select-none items-center justify-center space-x-2">
-                        <span>{{ $product->variations()->count() }}</span>
+          <ul>
+            @foreach ($products as $product)
+              <li x-data="{ open: false, selectedProductId: null }" class="mb-2 select-none">
+                <div @click="open = !open; selectedProductId = open ? {{ $product->id }} : null"
+                  class="cursor-pointer rounded bg-gray-100 p-2 hover:bg-gray-200">
+                  {{ $product->name }}
+                </div>
+                <ul x-show="open" class="ml-4 mt-2">
+                  @foreach ($product->variations as $variation)
+                    <li x-data="{ showAreas: false }" class="mb-2"
+                      wire:click="selectVariation({{ $variation->id }}, 'create')">
+                      <div
+                        class="flex cursor-pointer items-center justify-between rounded bg-gray-50 p-2 hover:bg-gray-100">
+                        <span>{{ $variation->unit->abbreviation }} - Stock: {{ $variation->quantity_base }}</span>
                       </div>
-                    </td>
-                  </tr>
-                @endif
-              @endforeach
-            </tbody>
-            </tbody>
-          </table>
-          <!-- Variations Table -->
-          <table class="min-w-full bg-white text-xs" x-show="showVariations" wire:loading.class="hidden">
-            <thead>
-              <tr>
-                <th class="select-none bg-gray-200 px-4 py-2 text-center">Unidad</th>
-                <th class="select-none bg-gray-200 px-4 py-2 text-center">Stock</th>
-              </tr>
-            </thead>
-            <tbody>
-              @foreach ($variations as $variation)
-                <tr class="cursor-pointer hover:bg-gray-100" wire:key="{{ $variation->id }}"
-                  wire:click="selectVariation({{ $variation->id }}, 'create')" @click="showVariations = false">
-                  <td class="select-none border-b px-4 py-2 text-center">{{ $variation->unit->abbreviation }}</td>
-                  <td class="select-none border-b px-4 py-2 text-center">
-                    <span>{{ $variation->quantity_base }}</span>
-                  </td>
-                </tr>
-              @endforeach
-            </tbody>
-          </table>
-          <div x-show="showVariations" class="mt-2 flex justify-center" wire:loading.class="hidden">
-            <span @click="showVariations = false"
-              class="cursor-pointer text-blue-500 underline hover:text-blue-700">Atrás</span>
-          </div>
+                    </li>
+                  @endforeach
+                </ul>
+              </li>
+            @endforeach
+          </ul>
         </div>
       </div>
     </div>

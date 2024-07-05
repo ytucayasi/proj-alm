@@ -229,7 +229,7 @@ class ReservationForm extends Form
               $product['variation_price'] = 1;
             }
           }
-          $product['price_edit'] = !$product['price_edit'];
+          /* $product['price_edit'] = !$product['price_edit']; */
           $product['quantity_edit'] = !$product['quantity_edit'];
         }
         $product['variation_stock'] = $product['initial_stock'] - $product['quantity'];

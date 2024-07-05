@@ -4,12 +4,20 @@
     <div class="flex w-full justify-between rounded-md bg-orange-500 p-2">
       <div class="flex items-center justify-center text-white">
         <i class="fas fa-box fa-lg mr-1"></i>
-        <h2 class="text-sm font-semibold">
-          <span class="text-lg">
-            {{ $countProducts }}
-          </span>
-          Productos
-        </h2>
+        <div class="flex flex-col">
+          <h2 class="text-sm font-semibold">
+            <span class="text-lg">
+              {{ $countProducts }}
+            </span>
+            Productos
+          </h2>
+          <h2 class="text-xs font-semibold">
+            <span class="text-sm">
+              {{ $countProductsTotals }}
+            </span>
+            Almacén
+          </h2>
+        </div>
       </div>
       <div class="flex flex-col items-start justify-center rounded-md bg-orange-600 p-2 text-white">
         <h3 class="text-xs font-semibold"><span class="text-sm">{{ $countActive }}</span> Activos</h3>
@@ -65,8 +73,8 @@
   </div>
   <div class="mt-4 rounded-lg bg-white p-2 text-gray-700 shadow-md">
     <p class="text-1xl font-semibold">Reservaciones para Hoy</p>
-    <div class="flex flex-wrap">
-      @foreach ($todayReservations as $reservation)
+    <div class="mt-4 flex flex-wrap">
+      @forelse ($todayReservations as $reservation)
         <div class="w-full p-2 lg:w-1/3">
           <div x-data="{ currentSlide: 0 }" class="relative w-full overflow-hidden">
             <div class="flex transition-transform duration-500"
@@ -99,46 +107,56 @@
             </button>
           </div>
         </div>
-      @endforeach
+      @empty
+        <div>
+          Sin reservas del día
+        </div>
+      @endforelse
     </div>
   </div>
-{{--   <div class="mt-4 rounded-lg bg-white p-2 text-gray-700 shadow-md">
-    <!-- Listar Productos con Stock Bajo -->
-    <div>
-      <h2 class="mb-4 text-1xl font-semibold">Productos con Stock Bajo</h2>
-      <!-- Buscar Productos -->
-      <div class="mb-4">
-        <input type="text" wire:model.live="search"
-          class="w-full rounded-lg border px-4 py-2 shadow-sm focus:border-blue-300 focus:outline-none focus:ring"
-          placeholder="Buscar productos..." />
-      </div>
-      <table class="w-full table-auto">
-        <thead>
-          <tr class="bg-gray-100">
-            <th class="px-4 py-2">Nombre</th>
-            <th class="px-4 py-2">Cantidad Base</th>
-            <th class="px-4 py-2">Stock Mínimo</th>
-          </tr>
-        </thead>
-        <tbody>
-          @forelse($lowStockProducts as $variation)
+  <div class="mt-4 rounded-lg bg-white p-2 text-gray-800 shadow-lg">
+    <p class="text-1xl font-bold">Stock Mínimo de Productos</p>
+    <div class="mt-6">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
             <tr>
-              <td class="border px-4 py-2">{{ $variation->product_name }}</td>
-              <td class="border px-4 py-2">{{ $variation->quantity_base }}</td>
-              <td class="border px-4 py-2">{{ $variation->stock_min }}</td>
+              <th scope="col"
+                class="px-4 py-2 text-center text-xs font-extrabold uppercase tracking-wider text-gray-500">
+                Nombre del Producto</th>
+              <th scope="col"
+                class="px-4 py-2 text-center text-xs font-extrabold uppercase tracking-wider text-gray-500">
+                Cantidad Base</th>
+              <th scope="col"
+                class="px-4 py-2 text-center text-xs font-extrabold uppercase tracking-wider text-red-500">
+                Stock Mínimo</th>
             </tr>
-          @empty
-            <tr>
-              <td colspan="5" class="py-4 text-center">No hay productos con stock bajo.</td>
-            </tr>
-          @endforelse
-        </tbody>
-      </table>
+          </thead>
+          <tbody class="divide-y divide-gray-200 bg-white">
+            @forelse ($lowStockVariations as $variation)
+              <tr class="hover:bg-red-100">
+                <td class="whitespace-nowrap px-4 py-2 text-center text-sm font-bold text-red-700">
+                  {{ $variation->product->name }}
+                </td>
 
-      <!-- Paginación -->
+                <td class="whitespace-nowrap px-4 py-2 text-center text-sm font-extrabold text-gray-600">
+                  {{ $variation->quantity_base }}</td>
+                <td class="whitespace-nowrap px-4 py-2 text-center text-sm font-bold text-red-600">
+                  {{ $variation->product->stock_min }}</td>
+              </tr>
+            @empty
+              <tr>
+                <td colspan="5" class="px-6 py-4 text-center text-xl font-semibold text-gray-600">Productos Sin Stock
+                  Mínimo</td>
+              </tr>
+            @endforelse
+          </tbody>
+        </table>
+      </div>
       <div class="mt-4">
-        {{ $lowStockProducts->links() }}
+        {{ $lowStockVariations->links() }}
       </div>
     </div>
-  </div> --}}
+  </div>
+
 </div>
