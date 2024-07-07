@@ -182,6 +182,13 @@
           @enderror
         </div>
         <div class="mt-4">
+          <label class="block text-sm font-medium text-gray-700">Stock Mínimo</label>
+          <input type="text" wire:model="form.stock_min" class="form-input mt-1 block w-full rounded-md shadow-sm">
+          @error('form.stock_min')
+            <span class="text-sm text-red-500">{{ $message }}</span>
+          @enderror
+        </div>
+        <div class="mt-4">
           <label class="block text-sm font-medium text-gray-700">Descripción</label>
           <textarea wire:model="form.description" class="form-input mt-1 block w-full rounded-md shadow-sm"></textarea>
           @error('form.description')

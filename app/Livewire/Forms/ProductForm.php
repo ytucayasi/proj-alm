@@ -21,6 +21,7 @@ class ProductForm extends Form
   public $state = 1;
   public $product_type = 1;
   public $price_base = 0;
+  public $stock_min = 0;
   public $variationId = null;
   public $variation = null;
 
@@ -37,6 +38,7 @@ class ProductForm extends Form
       'category_id' => 'required|integer|exists:categories,id',
       'state' => 'required|integer|in:1,2',
       'product_type' => 'required|integer|in:1,2',
+      'stock_min' => 'required|numeric|min:0.01'
     ];
   }
 
@@ -49,6 +51,7 @@ class ProductForm extends Form
     $this->category_id = $product->category_id;
     $this->state = $product->state;
     $this->product_type = $product->product_type;
+    $this->stock_min = $product->stock_min;
   }
   public function setVariation($variationId)
   {
