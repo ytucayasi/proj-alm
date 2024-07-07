@@ -10,6 +10,7 @@ use App\Models\ReservationCompany;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
@@ -25,6 +26,7 @@ class ReservationCU extends Component
   public $name = ""; // El nombre de la compania
   public $ruc = "NAN";
   public $selectedCompanies = [];
+  public $perPage = 10;
   public function mount($reservationId = null)
   {
     $this->form->init($reservationId);
@@ -46,6 +48,12 @@ class ReservationCU extends Component
         $this->alert('error', $e->getMessage());
       }
     }
+    $this->perPage = Cache::get('reservation_per_page', 10);
+  }
+  public function updatingPerPage($value)
+  {
+    Cache::put('reservation_per_page', $value);
+    $this->resetPage();
   }
   public function openModal($modalName)
   {
@@ -86,7 +94,8 @@ class ReservationCU extends Component
     ];
     $this->companySearch = "";
   }
-  public function recargar_precios(){
+  public function recargar_precios()
+  {
     $this->form->recargar_precios();
   }
   public function validateCompany($companyId)
@@ -178,6 +187,10 @@ class ReservationCU extends Component
   }
   public function saveCompany()
   {
+    $this->validate([
+      'name' => 'required|unique:companies,name',
+      'ruc' => 'required|numeric'
+    ]);
     try {
       $company = Company::create(
         $this->only(['name', 'ruc'])
@@ -293,7 +306,7 @@ class ReservationCU extends Component
       ->whereHas('variations') // Filtrar productos que tienen variaciones
       ->take(10)
       ->get();
-    $filteredSelectedProducts = $this->filterAndPaginate($this->form->selectedProducts ?? collect());
+    $filteredSelectedProducts = $this->filterAndPaginate($this->form->selectedProducts ?? collect(), $this->perPage);
     return view('livewire.admin.reservation.reservation-c-u', [
       'products' => $products,
       'areas' => Area::where('state', 1)->get(),

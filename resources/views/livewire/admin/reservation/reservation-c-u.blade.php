@@ -242,8 +242,17 @@
           @endif
         </div>
         <h2 class="mb-4 font-bold">Productos Seleccionados</h2>
-        <input type="text" wire:model.live="form.searchS" placeholder="Buscar en productos seleccionados..."
-          class="mb-4 w-full rounded border border-gray-300 p-2 text-xs">
+        <div class="flex justify-center items-center gap-2 mb-4">
+          <input type="text" wire:model.live="form.searchS" placeholder="Buscar en productos seleccionados..."
+            class="w-full rounded border border-gray-300 px-4 py-2 text-xs">
+          <select wire:model.live="perPage"
+            class="form-select rounded-md border-gray-300 bg-white text-xs shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
         <div class="overflow-x-auto">
           <table class="min-w-full bg-white text-xs">
             <thead>

@@ -116,6 +116,18 @@
   </div>
   <div class="mt-4 rounded-lg bg-white p-2 text-gray-800 shadow-lg">
     <p class="text-1xl font-bold">Stock Mínimo de Productos</p>
+    <div class="flex items-center justify-center gap-2">
+      <input type="text"
+        class="form-input rounded-md border-gray-300 bg-white px-4 py-2 placeholder-gray-500 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+        placeholder="Buscar..." wire:model.live="search">
+      <select wire:model.live="perPage"
+        class="form-select rounded-md border-gray-300 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="30">50</option>
+        <option value="100">100</option>
+      </select>
+    </div>
     <div class="mt-6">
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
@@ -128,25 +140,29 @@
                 class="px-4 py-2 text-center text-xs font-extrabold uppercase tracking-wider text-gray-500">
                 Cantidad Base</th>
               <th scope="col"
-                class="px-4 py-2 text-center text-xs font-extrabold uppercase tracking-wider text-red-500">
+                class="px-4 py-2 text-center text-xs font-extrabold uppercase tracking-wider text-gray-500">
+                Unidad de Medida</th>
+              <th scope="col"
+                class="px-4 py-2 text-center text-xs font-extrabold uppercase tracking-wider text-gray-500">
                 Stock Mínimo</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200 bg-white">
             @forelse ($lowStockVariations as $variation)
-              <tr class="hover:bg-red-100">
-                <td class="whitespace-nowrap px-4 py-2 text-center text-sm font-bold text-red-700">
+              <tr>
+                <td class="whitespace-nowrap px-4 py-2 text-center text-sm font-bold">
                   {{ $variation->product->name }}
                 </td>
-
-                <td class="whitespace-nowrap px-4 py-2 text-center text-sm font-extrabold text-gray-600">
+                <td class="whitespace-nowrap px-4 py-2 text-center text-sm font-bold">
                   {{ $variation->quantity_base }}</td>
-                <td class="whitespace-nowrap px-4 py-2 text-center text-sm font-bold text-red-600">
+                <td class="whitespace-nowrap px-4 py-2 text-center text-sm font-bold">
+                  {{ $variation->unit->name }} ({{ $variation->unit->abbreviation }})</td>
+                <td class="whitespace-nowrap px-4 py-2 text-center text-sm font-bold">
                   {{ $variation->product->stock_min }}</td>
               </tr>
             @empty
               <tr>
-                <td colspan="5" class="px-6 py-4 text-center text-xl font-semibold text-gray-600">Productos Sin Stock
+                <td colspan="4" class="px-6 py-4 text-center font-semibold text-gray-600">Productos Sin Stock
                   Mínimo</td>
               </tr>
             @endforelse

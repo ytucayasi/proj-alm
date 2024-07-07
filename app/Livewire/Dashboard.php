@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Reservation;
 use App\Models\Variation;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -26,20 +27,28 @@ class Dashboard extends Component
   public $total_percentage = 0;
   public $startDate;
   public $endDate;
-  public $search = '';
   public $todayReservations = [];
   public $countProductsTotals = 0;
+
+  /* Variables para Stock Mínimo */
+  public $search = '';
+  public $perPage = 10;
 
   public function mount()
   {
     $this->startDate = Carbon::now()->startOfMonth();
     $this->endDate = Carbon::now()->endOfMonth();
+    $this->perPage = Cache::get('stock_min_per_page', 10);
     $this->countProducts();
     $this->countReservations();
     $this->calculateProfits();
     $this->loadTodayCompanies();
   }
-
+  public function updatingPerPage($value)
+  {
+    Cache::put('stock_min_per_page', $value);
+    $this->resetPage();
+  }
   public function countProducts()
   {
     $this->countProducts = Product::count();
@@ -86,8 +95,11 @@ class Dashboard extends Component
   {
     $lowStockVariations = Variation::whereHas('product', function ($query) {
       $query->whereColumn('quantity_base', '<', 'stock_min')
-        ->where('product_type', '=', 1);
-    })->paginate(10);
+        ->where('product_type', '=', 1)
+        ->when($this->search, function ($query, $search) {
+          return $query->where('name', 'like', '%' . $search . '%');
+        });
+    })->paginate($this->perPage);
 
     return view('dashboard', [
       'lowStockVariations' => $lowStockVariations,
