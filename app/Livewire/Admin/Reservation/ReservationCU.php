@@ -8,33 +8,26 @@ use App\Models\Company;
 use App\Models\Product;
 use App\Models\ReservationCompany;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class ReservationCU extends Component
 {
-  use WithPagination;
   use LivewireAlert;
   public ReservationForm $form;
   public $companySearch = "";
   public $modalCreateCompany = 'modal-create-company';
-  public $name = ""; // El nombre de la compania
+  public $name = ""; // El nombre de la compañía
   public $ruc = "NAN";
   public $selectedCompanies = [];
-  public $perPage = 10;
+
   public function mount($reservationId = null)
   {
     $this->form->init($reservationId);
-    $this->resetPage();
     if ($reservationId) {
       try {
         $this->form->setReservation($reservationId);
-        /* $this->companySearch = $this->form->company_name; */
         foreach ($this->form->reservation->companies as $company) {
           $this->selectedCompanies[] = [
             'id' => $company->company->id,
@@ -48,43 +41,29 @@ class ReservationCU extends Component
         $this->alert('error', $e->getMessage());
       }
     }
-    $this->perPage = Cache::get('reservation_per_page', 10);
   }
-  public function updatingPerPage($value)
-  {
-    Cache::put('reservation_per_page', $value);
-    $this->resetPage();
-  }
+
   public function openModal($modalName)
   {
     $this->resetValidation();
     $this->name = "";
     $this->dispatch('open-modal', $modalName);
   }
+
   public function closeModal($modalName)
   {
     $this->resetValidation();
     $this->name = "";
     $this->dispatch('close-modal', $modalName);
   }
+
   public function searchCompanies()
   {
     return Company::where('name', 'like', '%' . $this->companySearch . '%')->take(5)->get();
   }
+
   public function selectCompany($companyId, $companyName)
   {
-    /*     if ($this->validateCompany($companyId)) {
-          return;
-        } else {
-          $this->selectedCompanies[] = [
-            'id' => $companyId,
-            'name' => $companyName,
-            'pack' => 0,
-            'cost_pack' => 0,
-            'total_pack' => 0,
-          ];
-          $this->companySearch = "";
-        } */
     $this->selectedCompanies[] = [
       'id' => $companyId,
       'name' => $companyName,
@@ -94,10 +73,12 @@ class ReservationCU extends Component
     ];
     $this->companySearch = "";
   }
+
   public function recargar_precios()
   {
     $this->form->recargar_precios();
   }
+
   public function validateCompany($companyId)
   {
     foreach ($this->selectedCompanies as $company) {
@@ -107,38 +88,27 @@ class ReservationCU extends Component
     }
     return false;
   }
+
   public function removeCompany($index)
   {
     array_splice($this->selectedCompanies, $index, 1);
     $this->updateFormTotals();
   }
+
   public function showVariations($productId)
   {
     $this->form->setProduct($productId);
   }
+
   public function updating($name, $value)
   {
     if ($name == "form.searchS") {
-      $this->setPage(1);
+      // No need to set the page to 1 anymore
     }
   }
+
   public function updated($name, $value)
   {
-    /* if ($name == "form.cost_pack" || $name == "form.people_count") {
-      if ($value < 0) {
-        $this->alert('error', 'Los valores no pueden ser negativos.');
-        $this->form->total_pack = 0;  // Reiniciar a cero si el valor es negativo
-        return;
-      }
-      $this->form->validateOnly($name, [
-        'cost_pack' => 'required|numeric|min:0',
-        'people_count' => 'required|integer|min:1',
-      ]);
-      $this->form->total_pack = $this->form->cost_pack * $this->form->people_count;
-    } */
-
-    // Detectar cambios en los campos pack y cost_pack dentro de selectedCompanies
-    /* selectedCompanies.0.pack */
     if (strpos($name, 'selectedCompanies.') === 0) {
       $parts = explode('.', $name);
       if (isset($parts[1]) && isset($parts[2])) {
@@ -155,13 +125,13 @@ class ReservationCU extends Component
             $this->updateFormTotals();
             return;
           }
-          // Calcular y actualizar total_pack
           $this->selectedCompanies[$index]['total_pack'] = $pack * $costPack;
         }
         $this->updateFormTotals();
       }
     }
   }
+
   protected function updateFormTotals()
   {
     $totalPack = 0;
@@ -185,54 +155,55 @@ class ReservationCU extends Component
     $this->form->cost_pack = $totalCostPack;
     $this->form->total_pack = $totalTotalPack;
   }
+
   public function saveCompany()
   {
-    $this->validate([
-      'name' => 'required|unique:companies,name',
-      'ruc' => 'required|numeric'
-    ]);
     try {
       $company = Company::create(
         $this->only(['name', 'ruc'])
       );
       $this->alert('success', 'Se creó la empresa');
       $this->resetValidation();
-      /* $this->companySearch = $company->name; */
-      /* $this->form->company_name = $company->name; */
       $this->selectCompany($company->id, $company->name);
       $this->closeModal($this->modalCreateCompany);
     } catch (\Exception $e) {
       $this->alert('error', $e->getMessage());
     }
   }
-  public function selectVariation($variationId, $action)
+
+  public function selectVariation($variationId, $action, $areaId)
   {
     try {
-      $this->form->setVariation($variationId, $action);
+      $this->form->setVariation($variationId, $action, $areaId);
       if ($action == "delete") {
-        $this->resetPage();
+        // No need to reset the page anymore
       }
     } catch (\Exception $e) {
       \Log::error('Error de edición de tabla: ' . $e->getMessage());
       $this->alert('error', $e->getMessage());
     }
   }
-  public function incrementQuantity($variationId)
+
+  public function incrementQuantity($variationId, $areaId)
   {
-    $this->form->incrementQuantityVariation($variationId);
+    $this->form->incrementQuantityVariation($variationId, $areaId);
   }
-  public function decrementQuantity($variationId)
+
+  public function decrementQuantity($variationId, $areaId)
   {
-    $this->form->decrementQuantityVariation($variationId);
+    $this->form->decrementQuantityVariation($variationId, $areaId);
   }
+
   public function selectArea($areaId)
   {
     $this->form->setArea($areaId);
   }
+
   public function clearErrorStock()
   {
     $this->form->productsExceedingStock = [];
   }
+
   private function validateSelectedCompanies()
   {
     if (empty($this->selectedCompanies)) {
@@ -247,6 +218,7 @@ class ReservationCU extends Component
     }
     return true;
   }
+
   public function save()
   {
     if (!$this->validateSelectedCompanies()) {
@@ -270,6 +242,7 @@ class ReservationCU extends Component
       $this->alert('error', $e->getMessage());
     }
   }
+
   private function saveCompaniesSelected()
   {
     foreach ($this->selectedCompanies as $company) {
@@ -282,36 +255,20 @@ class ReservationCU extends Component
       ]);
     }
   }
-  private function filterAndPaginate($items, $perPage = 10, $page = null, $options = [])
-  {
-    $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
-    $items = $items instanceof Collection ? $items : Collection::make($items);
 
-    $filteredItems = $items->filter(function ($product) {
-      return str_contains(strtolower($product['product_name'] ?? ''), strtolower($this->form->searchS));
-    });
-    return new LengthAwarePaginator(
-      $filteredItems->forPage($page, $perPage),
-      $filteredItems->count(),
-      $perPage,
-      $page,
-      $options
-    );
-  }
   public function render()
   {
     $products = Product::where('state', 1)
       ->where('name', 'like', '%' . $this->form->searchP . '%')
       ->where('product_type', 1)
-      ->whereHas('variations') // Filtrar productos que tienen variaciones
-      ->take(10)
-      ->get();
-    $filteredSelectedProducts = $this->filterAndPaginate($this->form->selectedProducts ?? collect(), $this->perPage);
+      ->whereHas('variations')
+      ->get(); // No pagination or limit
+
     return view('livewire.admin.reservation.reservation-c-u', [
       'products' => $products,
       'areas' => Area::where('state', 1)->get(),
       'variations' => $this->form->variations ?? collect(),
-      'selectedProducts' => $filteredSelectedProducts,
+      'selectedProducts' => $this->form->selectedProducts->flatten(1) ?? collect(), // No pagination
       'searchResults' => $this->searchCompanies(),
     ]);
   }

@@ -65,6 +65,9 @@
               Producto</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+              Area</th>
+            <th
+              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
               Cantidad</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -79,7 +82,7 @@
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
               Acciones</th>
           </tr>
-        </thead>
+        </thead>{{-- {{ \App\Models\Area::find($area['area_id'])->name }} --}}
         <tbody>
           @forelse ($inventories as $inventory)
             <tr class="{{ $inventory->movement_type == '1' ? 'bg-green-200' : 'bg-red-200' }}">
@@ -89,6 +92,8 @@
                   href="/products/{{ $inventory->product->id }}"
                   wire:navigate>{{ $inventory->product ? $inventory->product->name : 'Sin Asignar' }}</a>
               </td>
+              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                {{ \App\Models\Area::find($inventory->type_area)->name }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
                 {{ $inventory->quantity }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">

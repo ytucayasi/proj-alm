@@ -1,19 +1,11 @@
 {{-- Contenido --}}
-<div x-data="{ open: false, openAreas: false }">
+<div x-data="{ open: false, showVariations: false, openAreas: false }">
   <div class="mb-4 flex justify-between">
     <div class="flex items-center gap-2">
       <button @click="open = !open" class="flex items-center rounded bg-blue-500 px-4 py-2 text-xs text-white">
         <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
         <span class="ml-2">Reserva</span>
       </button>
-      {{--       <button class="flex items-center rounded bg-purple-500 px-4 py-2 text-xs text-white">
-        <i class="fas fa-broom"></i>
-        <span class="ml-2">Limpiar</span>
-      </button>
-      <button wire:click="recargar_precios" class="flex items-center rounded bg-cyan-500 px-4 py-2 text-xs text-white">
-        <i class="fas fa-broom"></i>
-        <span class="ml-2">Precios</span>
-      </button> --}}
       <button wire:click="save"
         class="flex items-center rounded bg-green-500 px-4 py-2 text-xs text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300">
         <i class="fas fa-plus"></i>
@@ -196,19 +188,29 @@
         <div class="overflow-x-auto">
           <ul>
             @foreach ($products as $product)
-              <li x-data="{ open: false, selectedProductId: null }" class="mb-2 select-none">
+              <li x-data="{ open: false, selectedProductId: null }" class="mb-2">
                 <div @click="open = !open; selectedProductId = open ? {{ $product->id }} : null"
                   class="cursor-pointer rounded bg-gray-100 p-2 hover:bg-gray-200">
                   {{ $product->name }}
                 </div>
                 <ul x-show="open" class="ml-4 mt-2">
                   @foreach ($product->variations as $variation)
-                    <li x-data="{ showAreas: false }" class="mb-2"
-                      wire:click="selectVariation({{ $variation->id }}, 'create')">
-                      <div
+                    <li x-data="{ showAreas: false }" class="mb-2">
+                      <div @click="showAreas = !showAreas"
                         class="flex cursor-pointer items-center justify-between rounded bg-gray-50 p-2 hover:bg-gray-100">
                         <span>{{ $variation->unit->abbreviation }} - Stock: {{ $variation->quantity_base }}</span>
+                        <span x-show="showAreas" class="text-blue-500">↓</span>
+                        <span x-show="!showAreas" class="text-blue-500">→</span>
                       </div>
+                      <ul x-show="showAreas" class="ml-4 mt-2">
+                        @foreach ($form->selectedProducts as $area)
+                          <li @click="showAreas = false"
+                            wire:click="selectVariation({{ $variation->id }}, 'create', {{ $area['area_id'] }})"
+                            class="cursor-pointer rounded bg-gray-200 p-2 hover:bg-gray-300">
+                            {{ \App\Models\Area::find($area['area_id'])->name }}
+                          </li>
+                        @endforeach
+                      </ul>
                     </li>
                   @endforeach
                 </ul>
@@ -217,6 +219,7 @@
           </ul>
         </div>
       </div>
+      {{-- Termino de recorrer el Productos selecciados --}}
     </div>
     <div class="w-full lg:w-2/3">
       <div class="rounded bg-white p-4 shadow-md">
@@ -227,9 +230,20 @@
               class="relative mb-4 rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700" role="alert">
               <strong class="font-bold">Error:</strong><br>
               <ul class="mt-2 list-inside list-disc">
-                @foreach ($form->productsExceedingStock as $product)
+                @php
+                  $areas = collect($form->productsExceedingStock)->groupBy('area_id');
+                @endphp
+                @foreach ($areas as $areaId => $products)
                   <li>
-                    Excede el {{ $product['product_name'] }} por {{ $product['exceeded_quantity'] }} de cantidad.
+                    <strong>Área {{ $areaId }}:</strong>
+                    <ul class="ml-4">
+                      @foreach ($products as $product)
+                        <li>
+                          {{ $product['product_name'] }} excede por {{ $product['exceeded_quantity'] }},
+                          "{{ $product['variation_abbr'] }}".
+                        </li>
+                      @endforeach
+                    </ul>
                   </li>
                 @endforeach
               </ul>
@@ -242,87 +256,99 @@
           @endif
         </div>
         <h2 class="mb-4 font-bold">Productos Seleccionados</h2>
-        <div class="flex justify-center items-center gap-2 mb-4">
-          <input type="text" wire:model.live="form.searchS" placeholder="Buscar en productos seleccionados..."
-            class="w-full rounded border border-gray-300 px-4 py-2 text-xs">
-          <select wire:model.live="perPage"
-            class="form-select rounded-md border-gray-300 bg-white text-xs shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-          </select>
+        {{-- <input type="text" wire:model.live="form.searchS" placeholder="Buscar en productos seleccionados..."
+          class="mb-4 w-full rounded border border-gray-300 p-2 text-xs"> --}}
+        {{-- Empieza el FOREACH --}}
+        <div x-data="{
+            openAreas: {},
+            toggleArea(areaId) {
+                if (this.openAreas[areaId] === undefined) {
+                    this.openAreas[areaId] = false;
+                }
+                this.openAreas[areaId] = !this.openAreas[areaId];
+            }
+        }">
+          @forelse ($form->selectedProducts as $index => $area)
+            <div class="mb-6" wire:key="area-{{ $area['index'] }}">
+              <div class="flex items-center justify-between">
+                <h3 class="mb-2 text-lg font-semibold uppercase">{{ \App\Models\Area::find($area['area_id'])->name }}
+                </h3>
+                <button @click="toggleArea({{ $area['area_id'] }})"
+                  class="ml-4 text-sm text-blue-500 hover:underline">
+                  <span x-text="openAreas[{{ $area['area_id'] }}] ? 'Ocultar Productos' : 'Mostrar Productos'"></span>
+                </button>
+              </div>
+              <div class="overflow-x-auto" x-show="openAreas[{{ $area['area_id'] }}]">
+                <table class="min-w-full bg-white text-xs">
+                  <thead>
+                    <tr>
+                      <th class="bg-gray-200 px-4 py-2 text-center">Producto</th>
+                      <th class="bg-gray-200 px-4 py-2 text-center">Precio</th>
+                      <th class="bg-gray-200 px-4 py-2 text-center">Cantidad</th>
+                      <th class="bg-gray-200 px-4 py-2 text-center">Stock</th>
+                      <th class="bg-gray-200 px-4 py-2 text-center">Stock Inicial</th>
+                      <th class="bg-gray-200 px-4 py-2 text-center">Unidad de Medida</th>
+                      <th class="bg-gray-200 px-4 py-2 text-center">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($area['products'] as $productIndex => $product)
+                      <tr wire:key="product-{{ $product['index'] }}">
+                        <td class="border-b px-4 py-2 text-center">{{ $product['product_name'] }}</td>
+                        <td class="border-b px-4 py-2 text-center">
+                          <input
+                            wire:model="form.selectedProducts.{{ $index }}.products.{{ $productIndex }}.variation_price"
+                            {{ $product['price_edit'] ? 'disabled' : '' }}
+                            class="w-16 rounded border border-gray-300 text-center text-xs" />
+                        </td>
+                        <td class="border-b px-4 py-2 text-center">
+                          <div class="flex items-center justify-center space-x-2">
+                            <button wire:loading.class="opacity-50" wire:loading.attr="disabled"
+                              wire:click="decrementQuantity({{ $product['variation_id'] }}, {{ $area['area_id'] }})"
+                              class="flex h-7 w-7 items-center justify-center rounded-full border border-red-500 text-red-500 shadow-md transition duration-200 hover:bg-red-500 hover:text-white">
+                              <i class="fas fa-minus w-4"></i>
+                            </button>
+                            <input
+                              wire:model.defer="form.selectedProducts.{{ $index }}.products.{{ $productIndex }}.quantity"
+                              {{ $product['quantity_edit'] ? 'disabled' : '' }}
+                              class="w-14 rounded border border-gray-300 text-center text-xs"
+                              value="{{ $product['quantity'] }}" />
+                            <button wire:loading.class="opacity-50" wire:loading.attr="disabled"
+                              wire:click="incrementQuantity({{ $product['variation_id'] }}, {{ $area['area_id'] }})"
+                              class="flex h-7 w-7 items-center justify-center rounded-full border border-green-500 text-green-500 shadow-md transition duration-200 hover:bg-green-500 hover:text-white">
+                              <i class="fas fa-plus w-4"></i>
+                            </button>
+                          </div>
+                        </td>
+                        <td class="border-b px-4 py-2 text-center">{{ $product['variation_stock'] }}</td>
+                        <td class="border-b px-4 py-2 text-center">{{ $product['initial_stock'] }}</td>
+                        <td class="border-b px-4 py-2 text-center">{{ $product['unit_abbreviation'] }}</td>
+                        <td class="border-b px-4 py-2 text-center">
+                          <button
+                            class="{{ $product['quantity_edit'] && $product['price_edit'] ? 'bg-yellow-400 hover:bg-yellow-500 focus:ring-yellow-300' : 'bg-green-400 hover:bg-green-500 focus:ring-green-300' }} h-7 w-7 rounded px-2 py-1 font-bold text-white focus:outline-none focus:ring-2"
+                            wire:click="selectVariation({{ $product['variation_id'] }}, 'edit', {{ $area['area_id'] }})">
+                            <i
+                              class="fas {{ $product['quantity_edit'] && $product['price_edit'] ? 'fa-edit' : 'fa-check' }}"></i>
+                          </button>
+                          <button
+                            class="h-7 w-7 rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
+                            wire:click="selectVariation({{ $product['variation_id'] }}, 'delete', {{ $area['area_id'] }})">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          @empty
+            <div>
+              No hay productos seleccionados
+            </div>
+          @endforelse
         </div>
-        <div class="overflow-x-auto">
-          <table class="min-w-full bg-white text-xs">
-            <thead>
-              <tr>
-                <th class="bg-gray-200 px-4 py-2 text-center">Producto</th>
-                <th class="bg-gray-200 px-4 py-2 text-center">Precio</th>
-                <th class="bg-gray-200 px-4 py-2 text-center">Cantidad</th>
-                <th class="bg-gray-200 px-4 py-2 text-center">Stock</th>
-                <th class="bg-gray-200 px-4 py-2 text-center">Stock Inicial</th>
-                <th class="bg-gray-200 px-4 py-2 text-center">Unidad de Medida</th>
-                <th class="bg-gray-200 px-4 py-2 text-center">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              @forelse ($selectedProducts as $index => $product)
-                <tr wire:key="product-{{ $product['index'] }}">
-                  <td class="border-b px-4 py-2 text-center">{{ $product['product_name'] }}</td>
-                  <td class="border-b px-4 py-2 text-center">
-                    <input wire:model="form.selectedProducts.{{ $product['index'] }}.variation_price"
-                      {{ $product['price_edit'] ? 'disabled' : '' }}
-                      class="w-16 rounded border border-gray-300 text-center text-xs" />
-                  </td>
-                  <td class="border-b px-4 py-2 text-center">
-                    <div class="flex items-center justify-center space-x-2">
-                      <button wire:loading.class="opacity-50" wire:loading.attr="disabled"
-                        wire:click="decrementQuantity({{ $product['variation_id'] }})"
-                        class="flex h-7 w-7 items-center justify-center rounded-full border border-red-500 text-red-500 shadow-md transition duration-200 hover:bg-red-500 hover:text-white">
-                        <i class="fas fa-minus w-4"></i>
-                      </button>
-                      <input wire:model.defer="form.selectedProducts.{{ $product['index'] }}.quantity"
-                        {{ $product['quantity_edit'] ? 'disabled' : '' }}
-                        class="w-14 rounded border border-gray-300 text-center text-xs"
-                        value="{{ $product['quantity'] }}" />
-                      <button wire:loading.class="opacity-50" wire:loading.attr="disabled"
-                        wire:click="incrementQuantity({{ $product['variation_id'] }})"
-                        class="flex h-7 w-7 items-center justify-center rounded-full border border-green-500 text-green-500 shadow-md transition duration-200 hover:bg-green-500 hover:text-white">
-                        <i class="fas fa-plus w-4"></i>
-                      </button>
-                    </div>
-                  </td>
-                  <td class="border-b px-4 py-2 text-center">{{ $product['variation_stock'] }}</td>
-                  <td class="border-b px-4 py-2 text-center">{{ $product['initial_stock'] }}</td>
-                  <td class="border-b px-4 py-2 text-center">{{ $product['unit_abbreviation'] }}</td>
-                  <td class="border-b px-4 py-2 text-center">
-                    <button
-                      class="{{ $product['quantity_edit'] && $product['price_edit'] ? 'bg-yellow-400 hover:bg-yellow-500 focus:ring-yellow-300' : 'bg-green-400 hover:bg-green-500 focus:ring-green-300' }} h-7 w-7 rounded px-2 py-1 font-bold text-white focus:outline-none focus:ring-2"
-                      wire:click="selectVariation({{ $product['variation_id'] }}, 'edit')">
-                      <i
-                        class="fas {{ $product['quantity_edit'] && $product['price_edit'] ? 'fa-edit' : 'fa-check' }}"></i>
-                    </button>
-                    <button
-                      class="h-7 w-7 rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
-                      wire:click="selectVariation({{ $product['variation_id'] }}, 'delete')">
-                      <i class="fas fa-trash"></i>
-                    </button>
-                  </td>
-                </tr>
-              @empty
-                <tr>
-                  <td colspan="7" class="border-b px-4 py-2 text-center">
-                    <p class="text-sm text-gray-500">No hay productos seleccionados</p>
-                  </td>
-                </tr>
-              @endforelse
-            </tbody>
-          </table>
-        </div>
-        <div class="mt-5">
-          {{ $selectedProducts->links() }}
-        </div>
+        {{-- Termina el FOREACH --}}
       </div>
     </div>
   </div>
