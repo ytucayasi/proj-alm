@@ -109,7 +109,7 @@ class ReservationForm extends Form
   {
     $variation = Variation::findOrFail($variationId);
     $price = $variation->price_base;
-    $quantity = 1;
+    $quantity = 0.01;
     $this->addProductToSelected($variation, $price, $quantity, $areaId);
   }
   private function addProductToSelected(Variation $variation, $price, $quantity, $areaId)
