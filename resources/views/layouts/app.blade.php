@@ -11,7 +11,6 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.bunny.net">
   <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
   <!-- Scripts -->
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -24,7 +23,7 @@
     @if (isset($header))
       <header class="bg-white shadow">
         <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <h2 class="text-xl font-semibold leading-tight text-gray-800 uppercase">
+          <h2 class="text-xl font-semibold uppercase leading-tight text-gray-800">
             {{ $header }}
           </h2>
         </div>
@@ -44,6 +43,8 @@
       </div>
     </main>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <x-livewire-alert::scripts />
 </body>

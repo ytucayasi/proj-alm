@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Pagination\Paginator;
 
 class Dashboard extends Component
 {
@@ -44,6 +45,14 @@ class Dashboard extends Component
     $this->calculateProfits();
     $this->loadTodayCompanies();
   }
+
+  public function updating($name, $value)
+  {
+    if ($name == "search") {
+      $this->setPage(1);
+    }
+  }
+
   public function updatingPerPage($value)
   {
     Cache::put('stock_min_per_page', $value);
@@ -90,19 +99,30 @@ class Dashboard extends Component
       ->whereDate('execution_date', $today)
       ->get();
   }
-
   public function render()
   {
-    $lowStockVariations = Variation::whereHas('product', function ($query) {
-      $query->whereColumn('quantity_base', '<', 'stock_min')
+    $variations = Variation::whereHas('product', function ($query) {
+      $query
         ->where('product_type', '=', 1)
         ->when($this->search, function ($query, $search) {
           return $query->where('name', 'like', '%' . $search . '%');
         });
-    })->paginate($this->perPage);
+    })
+      ->with('product')
+      ->get();
+
+    $sortedVariations = $variations->sortBy(function ($variation) {
+      return $variation->product->name;
+    });
+
+    $currentPage = Paginator::resolveCurrentPage();
+    $perPage = $this->perPage;
+    $currentItems = $sortedVariations->slice(($currentPage - 1) * $perPage, $perPage)->all();
+
+    $paginatedVariations = new Paginator($currentItems, $perPage, $currentPage);
 
     return view('dashboard', [
-      'lowStockVariations' => $lowStockVariations,
+      'lowStockVariations' => $paginatedVariations,
     ]);
   }
 }

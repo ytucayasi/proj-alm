@@ -149,7 +149,7 @@
           </thead>
           <tbody class="divide-y divide-gray-200 bg-white">
             @forelse ($lowStockVariations as $variation)
-              <tr>
+              <tr class="{{ $variation->quantity_base <= $variation->product->stock_min ? 'bg-red-300' : '' }}">
                 <td class="whitespace-nowrap px-4 py-2 text-center text-sm font-bold">
                   {{ $variation->product->name }}
                 </td>

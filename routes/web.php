@@ -9,6 +9,7 @@ use App\Livewire\Admin\Company\CompanyPage;
 use App\Livewire\Admin\Inventory\InventoryPage;
 use App\Livewire\Admin\Product\ProductPage;
 use App\Livewire\Admin\Product\ProductShow;
+use App\Livewire\Admin\Report\ReportG;
 use App\Livewire\Admin\Report\ReportPage;
 use App\Livewire\Admin\Reservation\ReservationCU;
 use App\Livewire\Admin\Reservation\ReservationPage;
@@ -63,6 +64,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
   });
   Route::prefix('reports')->name('reports.')->group(function () {
     Route::get('/', ReportPage::class)->name('index');
+    Route::get('/charts', ReportG::class)->name('chart');
   });
 });
 

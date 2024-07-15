@@ -10,20 +10,28 @@ class ReservationShow extends Component
 {
   public $reservationId;
   public $reservation;
-  public $inventories;
+  public $inventoriesByArea = [];
 
   public function mount($reservationId)
   {
     $this->reservationId = $reservationId;
     $this->reservation = Reservation::findOrFail($reservationId);
-    $this->inventories = Inventory::where('reservation_id', $reservationId)->get();
+    $this->loadInventoriesByArea();
+  }
+
+  public function loadInventoriesByArea()
+  {
+    $inventories = Inventory::where('reservation_id', $this->reservationId)->get();
+    foreach ($inventories as $inventory) {
+      $this->inventoriesByArea[$inventory->type_area][] = $inventory;
+    }
   }
 
   public function render()
   {
     return view('livewire.admin.reservation.reservation-show', [
       'reservation' => $this->reservation,
-      'inventories' => $this->inventories
+      'inventoriesByArea' => $this->inventoriesByArea
     ]);
   }
 }

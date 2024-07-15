@@ -91,36 +91,32 @@
   </div>
   <div>
     <h3 class="mb-4 text-lg font-bold text-gray-900">Inventarios Registrados</h3>
-    <div class="overflow-x-auto">
-      <table class="min-w-full rounded-lg border border-gray-200 bg-white shadow-lg">
-        <thead class="bg-gray-100">
-          <tr>
-            <th class="px-4 py-2 text-center text-xs font-medium uppercase tracking-wider text-gray-700">
-              Producto</th>
-            <th class="px-4 py-2 text-center text-xs font-medium uppercase tracking-wider text-gray-700">
-              Unidad</th>
-            <th class="px-4 py-2 text-center text-xs font-medium uppercase tracking-wider text-gray-700">
-              Tipo de Movimiento</th>
-            <th class="px-4 py-2 text-center text-xs font-medium uppercase tracking-wider text-gray-700">
-              Cantidad</th>
-            <th class="px-4 py-2 text-center text-xs font-medium uppercase tracking-wider text-gray-700">
-              Precio Unitario
-            </th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200 bg-white">
-          @foreach ($inventories as $inventory)
+    @foreach ($inventoriesByArea as $area => $inventories)
+      <h4 class="mt-6 mb-2 text-md font-semibold text-gray-800 uppercase">Área: {{ \App\Models\Area::find($area)->name }}</h4>
+      <div class="overflow-x-auto">
+        <table class="min-w-full rounded-lg border border-gray-200 bg-white shadow-lg">
+          <thead class="bg-gray-100">
             <tr>
-              <td class="whitespace-nowrap px-4 py-2 text-center">{{ $inventory->product->name }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-center">{{ $inventory->unit->name }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-center">
-                {{ $inventory->movement_type == 1 ? 'Entrada' : 'Salida' }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-center">{{ $inventory->quantity }} productos</td>
-              <td class="whitespace-nowrap px-4 py-2 text-center">S/. {{ $inventory->unit_price }}</td>
+              <th class="px-4 py-2 text-center text-xs font-medium uppercase tracking-wider text-gray-700">Producto</th>
+              <th class="px-4 py-2 text-center text-xs font-medium uppercase tracking-wider text-gray-700">Unidad</th>
+              <th class="px-4 py-2 text-center text-xs font-medium uppercase tracking-wider text-gray-700">Tipo de Movimiento</th>
+              <th class="px-4 py-2 text-center text-xs font-medium uppercase tracking-wider text-gray-700">Cantidad</th>
+              <th class="px-4 py-2 text-center text-xs font-medium uppercase tracking-wider text-gray-700">Precio Unitario</th>
             </tr>
-          @endforeach
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody class="divide-y divide-gray-200 bg-white">
+            @foreach ($inventories as $inventory)
+              <tr>
+                <td class="whitespace-nowrap px-4 py-2 text-center">{{ $inventory->product->name }}</td>
+                <td class="whitespace-nowrap px-4 py-2 text-center">{{ $inventory->unit->name }}</td>
+                <td class="whitespace-nowrap px-4 py-2 text-center">{{ $inventory->movement_type == 1 ? 'Entrada' : 'Salida' }}</td>
+                <td class="whitespace-nowrap px-4 py-2 text-center">{{ $inventory->quantity }} productos</td>
+                <td class="whitespace-nowrap px-4 py-2 text-center">S/. {{ $inventory->unit_price }}</td>
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
+    @endforeach
   </div>
 </div>

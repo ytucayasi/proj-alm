@@ -22,6 +22,11 @@ class Reservation extends Model
     return $this->hasMany(ReservationCompany::class);
   }
 
+  public function reservationCompanies()
+  {
+    return $this->hasMany(ReservationCompany::class);
+  }
+
   protected $casts = [
     'order_date' => 'datetime',
     'execution_date' => 'datetime',

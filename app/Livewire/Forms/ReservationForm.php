@@ -779,19 +779,37 @@ class ReservationForm extends Form
       $this->reservation->delete();
     });
   }
+    /* private function calculateTotals()
+    {
+      $totalCost = 0;
+      $totalProducts = 0;
+
+      foreach ($this->selectedProducts as $area) {
+        foreach ($area['products'] as $product) {
+          $totalCost += $product['variation_price'] * $product['quantity'];
+          $totalProducts += $product['quantity'];
+        }
+      }
+
+      $this->total_cost = $totalCost;
+      $this->total_products = $totalProducts;
+    } */
   private function calculateTotals()
   {
     $totalCost = 0;
-    $totalProducts = 0;
+    $distinctProducts = [];
 
     foreach ($this->selectedProducts as $area) {
       foreach ($area['products'] as $product) {
         $totalCost += $product['variation_price'] * $product['quantity'];
-        $totalProducts += $product['quantity'];
+
+        if (!in_array($product['product_id'], $distinctProducts)) {
+          $distinctProducts[] = $product['product_id'];
+        }
       }
     }
 
     $this->total_cost = $totalCost;
-    $this->total_products = $totalProducts;
+    $this->total_products = count($distinctProducts);
   }
 }
