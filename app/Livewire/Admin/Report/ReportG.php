@@ -76,29 +76,43 @@ class ReportG extends Component
 
   private function getDailyEarnings($start_date, $end_date)
   {
-    // Inicializar el arreglo para las ganancias por días del mes
-    $earningsByDays = [];
+    $dataByDays = [];
     $current_day = $start_date->copy();
     while ($current_day->lte($end_date)) {
-      $earningsByDays[$current_day->format('Y-m-d')] = 0;
+      $dataByDays[$current_day->format('Y-m-d')] = [
+        'earnings' => 0,
+        'total_cost' => 0,
+        'total_pack' => 0
+      ];
       $current_day->addDay();
     }
 
-    // Obtener las ganancias diarias
-    $earningsByDay = Reservation::whereBetween('execution_date', [$start_date, $end_date])
+    $reservationsByDays = Reservation::whereBetween('execution_date', [$start_date, $end_date])
+      ->select(
+        DB::raw('DATE(execution_date) as date'),
+        DB::raw('SUM(total_pack - total_cost) as earnings'),
+        DB::raw('SUM(total_cost) as total_cost'),
+        DB::raw('SUM(total_pack) as total_pack')
+      )
       ->where('payment_status', 1)
-      ->select(DB::raw('DATE(execution_date) as date'), DB::raw('SUM(total_pack - total_cost) as earnings'))
       ->groupBy('date')
       ->get();
 
-    // Llenar el arreglo con los datos de las ganancias por días del mes
-    foreach ($earningsByDay as $earning) {
-      $earningsByDays[$earning->date] = $earning->earnings;
+    foreach ($reservationsByDays as $reservation) {
+      $dataByDays[$reservation->date] = [
+        'earnings' => $reservation->earnings,
+        'total_cost' => $reservation->total_cost,
+        'total_pack' => $reservation->total_pack
+      ];
     }
 
     return [
-      'labels' => array_keys($earningsByDays),
-      'data' => array_values($earningsByDays),
+      'labels' => array_keys($dataByDays),
+      'earnings' => array_column($dataByDays, 'earnings'),
+      'total_cost' => array_column($dataByDays, 'total_cost'),
+      'total_pack' => array_column($dataByDays, 'total_pack')
     ];
   }
+
+
 }

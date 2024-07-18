@@ -100,25 +100,58 @@
   });
 
   var ctx3 = document.getElementById('gananciasDiarias').getContext('2d');
-  var dailyEarningsData = @json($dailyEarnings['data']);
-  var backgroundColors = dailyEarningsData.map(value => value < 0 ? 'rgba(255, 99, 132, 0.2)' :
-    'rgba(75, 192, 192, 0.2)');
-  var borderColors = dailyEarningsData.map(value => value < 0 ? 'rgba(255, 99, 132, 1)' : 'rgba(75, 192, 192, 1)');
+
+  // Datos desde el backend
+  var dailyEarningsData = @json($dailyEarnings['earnings']);
+  var dailyTotalCostData = @json($dailyEarnings['total_cost']);
+  var dailyTotalPackData = @json($dailyEarnings['total_pack']);
+  var labels = @json($dailyEarnings['labels']);
+
+  // Colores
+  var earningsColors = dailyEarningsData.map(value => value < 0 ? 'rgba(255, 99, 132, 0.2)' :
+  'rgba(75, 192, 192, 0.2)');
+  var earningsBorderColors = dailyEarningsData.map(value => value < 0 ? 'rgba(255, 99, 132, 1)' :
+    'rgba(75, 192, 192, 1)');
+  var totalCostColor = 'rgba(54, 162, 235, 0.2)';
+  var totalCostBorderColor = 'rgba(54, 162, 235, 1)';
+  var totalPackColor = 'rgba(255, 206, 86, 0.2)';
+  var totalPackBorderColor = 'rgba(255, 206, 86, 1)';
 
   var myChart3 = new Chart(ctx3, {
     type: 'line',
     data: {
-      labels: @json($dailyEarnings['labels']),
+      labels: labels,
       datasets: [{
-        label: 'Ganancias Diarias',
-        data: dailyEarningsData,
-        backgroundColor: backgroundColors,
-        borderColor: borderColors,
-        borderWidth: 1,
-        fill: false, // Para evitar que el área debajo de la línea se rellene
-        pointBackgroundColor: borderColors, // Color de los puntos
-        pointBorderColor: borderColors // Borde de los puntos
-      }]
+          label: 'Ganancias Diarias',
+          data: dailyEarningsData,
+          backgroundColor: earningsColors,
+          borderColor: earningsBorderColors,
+          borderWidth: 1,
+          fill: false,
+          pointBackgroundColor: earningsBorderColors,
+          pointBorderColor: earningsBorderColors
+        },
+        {
+          label: 'Costo Total',
+          data: dailyTotalCostData,
+          backgroundColor: totalCostColor,
+          borderColor: totalCostBorderColor,
+          borderWidth: 1,
+          fill: false,
+          pointBackgroundColor: totalCostBorderColor,
+          pointBorderColor: totalCostBorderColor
+        },
+        {
+          label: 'Pago Total',
+          data: dailyTotalPackData,
+          backgroundColor: totalPackColor,
+          borderColor: totalPackBorderColor,
+          borderWidth: 1,
+          fill: false,
+          pointBackgroundColor: totalPackBorderColor,
+          pointBorderColor: totalPackBorderColor
+        }
+      ]
     },
     options: {
       responsive: true,
@@ -130,7 +163,7 @@
       },
       plugins: {
         legend: {
-          display: false,
+          display: true,
           position: 'top' // Mostrar la leyenda en la parte superior
         }
       }
