@@ -22,6 +22,7 @@ class InventoryForm extends Form
   public $unit_id = null;
   public $description = '';
   public $type = 1;
+  public $type_area = 1;//
   const MOVEMENT_TYPE_ENTRY = 1;
   const MOVEMENT_TYPE_EXIT = 2;
   public function rules()
@@ -36,8 +37,11 @@ class InventoryForm extends Form
     ];
     if ($this->type == 1 && $this->movement_type == 1) {
       $rules['unit_price'] = 'required|numeric|min:0.01';
+      $rules['type_area'] = 'nullable';//
+
     } else {
       $rules['unit_price'] = 'nullable';
+      $rules['type_area'] = 'required|exists:areas,id';//
     }
     return $rules;
   }
@@ -52,6 +56,7 @@ class InventoryForm extends Form
       'quantity.numeric' => 'La :attribute debe ser un número.',
       'product_id.required' => 'El :attribute es requerido.',
       'unit_id.required' => 'La :attribute es requerida.',
+      'type_area.required' => 'El :attribute es requerida.', //
     ];
   }
   public function validationAttributes()
@@ -61,6 +66,7 @@ class InventoryForm extends Form
       'unit_price' => 'precio',
       'product_id' => 'producto',
       'unit_id' => 'unidad de medida',
+      'type_area' => 'area',//
     ];
   }
   public function setInventory(Inventory $inventory)
@@ -74,6 +80,7 @@ class InventoryForm extends Form
     $this->unit_id = $inventory->unit_id;
     $this->description = $inventory->description;
     $this->type = $inventory->type;
+    $this->type_area = $inventory->type_area;
   }
 
   public function store()
@@ -159,7 +166,7 @@ class InventoryForm extends Form
     }
     $this->updateProductPriceBase($newVariation);
 
-    $this->reset();
+    /* $this->reset(); */
   }
 
   public function delete()

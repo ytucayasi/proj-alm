@@ -65,6 +65,9 @@
               Producto</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+              Area</th>
+            <th
+              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
               Cantidad</th>
             <th
               class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -90,9 +93,11 @@
                   wire:navigate>{{ $inventory->product ? $inventory->product->name : 'Sin Asignar' }}</a>
               </td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                {{ \App\Models\Area::find($inventory->type_area)->name }}</td>
+              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
                 {{ $inventory->quantity }}</td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $inventory->movement_type == 2 && $inventory->type_action != 2 || $inventory->type == 2 ? '-' : 'S/. ' . $inventory->unit_price }}
+                {{ ($inventory->movement_type == 2 && $inventory->type_action != 2) || $inventory->type == 2 ? '-' : 'S/. ' . $inventory->unit_price }}
               </td>
               <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
                 {{ $inventory->unit->name }}
@@ -204,6 +209,18 @@
           @enderror
         </div>
         <div class="mt-4">
+          <label class="block text-sm font-medium text-gray-700">Area</label>
+          <select wire:model.live="form.type_area" class="form-select mt-1 block w-full rounded-md shadow-sm">
+            <option>Seleccionar un Area</option>
+            @foreach ($areas as $area)
+              <option value="{{ $area->id }}">{{ $area->name }}</option>
+            @endforeach
+          </select>
+          @error('form.type_area')
+            <span class="text-sm text-red-500">{{ $message }}</span>
+          @enderror
+        </div>
+        <div class="mt-4">
           <label class="block text-sm font-medium text-gray-700">Tipo de Movimiento</label>
           <select wire:model.live="form.movement_type" class="form-select mt-1 block w-full rounded-md shadow-sm">
             <option value="1">Entrada</option>
@@ -213,7 +230,7 @@
             <span class="text-sm text-red-500">{{ $message }}</span>
           @enderror
         </div>
-{{--         @if ($form->movement_type == 1)
+        {{--         @if ($form->movement_type == 1)
           <div class="mt-4">
             <label class="block text-sm font-medium text-gray-700">Precio Unitario</label>
             <input type="number" step="0.01" wire:model="form.unit_price"

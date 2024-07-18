@@ -21,13 +21,17 @@
         class="rounded-lg bg-red-500 px-2 py-2 text-xs font-semibold text-white shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
         <i class="fas fa-calendar-alt"></i> 3 Meses
       </button>
+      <button wire:click="setPreviousYears"
+        class="rounded-lg bg-teal-500 px-2 py-2 text-xs font-semibold text-white shadow-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">
+        <i class="fas fa-calendar-alt"></i> Todos
+      </button>
     </div>
     <div class="mb-4 flex space-x-2">
       <button wire:click="reportG()"
         class="rounded-lg bg-slate-500 px-2 py-2 text-xs font-semibold text-white shadow-md hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2">
         <i class="fas fa-chart-pie"></i> Gráficos
       </button>
-{{--       <button wire:click="setThreeMonths"
+      {{--       <button wire:click="setThreeMonths"
         class="rounded-lg bg-slate-500 px-2 py-2 text-xs font-semibold text-white shadow-md hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2">
         <i class="far fa-chart-bar"></i> Productos
       </button>

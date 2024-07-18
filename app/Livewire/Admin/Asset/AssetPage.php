@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin\Asset;
 
 use App\Livewire\Forms\InventoryForm;
+use App\Models\Area;
 use App\Models\Inventory;
 use App\Models\Product;
 use App\Models\Unit;
@@ -107,10 +108,10 @@ class AssetPage extends Component
       } else {
         $this->form->type = 2;
         $this->form->store();
+        $this->form->reset();
       }
       $this->alert('success', 'Se creó/actualizó con éxito');
       $this->resetValidation();
-      $this->form->reset();
       $this->productSearch = "";
       /* $this->closeModal($this->modalCreateOrUpdate); */
     } catch (\Exception $e) {
@@ -149,6 +150,7 @@ class AssetPage extends Component
       'inventories' => $inventories->paginate($this->perPage),
       'products' => Product::where("state", 1)->where("product_type", 2)->get(),
       'units' => Unit::where("state", 1)->get(),
+      'areas' => Area::where("state", 1)->get(),
       'searchResults' => $this->searchProducts(),
     ]);
   }

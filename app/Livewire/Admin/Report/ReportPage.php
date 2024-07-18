@@ -89,6 +89,13 @@ class ReportPage extends Component
     $this->calculateTotals();
   }
 
+  public function setPreviousYears()
+  {
+    $this->start_date = Carbon::createFromFormat('Y-m-d\TH:i', '1900-01-01T00:00'); // Fecha de inicio arbitrariamente antigua
+    $this->end_date = Carbon::now()->format('Y-m-d\T23:59');
+    $this->calculateTotals();
+  }
+
   public function setMonth()
   {
     $this->start_date = Carbon::now()->startOfMonth()->format('Y-m-d\T00:00');
