@@ -14,10 +14,18 @@
     </div>
     <div class="mb-4">
       <div class="mb-4">
-        Reservas por Areas
+        Reservas por Áreas
+      </div>
+      <div style="width: 100%; height: 400px;" class="flex justify-center">
+        <canvas id="reservasAreas"></canvas>
+      </div>
+    </div>
+    <div class="mb-4">
+      <div class="mb-4">
+        Ganancias Diarias
       </div>
       <div style="width: 100%; height: 400px;">
-        <canvas id="reservasAreas"></canvas>
+        <canvas id="gananciasDiarias"></canvas>
       </div>
     </div>
   </div>
@@ -55,13 +63,12 @@
   });
 
   var ctx2 = document.getElementById('reservasAreas').getContext('2d');
-  console.log(@json($dataByArea));
   var myChart2 = new Chart(ctx2, {
     type: 'pie',
     data: {
       labels: @json($dataByArea['labels']),
       datasets: [{
-        label: 'Reservas por Areas',
+        label: 'Reservas',
         data: @json($dataByArea['data']),
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)',
@@ -87,6 +94,44 @@
         legend: {
           display: true,
           position: 'right' // Mostrar la leyenda a la derecha
+        }
+      }
+    }
+  });
+
+  var ctx3 = document.getElementById('gananciasDiarias').getContext('2d');
+  var dailyEarningsData = @json($dailyEarnings['data']);
+  var backgroundColors = dailyEarningsData.map(value => value < 0 ? 'rgba(255, 99, 132, 0.2)' :
+    'rgba(75, 192, 192, 0.2)');
+  var borderColors = dailyEarningsData.map(value => value < 0 ? 'rgba(255, 99, 132, 1)' : 'rgba(75, 192, 192, 1)');
+
+  var myChart3 = new Chart(ctx3, {
+    type: 'line',
+    data: {
+      labels: @json($dailyEarnings['labels']),
+      datasets: [{
+        label: 'Ganancias Diarias',
+        data: dailyEarningsData,
+        backgroundColor: backgroundColors,
+        borderColor: borderColors,
+        borderWidth: 1,
+        fill: false, // Para evitar que el área debajo de la línea se rellene
+        pointBackgroundColor: borderColors, // Color de los puntos
+        pointBorderColor: borderColors // Borde de los puntos
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      },
+      plugins: {
+        legend: {
+          display: false,
+          position: 'top' // Mostrar la leyenda en la parte superior
         }
       }
     }
