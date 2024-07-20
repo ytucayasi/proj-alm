@@ -31,7 +31,8 @@ class ReportPage extends Component
 
   public function mount()
   {
-    $this->start_date = Carbon::today()->format('Y-m-d\T00:00');
+    /* $this->start_date = Carbon::today()->format('Y-m-d\T00:00'); */
+    $this->start_date = Carbon::createFromFormat('Y-m-d\TH:i', '1900-01-01T00:00');
     $this->end_date = Carbon::today()->format('Y-m-d\T23:59');
     $this->calculateTotals();
   }
@@ -189,7 +190,7 @@ class ReportPage extends Component
     $query = Reservation::query();
     $this->applyFilters($query);
 
-    $reservations = $query->paginate(10);
+    $reservations = $query->get();
 
     return view('livewire.admin.report.report-page', [
       'reservations' => $reservations,

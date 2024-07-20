@@ -51,117 +51,119 @@
       </div>
     </div>
     @if ($viewMode === 'table')
-      <table class="min-w-full overflow-hidden rounded-lg bg-white leading-normal shadow-md">
-        <thead>
-          <tr>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              ID</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Fecha de Pedido</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Fecha de Ejecución</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Total Pago</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Total Invertido</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Número de Personas</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Total de Productos</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Estado</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          @forelse ($reservations as $reservation)
+      <div class="overflow-x-auto">
+        <table class="min-w-full overflow-hidden rounded-lg bg-white leading-normal shadow-md">
+          <thead>
             <tr>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $reservation->id }}
-              </td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                <span class="block">{{ $reservation->order_date->format('d/m/Y') }}</span>
-                <span class="text-xs font-bold">({{ $reservation->order_date->format('H:i') }})</span>
-              </td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                <span
-                  class="block">{{ $reservation->execution_date ? $reservation->execution_date->format('d/m/Y') : 'N/A' }}</span>
-                <span
-                  class="text-xs font-bold">({{ $reservation->execution_date ? $reservation->execution_date->format('H:i') : 'N/A' }})</span>
-              </td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                S/. {{ number_format($reservation->total_pack, 2) }}</td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                S/. {{ number_format($reservation->total_cost, 2) }}</td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $reservation->people_count }} (pack)</td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $reservation->total_products }} productos</td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                <span
-                  class="{{ $reservation->status == 1 ? 'bg-green-100 text-green-800' : '' }} {{ $reservation->status == 2 ? 'bg-blue-100 text-blue-800' : '' }} {{ $reservation->status == 3 ? 'bg-yellow-100 text-yellow-800' : '' }} {{ $reservation->status == 5 ? 'bg-red-100 text-red-800' : '' }} {{ $reservation->status == 4 ? 'bg-purple-100 text-purple-800' : '' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
-                  @switch($reservation->status)
-                    @case(1)
-                      Realizado
-                    @break
-
-                    @case(2)
-                      En Ejecución
-                    @break
-
-                    @case(3)
-                      Pendiente
-                    @break
-
-                    @case(4)
-                      Pospuesto
-                    @break
-
-                    @case(5)
-                      Cancelado
-                    @break
-                  @endswitch
-                </span>
-              </td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center">
-                <div class="flex gap-1">
-                  <button
-                    class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
-                    wire:click="formCU({{ $reservation->id }})"><i class="fas fa-edit"></i></button>
-                  <button
-                    class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
-                    wire:click="alertDelete({{ $reservation->id }})"><i class="fas fa-trash"></i></button>
-                  <button
-                    class="rounded bg-cyan-400 px-2 py-1 font-bold text-white hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-300"
-                    wire:click="view({{ $reservation->id }})"><i class="fas fa-eye"></i></button>
-                </div>
-              </td>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                ID</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Fecha de Pedido</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Fecha de Ejecución</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Total Pago</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Total Invertido</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Número de Personas</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Total de Productos</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Estado</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Acciones</th>
             </tr>
-            @empty
+          </thead>
+          <tbody>
+            @forelse ($reservations as $reservation)
               <tr>
-                <td colspan="8" class="border-b px-4 py-2 text-center">
-                  <p class="text-sm text-gray-500">No se registraron aún datos</p>
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $reservation->id }}
+                </td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                  <span class="block">{{ $reservation->order_date->format('d/m/Y') }}</span>
+                  <span class="text-xs font-bold">({{ $reservation->order_date->format('H:i') }})</span>
+                </td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                  <span
+                    class="block">{{ $reservation->execution_date ? $reservation->execution_date->format('d/m/Y') : 'N/A' }}</span>
+                  <span
+                    class="text-xs font-bold">({{ $reservation->execution_date ? $reservation->execution_date->format('H:i') : 'N/A' }})</span>
+                </td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                  S/. {{ number_format($reservation->total_pack, 2) }}</td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                  S/. {{ number_format($reservation->total_cost, 2) }}</td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                  {{ $reservation->people_count }} (pack)</td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                  {{ $reservation->total_products }} productos</td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                  <span
+                    class="{{ $reservation->status == 1 ? 'bg-green-100 text-green-800' : '' }} {{ $reservation->status == 2 ? 'bg-blue-100 text-blue-800' : '' }} {{ $reservation->status == 3 ? 'bg-yellow-100 text-yellow-800' : '' }} {{ $reservation->status == 5 ? 'bg-red-100 text-red-800' : '' }} {{ $reservation->status == 4 ? 'bg-purple-100 text-purple-800' : '' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
+                    @switch($reservation->status)
+                      @case(1)
+                        Realizado
+                      @break
+
+                      @case(2)
+                        En Ejecución
+                      @break
+
+                      @case(3)
+                        Pendiente
+                      @break
+
+                      @case(4)
+                        Pospuesto
+                      @break
+
+                      @case(5)
+                        Cancelado
+                      @break
+                    @endswitch
+                  </span>
+                </td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center">
+                  <div class="flex gap-1">
+                    <button
+                      class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                      wire:click="formCU({{ $reservation->id }})"><i class="fas fa-edit"></i></button>
+                    <button
+                      class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
+                      wire:click="alertDelete({{ $reservation->id }})"><i class="fas fa-trash"></i></button>
+                    <button
+                      class="rounded bg-cyan-400 px-2 py-1 font-bold text-white hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-300"
+                      wire:click="view({{ $reservation->id }})"><i class="fas fa-eye"></i></button>
+                  </div>
                 </td>
               </tr>
-            @endforelse
-          </tbody>
-        </table>
+              @empty
+                <tr>
+                  <td colspan="8" class="border-b px-4 py-2 text-center">
+                    <p class="text-sm text-gray-500">No se registraron aún datos</p>
+                  </td>
+                </tr>
+              @endforelse
+            </tbody>
+          </table>
+        </div>
       @else
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           @forelse ($reservations as $reservation)
             <div class="overflow-hidden rounded-lg bg-white shadow-lg">
               <div class="p-6">
                 <h3 class="mb-2 text-lg font-semibold text-gray-900">
-                  {{ $reservation->company_name }}
+                  {{ implode(', ', $reservation->companies->pluck('company.name')->toArray()) }}
                 </h3>
                 <span class="block text-sm text-gray-600">
                   Estado: <span

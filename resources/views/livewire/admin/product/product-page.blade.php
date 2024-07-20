@@ -53,76 +53,79 @@
       </div>
     </div>
     @if ($viewMode === 'table')
-      <table class="min-w-full overflow-hidden rounded-lg bg-white leading-normal shadow-md">
-        <thead>
-          <tr>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              ID</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Nombre</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Categoría</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Estado</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Tipo</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          @forelse ($products as $product)
+      <div class="overflow-x-auto">
+        <table class="min-w-full overflow-hidden rounded-lg bg-white leading-normal shadow-md">
+          <thead>
             <tr>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $product->id }}</td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $product->name }}
-              </td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $product->category ? $product->category->name : 'Sin Asignar' }}</td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                <span
-                  class="{{ $product->state == 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
-                  {{ $product->state == 1 ? 'Disponible' : 'Agotado' }}
-                </span>
-              </td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                <span
-                  class="{{ $product->product_type == 1 ? 'bg-cyan-100 text-cyan-800' : 'bg-orange-100 text-orange-800' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
-                  {{ $product->product_type == 1 ? 'Inventario' : 'Activo' }}
-                </span>
-              </td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center">
-                <button
-                  class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
-                  wire:click="edit({{ $product->id }})"><i class="fas fa-edit"></i></button>
-                @if ($product->inventories->isEmpty() && $product->variations->isEmpty())
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                ID</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Nombre</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Categoría</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Estado</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Tipo</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @forelse ($products as $product)
+              <tr>
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $product->id }}
+                </td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                  {{ $product->name }}
+                </td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                  {{ $product->category ? $product->category->name : 'Sin Asignar' }}</td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                  <span
+                    class="{{ $product->state == 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
+                    {{ $product->state == 1 ? 'Disponible' : 'Agotado' }}
+                  </span>
+                </td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                  <span
+                    class="{{ $product->product_type == 1 ? 'bg-cyan-100 text-cyan-800' : 'bg-orange-100 text-orange-800' }} inline-flex rounded-full px-2 text-xs font-semibold leading-5">
+                    {{ $product->product_type == 1 ? 'Inventario' : 'Activo' }}
+                  </span>
+                </td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center">
                   <button
-                    class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
-                    wire:click="alertDelete({{ $product->id }})"><i class="fas fa-trash"></i></button>
-                @endif
-                <button
-                  class="rounded bg-cyan-400 px-2 py-1 font-bold text-white hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-300"
-                  wire:click="view({{ $product->id }})"><i class="fas fa-eye"></i></button>
-                {{--                 <button
+                    class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                    wire:click="edit({{ $product->id }})"><i class="fas fa-edit"></i></button>
+                  @if ($product->inventories->isEmpty() && $product->variations->isEmpty())
+                    <button
+                      class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
+                      wire:click="alertDelete({{ $product->id }})"><i class="fas fa-trash"></i></button>
+                  @endif
+                  <button
+                    class="rounded bg-cyan-400 px-2 py-1 font-bold text-white hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-300"
+                    wire:click="view({{ $product->id }})"><i class="fas fa-eye"></i></button>
+                  {{--                 <button
                   class="rounded bg-orange-400 px-2 py-1 font-bold text-white hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-300"
                   wire:click="addInventory({{ $product->id }})"><i class="fas fa-cart-plus"></i></button> --}}
-              </td>
-            </tr>
-          @empty
-            <tr>
-              <td colspan="5" class="border-b px-4 py-2 text-center">
-                <p class="text-sm text-gray-500">No se registraron aún datos</p>
-              </td>
-            </tr>
-          @endforelse
-        </tbody>
-      </table>
+                </td>
+              </tr>
+            @empty
+              <tr>
+                <td colspan="5" class="border-b px-4 py-2 text-center">
+                  <p class="text-sm text-gray-500">No se registraron aún datos</p>
+                </td>
+              </tr>
+            @endforelse
+          </tbody>
+        </table>
+      </div>
     @else
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         @forelse ($products as $product)
@@ -183,7 +186,8 @@
         </div>
         <div class="mt-4">
           <label class="block text-sm font-medium text-gray-700">Stock Mínimo</label>
-          <input type="text" wire:model="form.stock_min" class="form-input mt-1 block w-full rounded-md shadow-sm">
+          <input type="text" wire:model="form.stock_min"
+            class="form-input mt-1 block w-full rounded-md shadow-sm">
           @error('form.stock_min')
             <span class="text-sm text-red-500">{{ $message }}</span>
           @enderror

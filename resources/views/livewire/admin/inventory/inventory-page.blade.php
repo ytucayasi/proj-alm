@@ -54,84 +54,97 @@
       </div>
     </div>
     @if ($viewMode === 'table')
-      <table class="min-w-full overflow-hidden rounded-lg bg-white leading-normal shadow-md">
-        <thead>
-          <tr>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              ID</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Producto</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Area</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Cantidad</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Precio Unitario</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Unidad</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Fecha de Creación</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Acciones</th>
-          </tr>
-        </thead>{{-- {{ \App\Models\Area::find($area['area_id'])->name }} --}}
-        <tbody>
-          @forelse ($inventories as $inventory)
-            <tr class="{{ $inventory->movement_type == '1' ? 'bg-green-200' : 'bg-red-200' }}">
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $inventory->id }}</td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                <a class="text-blue-500 underline transition duration-300 ease-in-out hover:text-blue-700 hover:no-underline"
-                  href="/products/{{ $inventory->product->id }}"
-                  wire:navigate>{{ $inventory->product ? $inventory->product->name : 'Sin Asignar' }}</a>
-              </td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ \App\Models\Area::find($inventory->type_area)->name }}</td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $inventory->quantity }}</td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $inventory->movement_type == 2 && $inventory->type_action != 2 ? '-' : 'S/. ' . $inventory->unit_price }}
-              </td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $inventory->unit->name }}
-                <span class="font-bold">
-                  ({{ $inventory->unit->abbreviation }})
-                </span>
-              </td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
-                {{ $inventory->created_at }}</td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center">
-                @if ($inventory->type_action != 2)
-                  <button
-                    class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
-                    wire:click="edit({{ $inventory->id }})"><i class="fas fa-edit"></i></button>
-                  <button
-                    class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
-                    wire:click="alertDelete({{ $inventory->id }})"><i class="fas fa-trash"></i></button>
-                @else
-                  <button
-                    class="rounded bg-orange-400 px-2 py-1 font-bold text-white hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-300"
-                    wire:click="reservation({{ $inventory->reservation_id }})"><i
-                      class="fas fa-external-link-alt"></i></button>
-                @endif
-              </td>
-            </tr>
-          @empty
+      <div class="overflow-x-auto">
+        <table class="min-w-full overflow-hidden rounded-lg bg-white leading-normal shadow-md">
+          <thead>
             <tr>
-              <td colspan="7" class="border-b px-4 py-2 text-center">
-                <p class="text-sm text-gray-500">No se registraron aún datos</p>
-              </td>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                ID</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Producto</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Area</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Cantidad</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Precio Unitario</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Unidad</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Fecha de Creación</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Acciones</th>
             </tr>
-          @endforelse
-        </tbody>
-      </table>
+          </thead>{{-- {{ \App\Models\Area::find($area['area_id'])->name }} --}}
+          <tbody>
+            @forelse ($inventories as $inventory)
+              <tr class="{{ $inventory->movement_type == '1' ? 'bg-green-200' : 'bg-red-200' }}">
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $inventory->id }}
+                </td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                  <a class="text-blue-500 underline transition duration-300 ease-in-out hover:text-blue-700 hover:no-underline"
+                    href="/products/{{ $inventory->product->id }}"
+                    wire:navigate>{{ $inventory->product ? $inventory->product->name : 'Sin Asignar' }}</a>
+                </td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                  @if (
+                      $inventory->type_action == 1 &&
+                          $inventory->type == 1 &&
+                          !($inventory->movement_type == 1 || $inventory->movement_type == 2))
+                    {{ \App\Models\Area::find($inventory->type_area)->name }}
+                  @elseif ($inventory->type_action == 2 && $inventory->movement_type == 2)
+                    {{ \App\Models\Area::find($inventory->type_area)->name }}
+                  @else
+                    -
+                  @endif
+                </td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                  {{ $inventory->quantity }}</td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                  {{ $inventory->movement_type == 2 && $inventory->type_action != 2 ? '-' : 'S/. ' . $inventory->unit_price }}
+                </td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                  {{ $inventory->unit->name }}
+                  <span class="font-bold">
+                    ({{ $inventory->unit->abbreviation }})
+                  </span>
+                </td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">
+                  {{ $inventory->created_at }}</td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center">
+                  @if ($inventory->type_action != 2)
+                    <button
+                      class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                      wire:click="edit({{ $inventory->id }})"><i class="fas fa-edit"></i></button>
+                    <button
+                      class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
+                      wire:click="alertDelete({{ $inventory->id }})"><i class="fas fa-trash"></i></button>
+                  @else
+                    <button
+                      class="rounded bg-orange-400 px-2 py-1 font-bold text-white hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-300"
+                      wire:click="reservation({{ $inventory->reservation_id }})"><i
+                        class="fas fa-external-link-alt"></i></button>
+                  @endif
+                </td>
+              </tr>
+            @empty
+              <tr>
+                <td colspan="7" class="border-b px-4 py-2 text-center">
+                  <p class="text-sm text-gray-500">No se registraron aún datos</p>
+                </td>
+              </tr>
+            @endforelse
+          </tbody>
+        </table>
+      </div>
     @else
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         @forelse ($inventories as $inventory)
@@ -150,14 +163,17 @@
               <span class="block text-sm text-gray-600">Precio Unitario: {{ $inventory->unit_price }}</span>
               <span class="block text-sm text-gray-600">Unidad: {{ $inventory->unit->abbreviation }}</span>
               @if ($inventory->type_action != 2)
-                <div class="mt-2 text-right">
-                  <button
-                    class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
-                    wire:click="edit({{ $inventory->id }})"><i class="fas fa-edit"></i></button>
-                  <button
-                    class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
-                    wire:click="alertDelete({{ $inventory->id }})"><i class="fas fa-trash"></i></button>
-                </div>
+                <button
+                  class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                  wire:click="edit({{ $inventory->id }})"><i class="fas fa-edit"></i></button>
+                <button
+                  class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
+                  wire:click="alertDelete({{ $inventory->id }})"><i class="fas fa-trash"></i></button>
+              @else
+                <button
+                  class="rounded bg-orange-400 px-2 py-1 font-bold text-white hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-300"
+                  wire:click="reservation({{ $inventory->reservation_id }})"><i
+                    class="fas fa-external-link-alt"></i></button>
               @endif
             </div>
           </div>

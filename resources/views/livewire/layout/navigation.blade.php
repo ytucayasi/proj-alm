@@ -23,7 +23,7 @@ new class extends Component {
         <!-- Logo -->
         <div class="flex shrink-0 items-center">
           <a href="{{ route('dashboard') }}" wire:navigate>
-            <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+            <img src="{{ asset('images/logofe.png') }}" alt="Logo" class="h-9">
           </a>
         </div>
 
@@ -141,26 +141,34 @@ new class extends Component {
       <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
         {{ __('Dashboard') }}
       </x-responsive-nav-link>
-      <x-responsive-nav-link :href="route('products.index')" :active="request()->routeIs('products.*')" wire:navigate>
-        {{ __('Productos') }}
-      </x-responsive-nav-link>
       <x-responsive-nav-link :href="route('inventories.index')" :active="request()->routeIs('inventories.*')" wire:navigate>
         {{ __('Inventarios') }}
+      </x-responsive-nav-link>
+      <x-responsive-nav-link :href="route('assets.index')" :active="request()->routeIs('assets.*')" wire:navigate>
+        {{ __('Activos') }}
       </x-responsive-nav-link>
       <x-responsive-nav-link :href="route('reservations.index')" :active="request()->routeIs('reservations.*')" wire:navigate>
         {{ __('Reservas') }}
       </x-responsive-nav-link>
+      <x-responsive-nav-link :href="route('areas.index')" :active="request()->routeIs('areas.*')" wire:navigate>
+        {{ __('Areas') }}
+      </x-responsive-nav-link>
       <x-responsive-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')" wire:navigate>
         {{ __('Categorías') }}
+      </x-responsive-nav-link>
+      <x-responsive-nav-link :href="route('products.index')" :active="request()->routeIs('products.*')" wire:navigate>
+        {{ __('Productos') }}
       </x-responsive-nav-link>
       <x-responsive-nav-link :href="route('units.index')" :active="request()->routeIs('units.*')" wire:navigate>
         {{ __('Unidades') }}
       </x-responsive-nav-link>
-      <x-responsive-nav-link :href="route('areas.index')" :active="request()->routeIs('areas.*')" wire:navigate>
-        {{ __('Areas') }}
+      <x-responsive-nav-link :href="route('companies.index')" :active="request()->routeIs('companies.*')" wire:navigate>
+        {{ __('Empresas') }}
+      </x-responsive-nav-link>
+      <x-responsive-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.*')" wire:navigate>
+        {{ __('Reportes') }}
       </x-responsive-nav-link>
     </div>
-
     <!-- Responsive Settings Options -->
     <div class="border-t border-gray-200 pb-1 pt-4">
       <div class="px-4">

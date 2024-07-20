@@ -51,54 +51,57 @@
       </div>
     </div>
     @if ($viewMode === 'table')
-      <table class="min-w-full overflow-hidden rounded-lg bg-white leading-normal shadow-md">
-        <thead>
-          <tr>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              ID</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Nombre</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              RUC</th>
-            <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-              Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          @forelse ($companies as $company)
+      <div class="overflow-x-auto">
+        <table class="min-w-full overflow-hidden rounded-lg bg-white leading-normal shadow-md">
+          <thead>
             <tr>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $company->id }}</td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $company->name }}
-              </td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $company->ruc }}
-              </td>
-              <td class="border-b border-gray-200 px-5 py-2 text-center">
-                <button
-                  class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
-                  wire:click="edit({{ $company->id }})"><i class="fas fa-edit"></i></button>
-                @if ($company->reservations->isEmpty())
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                ID</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Nombre</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                RUC</th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @forelse ($companies as $company)
+              <tr>
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $company->id }}
+                </td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $company->name }}
+                </td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center text-sm text-gray-900">{{ $company->ruc }}
+                </td>
+                <td class="border-b border-gray-200 px-5 py-2 text-center">
                   <button
-                    class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
-                    wire:click="alertDelete({{ $company->id }})"><i class="fas fa-trash"></i></button>
-                @endif
-                {{-- <button
+                    class="rounded bg-yellow-400 px-2 py-1 font-bold text-white hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                    wire:click="edit({{ $company->id }})"><i class="fas fa-edit"></i></button>
+                  @if ($company->reservations->isEmpty())
+                    <button
+                      class="rounded bg-red-400 px-2 py-1 font-bold text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
+                      wire:click="alertDelete({{ $company->id }})"><i class="fas fa-trash"></i></button>
+                  @endif
+                  {{-- <button
                   class="rounded bg-cyan-400 px-2 py-1 font-bold text-white hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-300"
                   wire:click="view({{ $company->id }})"><i class="fas fa-eye"></i></button> --}}
-              </td>
-            </tr>
-          @empty
-            <tr>
-              <td colspan="4" class="border-b px-4 py-2 text-center">
-                <p class="text-sm text-gray-500">No se registraron aún datos</p>
-              </td>
-            </tr>
-          @endforelse
-        </tbody>
-      </table>
+                </td>
+              </tr>
+            @empty
+              <tr>
+                <td colspan="4" class="border-b px-4 py-2 text-center">
+                  <p class="text-sm text-gray-500">No se registraron aún datos</p>
+                </td>
+              </tr>
+            @endforelse
+          </tbody>
+        </table>
+      </div>
     @else
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         @forelse ($companies as $company)

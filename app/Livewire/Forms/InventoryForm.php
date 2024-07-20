@@ -38,7 +38,6 @@ class InventoryForm extends Form
     if ($this->type == 1 && $this->movement_type == 1) {
       $rules['unit_price'] = 'required|numeric|min:0.01';
       $rules['type_area'] = 'nullable';//
-
     } else {
       $rules['unit_price'] = 'nullable';
       $rules['type_area'] = 'required|exists:areas,id';//
@@ -89,7 +88,7 @@ class InventoryForm extends Form
     $this->validate();
 
     if ($this->type == 1) {
-      /* Validamos el preccio */
+      /* Validamos el precio */
       $this->validateUnitPrice();
     }
 
@@ -99,8 +98,20 @@ class InventoryForm extends Form
     /* Se crea la variación validando la cantidad */
     $this->updateProductQuantity($variation, 'create');
 
+    /* Preparamos los datos para guardar */
+    $data = $this->all();
+
+    /* Excluimos type_area si su valor es 1 */
+    if ($this->type == 1 && ($this->movement_type == 1 || $this->movement_type == 2)) {
+      $data['type_area'] = 0;
+    } elseif ($this->type == 2 && $this->movement_type == 2) {
+      $data['type_area'] = 0;
+    } else {
+
+    }
+
     /* Se crea el registro y se envía a la base de datos */
-    Inventory::create($this->all());
+    Inventory::create($data);
 
     /* Se actualiza el precio base, sacando nuevamente el promedio conforme a la cantidad de inventarios */
     if ($this->movement_type == self::MOVEMENT_TYPE_ENTRY) {
