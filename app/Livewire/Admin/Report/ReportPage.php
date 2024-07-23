@@ -200,10 +200,11 @@ class ReportPage extends Component
 
     $this->totalCost = $query->sum('total_cost');
     $this->totalPack = $query->sum('people_count');
-    $this->totalProducts = $query->sum('total_products');
-    /* $query->join('inventories', 'reservations.id', '=', 'inventories.reservation_id')
-                              ->selectRaw('COUNT(DISTINCT inventories.product_id) as total_products')
-                              ->first()->total_products; */
+    $totalProductsQuery = clone $query;
+    $this->totalProducts = $totalProductsQuery->join('inventories', 'reservations.id', '=', 'inventories.reservation_id')
+      ->selectRaw('COUNT(DISTINCT inventories.product_id) as total_products')
+      ->first()
+      ->total_products;
     $this->totalPaid = $query->where('payment_status', 1)->sum('total_pack');
     $this->total_ganado = $this->totalPaid - $this->totalCost;
   }
