@@ -90,6 +90,25 @@
       <i class="fas fa-broom"></i> Limpiar
     </button>
   </div>
+  @if ($area_id)
+    <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-1 lg:grid-cols-3">
+      <div class="rounded-lg bg-slate-200 p-4 shadow">
+        <div class="text-sm font-medium text-gray-500">Costo Total (Área)</div>
+        <div class="mt-1 text-lg font-semibold text-gray-900">S/. {{ number_format($totalCostArea, 2) }}</div>
+      </div>
+      <div class="rounded-lg bg-slate-200 p-4 shadow">
+        <div class="text-sm font-medium text-gray-500">Total Productos (Área)</div>
+        <div class="mt-1 text-lg font-semibold text-gray-900">{{ $totalProductsArea }}</div>
+      </div>
+      <div class="rounded-lg bg-slate-200 p-4 shadow">
+        <div class="{{ $total_ganadoArea < 0 ? 'text-red-600' : 'text-green-600' }} mt-1 text-lg font-semibold">
+          Diferencia (Área)</div>
+        <div class="mt-1 text-lg font-semibold text-gray-900">
+          S/. {{ number_format($total_ganadoArea, 2) }}
+        </div>
+      </div>
+    </div>
+  @endif
   <div class="mb-4">
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
       <div class="rounded-lg bg-white p-4 shadow">

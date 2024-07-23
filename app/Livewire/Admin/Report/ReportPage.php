@@ -29,12 +29,18 @@ class ReportPage extends Component
   public $totalPaid = 0;
   public $total_ganado = 0;
 
+  /* Area Variables */
+  public $totalCostArea = 0;
+  public $totalProductsArea = 0;
+  public $total_ganadoArea = 0;
+
   public function mount()
   {
     /* $this->start_date = Carbon::today()->format('Y-m-d\T00:00'); */
     $this->start_date = Carbon::createFromFormat('Y-m-d\TH:i', '1900-01-01T00:00');
     $this->end_date = Carbon::today()->format('Y-m-d\T23:59');
     $this->calculateTotals();
+    $this->calculateTotalsByArea();
   }
 
   public function updated($property)
@@ -42,6 +48,7 @@ class ReportPage extends Component
     $this->validateDates();
     $this->resetPage();
     $this->calculateTotals();
+    $this->calculateTotalsByArea();
   }
 
   public function updatedSelectAll($value)
@@ -57,6 +64,7 @@ class ReportPage extends Component
       $this->selectedReservations = [];
     }
     $this->calculateTotals();
+    $this->calculateTotalsByArea();
   }
 
   protected function validateDates()
@@ -64,6 +72,9 @@ class ReportPage extends Component
     if ($this->end_date < $this->start_date) {
       $this->end_date = Carbon::parse($this->start_date)->addDay()->format('Y-m-d\TH:i');
     }
+
+    $this->start_date = Carbon::parse($this->start_date)->format('Y-m-d\TH:i');
+    $this->end_date = Carbon::parse($this->end_date)->format('Y-m-d\TH:i');
   }
   public function reportG()
   {
@@ -74,6 +85,7 @@ class ReportPage extends Component
     $this->start_date = Carbon::today()->format('Y-m-d\T00:00');
     $this->end_date = Carbon::today()->format('Y-m-d\T23:59');
     $this->calculateTotals();
+    $this->calculateTotalsByArea();
   }
 
   public function setWeek()
@@ -81,6 +93,7 @@ class ReportPage extends Component
     $this->start_date = Carbon::now()->startOfWeek()->format('Y-m-d\T00:00');
     $this->end_date = Carbon::now()->endOfWeek()->format('Y-m-d\T23:59');
     $this->calculateTotals();
+    $this->calculateTotalsByArea();
   }
 
   public function setThreeWeeks()
@@ -88,6 +101,7 @@ class ReportPage extends Component
     $this->start_date = Carbon::now()->subWeeks(3)->startOfWeek()->format('Y-m-d\T00:00');
     $this->end_date = Carbon::now()->endOfWeek()->format('Y-m-d\T23:59');
     $this->calculateTotals();
+    $this->calculateTotalsByArea();
   }
 
   public function setPreviousYears()
@@ -95,6 +109,7 @@ class ReportPage extends Component
     $this->start_date = Carbon::createFromFormat('Y-m-d\TH:i', '1900-01-01T00:00'); // Fecha de inicio arbitrariamente antigua
     $this->end_date = Carbon::now()->format('Y-m-d\T23:59');
     $this->calculateTotals();
+    $this->calculateTotalsByArea();
   }
 
   public function setMonth()
@@ -102,6 +117,7 @@ class ReportPage extends Component
     $this->start_date = Carbon::now()->startOfMonth()->format('Y-m-d\T00:00');
     $this->end_date = Carbon::now()->endOfMonth()->format('Y-m-d\T23:59');
     $this->calculateTotals();
+    $this->calculateTotalsByArea();
   }
 
   public function setThreeMonths()
@@ -109,14 +125,16 @@ class ReportPage extends Component
     $this->start_date = Carbon::now()->subMonths(3)->startOfMonth()->format('Y-m-d\T00:00');
     $this->end_date = Carbon::now()->endOfMonth()->format('Y-m-d\T23:59');
     $this->calculateTotals();
+    $this->calculateTotalsByArea();
   }
 
   public function clearFilters()
   {
     $this->reset(['area_id', 'company_id', 'search']);
-    $this->start_date = Carbon::today()->format('Y-m-d\T00:00');
+    $this->start_date = Carbon::createFromFormat('Y-m-d\TH:i', '1900-01-01T00:00');
     $this->end_date = Carbon::today()->format('Y-m-d\T23:59');
     $this->calculateTotals();
+    $this->calculateTotalsByArea();
   }
 
   private function applyFilters($query)
@@ -136,9 +154,41 @@ class ReportPage extends Component
           $query->where('name', 'like', "%{$this->search}%");
         });
       })
-      ->whereBetween('order_date', [$this->start_date, $this->end_date]);
+      ->whereBetween('execution_date', [$this->start_date, $this->end_date]);
+  }
+  public function calculateTotalsByArea()
+  {
+    if (!$this->area_id) {
+      $this->totalCostArea = 0;
+      $this->totalProductsArea = 0;
+      $this->total_ganadoArea = 0;
+      return;
+    }
+
+    $query = Reservation::query()
+      ->join('inventories', 'reservations.id', '=', 'inventories.reservation_id')
+      ->where('inventories.type_area', $this->area_id);
+
+    if (!empty($this->selectedReservations)) {
+      $query->whereIn('reservations.id', $this->selectedReservations);
+    } else {
+      $this->applyFilters($query);
+    }
+
+    // Cálculo del total de costo
+    $this->totalCostArea = $query->selectRaw('SUM(inventories.quantity * inventories.unit_price) AS total_cost')
+      ->first()->total_cost ?? 0;
+
+    // Cálculo del total de productos
+    $this->totalProductsArea = $query->selectRaw('COUNT(DISTINCT inventories.product_id) AS total_products')
+      ->first()->total_products ?? 0;
+    $this->total_ganadoArea = $this->totalCost - $this->totalCostArea;
   }
 
+  public function updatedAreaId($value)
+  {
+    $this->calculateTotalsByArea();
+  }
   public function calculateTotals()
   {
     if (!empty($this->selectedReservations)) {
@@ -158,6 +208,7 @@ class ReportPage extends Component
   public function updatedSelectedReservations()
   {
     $this->calculateTotals();
+    $this->calculateTotalsByArea();
   }
 
   public function export()
