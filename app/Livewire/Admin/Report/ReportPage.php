@@ -34,6 +34,9 @@ class ReportPage extends Component
   public $totalProductsArea = 0;
   public $total_ganadoArea = 0;
 
+  /* Total de productos */
+  public $totalSumProducts = 0;
+
   public function mount()
   {
     /* $this->start_date = Carbon::today()->format('Y-m-d\T00:00'); */
@@ -179,10 +182,16 @@ class ReportPage extends Component
     $this->totalCostArea = $query->selectRaw('SUM(inventories.quantity * inventories.unit_price) AS total_cost')
       ->first()->total_cost ?? 0;
 
-    // Cálculo del total de productos
-    $this->totalProductsArea = $query->selectRaw('COUNT(DISTINCT inventories.product_id) AS total_products')
+    // Cálculo del total de productos (suma de cantidades)
+    $this->totalProductsArea = $query->selectRaw('SUM(inventories.quantity) AS total_products')
       ->first()->total_products ?? 0;
+
     $this->total_ganadoArea = $this->totalCost - $this->totalCostArea;
+  }
+
+  public function reservation($reservationId)
+  {
+    $this->redirectRoute('reservations.show', ['reservationId' => $reservationId], navigate: true);
   }
 
   public function updatedAreaId($value)
@@ -192,20 +201,25 @@ class ReportPage extends Component
   public function calculateTotals()
   {
     if (!empty($this->selectedReservations)) {
-      $query = Reservation::query()->whereIn('id', $this->selectedReservations);
+      $query = Reservation::query()->whereIn('reservations.id', $this->selectedReservations);
     } else {
       $query = Reservation::query();
       $this->applyFilters($query);
     }
 
-    $this->totalCost = $query->sum('total_cost');
-    $this->totalPack = $query->sum('people_count');
+    $this->totalCost = $query->sum('reservations.total_cost');
+    $this->totalPack = $query->sum('reservations.people_count');
+
     $totalProductsQuery = clone $query;
     $this->totalProducts = $totalProductsQuery->join('inventories', 'reservations.id', '=', 'inventories.reservation_id')
       ->selectRaw('COUNT(DISTINCT inventories.product_id) as total_products')
       ->first()
       ->total_products;
-    $this->totalPaid = $query->where('payment_status', 1)->sum('total_pack');
+
+    // Cálculo de la suma total de productos
+    $this->totalSumProducts = $query->sum('reservations.total_products') ?? 0;
+
+    $this->totalPaid = $query->where('reservations.payment_status', 1)->sum('reservations.total_pack');
     $this->total_ganado = $this->totalPaid - $this->totalCost;
   }
 

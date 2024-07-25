@@ -2,9 +2,11 @@
 
 namespace App\Livewire\Admin\Reservation;
 
+use App\Exports\ReservationInventoriesExport;
 use Livewire\Component;
 use App\Models\Reservation;
 use App\Models\Inventory;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReservationShow extends Component
 {
@@ -17,6 +19,11 @@ class ReservationShow extends Component
     $this->reservationId = $reservationId;
     $this->reservation = Reservation::findOrFail($reservationId);
     $this->loadInventoriesByArea();
+  }
+
+  public function export()
+  {
+    return Excel::download(new ReservationInventoriesExport($this->reservationId), 'reservation_inventories.xlsx');
   }
 
   public function loadInventoriesByArea()

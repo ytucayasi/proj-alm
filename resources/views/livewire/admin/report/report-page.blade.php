@@ -97,7 +97,7 @@
         <div class="mt-1 text-lg font-semibold text-gray-900">S/. {{ number_format($totalCostArea, 2) }}</div>
       </div>
       <div class="rounded-lg bg-slate-200 p-4 shadow">
-        <div class="text-sm font-medium text-gray-500">Total Productos (Área)</div>
+        <div class="text-sm font-medium text-gray-500">Cantidad de Productos (Área)</div>
         <div class="mt-1 text-lg font-semibold text-gray-900">{{ $totalProductsArea }}</div>
       </div>
       <div class="rounded-lg bg-slate-200 p-4 shadow">
@@ -110,14 +110,18 @@
     </div>
   @endif
   <div class="mb-4">
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-6">
       <div class="rounded-lg bg-white p-4 shadow">
         <div class="text-sm font-medium text-gray-500">Total Pack</div>
         <div class="mt-1 text-lg font-semibold text-gray-900">{{ $totalPack }}</div>
       </div>
       <div class="rounded-lg bg-white p-4 shadow">
-        <div class="text-sm font-medium text-gray-500">Total Productos</div>
+        <div class="text-sm font-medium text-gray-500">Total Productos Distintos</div>
         <div class="mt-1 text-lg font-semibold text-gray-900">{{ $totalProducts }}</div>
+      </div>
+      <div class="rounded-lg bg-white p-4 shadow">
+        <div class="text-sm font-medium text-gray-500">Suma Total de Productos</div>
+        <div class="mt-1 text-lg font-semibold text-gray-900">{{ $totalSumProducts }}</div>
       </div>
       <div class="rounded-lg bg-white p-4 shadow">
         <div class="text-sm font-medium text-gray-500">Total Pagado</div>
@@ -129,8 +133,8 @@
       </div>
       <div class="rounded-lg bg-white p-4 shadow">
         <div class="text-sm font-medium text-gray-500">Total Ganado</div>
-        <div class="{{ $totalGanado < 0 ? 'text-red-600' : 'text-green-600' }} mt-1 text-lg font-semibold">S/.
-          {{ number_format($totalGanado, 2) }}</div>
+        <div class="{{ $total_ganado < 0 ? 'text-red-600' : 'text-green-600' }} mt-1 text-lg font-semibold">S/.
+          {{ number_format($total_ganado, 2) }}</div>
       </div>
     </div>
   </div>
@@ -172,6 +176,9 @@
           <th
             class="border-b border-gray-200 bg-gray-50 px-4 py-2 text-center text-xs font-medium uppercase tracking-wider text-gray-500">
             Total Pagado</th>
+          <th
+            class="border-b border-gray-200 bg-gray-50 px-4 py-2 text-center text-xs font-medium uppercase tracking-wider text-gray-500">
+            Acciones</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-200 bg-white text-xs">
@@ -218,6 +225,12 @@
             <td class="px-4 py-2 text-center">{{ $reservation->people_count }} pack</td>
             <td class="px-4 py-2 text-center">{{ $reservation->total_products }}</td>
             <td class="px-4 py-2 text-center">S/. {{ $reservation->total_pack }}</td>
+            <td class="px-4 py-2 text-center">
+              <button
+                class="rounded bg-orange-400 w-7 h-7 font-bold text-white hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-300"
+                wire:click="reservation({{ $reservation->id }})"><i class="fas fa-external-link-alt"></i>
+              </button>
+            </td>
           </tr>
         @endforeach
       </tbody>
