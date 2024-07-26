@@ -111,6 +111,8 @@
               <th class="px-4 py-2 text-center text-xs font-medium uppercase tracking-wider text-gray-700">Cantidad</th>
               <th class="px-4 py-2 text-center text-xs font-medium uppercase tracking-wider text-gray-700">Precio
                 Unitario</th>
+              <th class="px-4 py-2 text-center text-xs font-medium uppercase tracking-wider text-gray-700">
+                Total</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200 bg-white">
@@ -120,8 +122,9 @@
                 <td class="whitespace-nowrap px-4 py-2 text-center">{{ $inventory->unit->name }}</td>
                 <td class="whitespace-nowrap px-4 py-2 text-center">
                   {{ $inventory->movement_type == 1 ? 'Entrada' : 'Salida' }}</td>
-                <td class="whitespace-nowrap px-4 py-2 text-center">{{ $inventory->quantity }} productos</td>
+                <td class="whitespace-nowrap px-4 py-2 text-center">{{ $inventory->quantity }}</td>
                 <td class="whitespace-nowrap px-4 py-2 text-center">S/. {{ $inventory->unit_price }}</td>
+                <td class="whitespace-nowrap px-4 py-2 text-center">S/. {{ $inventory->unit_price * $inventory->quantity }}</td>
               </tr>
             @endforeach
           </tbody>

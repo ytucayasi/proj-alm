@@ -69,17 +69,20 @@ class AreaSheet implements FromCollection, WithTitle, WithHeadings, WithMapping
       'Tipo de Movimiento',
       'Cantidad',
       'Precio Unitario',
+      'Total',
     ];
   }
 
   public function map($inventory): array
   {
+    $total = $inventory->quantity * $inventory->unit_price;
     return [
       $inventory->product->name,
       $inventory->unit->name,
       $inventory->movement_type == 1 ? 'Entrada' : 'Salida',
       $inventory->quantity,
       $inventory->unit_price,
+      $total,
     ];
   }
 }
