@@ -38,6 +38,9 @@ class InventoryForm extends Form
     if ($this->type == 1 && $this->movement_type == 1) {
       $rules['unit_price'] = 'required|numeric|min:0.01';
       $rules['type_area'] = 'nullable';//
+    } else if ($this->type == 1 && $this->movement_type == 2) {
+      $rules['unit_price'] = 'nullable';
+      $rules['type_area'] = 'nullable';
     } else {
       $rules['unit_price'] = 'nullable';
       $rules['type_area'] = 'required|exists:areas,id';//
