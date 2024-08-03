@@ -25,6 +25,9 @@ new #[Layout('layouts.guest')] class extends Component
 }; ?>
 
 <div>
+    <div class="flex items-center justify-center bg-red-500 text-white rounded-md py-4 px-2">
+        <span id="contador" class="text-center">Cargando...</span>
+    </div>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
@@ -69,3 +72,31 @@ new #[Layout('layouts.guest')] class extends Component
         </div>
     </form>
 </div>
+
+<script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Fecha y hora de cierre del servidor
+            const closingTime = new Date();
+            closingTime.setDate(closingTime.getDate() + 4); // 4 días desde ahora
+
+            function updateCounter() {
+                const now = new Date();
+                const timeDifference = closingTime - now;
+
+                if (timeDifference <= 0) {
+                    document.getElementById('contador').innerHTML = "El servidor ha cerrado.";
+                    return;
+                }
+
+                const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+                document.getElementById('contador').innerHTML = `El Servidor cerrará en ${days}d ${hours}h ${minutes}m ${seconds}s, ponerse en contacto`;
+            }
+
+            setInterval(updateCounter, 1000);
+            updateCounter(); // Initial call
+        });
+    </script>
